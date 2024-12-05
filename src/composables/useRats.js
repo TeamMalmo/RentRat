@@ -7,7 +7,8 @@ const rats = [
         "price": 120,
         "availability": true,
         "areaOfMalmo": "Värnhem",
-        "imgUrl": "https://example.com/rat-001.jpg"
+        "imgUrl": "https://example.com/rat-001.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Lisa",
@@ -17,7 +18,8 @@ const rats = [
         "price": 150,
         "availability": false,
         "areaOfMalmo": "Möllevången",
-        "imgUrl": "https://example.com/rat-002.jpg"
+        "imgUrl": "https://example.com/rat-002.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Erik",
@@ -27,7 +29,8 @@ const rats = [
         "price": 100,
         "availability": true,
         "areaOfMalmo": "Slottsstaden",
-        "imgUrl": "https://example.com/rat-003.jpg"
+        "imgUrl": "https://example.com/rat-003.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Klara",
@@ -37,7 +40,8 @@ const rats = [
         "price": 130,
         "availability": true,
         "areaOfMalmo": "Limhamn",
-        "imgUrl": "https://example.com/rat-004.jpg"
+        "imgUrl": "https://example.com/rat-004.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Olle",
@@ -47,7 +51,8 @@ const rats = [
         "price": 140,
         "availability": false,
         "areaOfMalmo": "Rosengård",
-        "imgUrl": "https://example.com/rat-005.jpg"
+        "imgUrl": "https://example.com/rat-005.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Sofia",
@@ -57,7 +62,8 @@ const rats = [
         "price": 125,
         "availability": true,
         "areaOfMalmo": "Hyllie",
-        "imgUrl": "https://example.com/rat-006.jpg"
+        "imgUrl": "https://example.com/rat-006.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Jonas",
@@ -67,7 +73,8 @@ const rats = [
         "price": 110,
         "availability": true,
         "areaOfMalmo": "Kirseberg",
-        "imgUrl": "https://example.com/rat-007.jpg"
+        "imgUrl": "https://example.com/rat-007.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Hanna",
@@ -77,7 +84,8 @@ const rats = [
         "price": 160,
         "availability": false,
         "areaOfMalmo": "Triangeln",
-        "imgUrl": "https://example.com/rat-008.jpg"
+        "imgUrl": "https://example.com/rat-008.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Fredrik",
@@ -87,7 +95,8 @@ const rats = [
         "price": 105,
         "availability": true,
         "areaOfMalmo": "Oxie",
-        "imgUrl": "https://example.com/rat-009.jpg"
+        "imgUrl": "https://example.com/rat-009.jpg",
+        "renter" : "Jumi",
     },
     {
         "name": "Emma",
@@ -97,7 +106,8 @@ const rats = [
         "price": 145,
         "availability": true,
         "areaOfMalmo": "Södervärn",
-        "imgUrl": "https://example.com/rat-010.jpg"
+        "imgUrl": "https://example.com/rat-010.jpg",
+        "renter" : "Jumi",
     }
 ];
 

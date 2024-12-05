@@ -1,23 +1,22 @@
 <script setup>
-import { useRats } from '@/composables/useRats';
-
-const {rats} = useRats();
-
+import RatList from '@/components/Layouts/RatList.vue';
 </script>
 
 <template>
-  <main>
-    <h1>This is a RenteeHome page</h1>
-    <ul>
-      <li v-for="rat in rats" :key="rat.id">
-        <h2>{{ rat.name }}</h2>
-        <p>Price: {{ rat.price }}</p>
-        <p>Skills: {{ rat.skills }}</p>
-        <p>Availability: {{ rat.availability }}</p>
-        <p>Area of Malmo: {{ rat.areaOfMalmo }}</p>
-        <img :src="rat.imgUrl" alt="rat-image">
-      </li>
-    </ul>
-  </main>
+  <div class="container">
+    <h1>This is a RenterHome page</h1>
+    <RatList />
+  </div>
+
 </template>
 
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  max-width: 80vh;
+}
+</style>

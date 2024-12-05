@@ -4,7 +4,7 @@ import RatList from '@/components/Layouts/RatList.vue';
 
 <template>
   <div class="container">
-    <h1>This is a RenterHome page</h1>
+    <h1>Rats For Rent</h1>
     <RatList />
   </div>
 
@@ -17,6 +17,6 @@ import RatList from '@/components/Layouts/RatList.vue';
   align-items: center;
   justify-content: center;
   height: 100vh;
-  max-width: 80vh;
+  width: 100%;
 }
 </style>

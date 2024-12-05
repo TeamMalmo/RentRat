@@ -31,9 +31,18 @@ const {rats} = useRats();
         box-sizing: border-box ;
     }
 
+    h2{
+        font-weight: 100;
+    }
+
     .rat-list{
         height: 100%;
+        width: 600px;
         overflow-y: auto; /* Enable vertical scrolling if content overflows */
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .rat-list::-webkit-scrollbar {
@@ -45,10 +54,18 @@ const {rats} = useRats();
         /* flex-direction: column; */
         align-items: center;
         justify-content: space-between;
-        border: 1px solid black;
-        padding: 10px;
-        margin: 10px;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        /* margin: 0.5rem; */
         width: 500px;
+        text-transform:lowercase;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        background-color: #8ACE00;
+    }
+
+    .rat-list-item:hover{
+        transform: scale(1.05);
+        transition: 0.2s ease-in-out;
     }
 
     .rat-image {

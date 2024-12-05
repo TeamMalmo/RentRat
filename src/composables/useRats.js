@@ -2,6 +2,7 @@ const rats = [
     {
         "name": "Calle",
         "id": "rat-001",
+        "primarySkill": "assemble furniture",
         "skills": ["cook", "clean"],
         "price": 120,
         "availability": true,
@@ -11,6 +12,7 @@ const rats = [
     {
         "name": "Lisa",
         "id": "rat-002",
+        "primarySkill": "clean",
         "skills": ["cook", "do laundry"],
         "price": 150,
         "availability": false,
@@ -20,6 +22,7 @@ const rats = [
     {
         "name": "Erik",
         "id": "rat-003",
+        "primarySkill": "cook",
         "skills": ["clean", "organize"],
         "price": 100,
         "availability": true,
@@ -29,6 +32,7 @@ const rats = [
     {
         "name": "Klara",
         "id": "rat-004",
+        "primarySkill": "paint",
         "skills": ["clean", "cook"],
         "price": 130,
         "availability": true,
@@ -38,6 +42,7 @@ const rats = [
     {
         "name": "Olle",
         "id": "rat-005",
+        "primarySkill": "laundry",
         "skills": ["clean", "assemble furniture"],
         "price": 140,
         "availability": false,
@@ -47,6 +52,7 @@ const rats = [
     {
         "name": "Sofia",
         "id": "rat-006",
+        "primarySkill": "clean",
         "skills": ["paint", "cook"],
         "price": 125,
         "availability": true,
@@ -56,6 +62,7 @@ const rats = [
     {
         "name": "Jonas",
         "id": "rat-007",
+        "primarySkill": "paint",
         "skills": ["clean", "paint"],
         "price": 110,
         "availability": true,
@@ -65,6 +72,7 @@ const rats = [
     {
         "name": "Hanna",
         "id": "rat-008",
+        "primarySkill": "cook",
         "skills": ["cook", "carry items"],
         "price": 160,
         "availability": false,
@@ -74,6 +82,7 @@ const rats = [
     {
         "name": "Fredrik",
         "id": "rat-009",
+        "primarySkill": "clean",
         "skills": ["clean", "wash windows"],
         "price": 105,
         "availability": true,
@@ -83,6 +92,7 @@ const rats = [
     {
         "name": "Emma",
         "id": "rat-010",
+        "primarySkill": "laundry",
         "skills": ["organize", "cook"],
         "price": 145,
         "availability": true,
@@ -95,7 +105,24 @@ const rats = [
 export function useRats() {
     const assignImgUrl = (rats) => {
         return rats.map((rat) => {
-
+            // Check the primarySkill and assign the corresponding image
+            switch (rat.primarySkill) {
+                case "cook":
+                    rat.imgUrl = "/images/cook.png";
+                    break;
+                case "clean":
+                    rat.imgUrl = "/images/clean.png";
+                    break;
+                case "laundry":
+                    rat.imgUrl = "/images/laundry.png";
+                    break;
+                case "paint":
+                    rat.imgUrl = "/images/paint.png";
+                    break;
+                default:
+                    rat.imgUrl = "/images/default.png";  // Fallback image
+                    break;
+            }
             return rat;
         });
     };
@@ -104,4 +131,5 @@ export function useRats() {
 
     return { rats: updatedRats };
 }
+
 

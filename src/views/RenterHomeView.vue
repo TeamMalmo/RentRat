@@ -1,8 +1,21 @@
 <script setup>
+
 </script>
 
 <template>
-  <main>
-    <h1>This is a RenterHome page</h1>
-  </main>
+  <div class="container">
+<h1>Rats For Rent</h1>
+  </div>
+
 </template>
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+</style>

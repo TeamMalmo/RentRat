@@ -4,22 +4,23 @@ import { useRats } from '@/composables/useRats';
 
 const { rats } = useRats();
 
-// hämtar alla options dynamiskt baserat på datan i rats
-const getFilterOptions = (filterKey) => {
-  if (!filterKey) return [];
-  return [...new Set(rats.map((rat) => rat[filterKey]))];
-};
-
 // alla refs för filtering av rats
 const searchText = ref('');
 const selectedFilter = ref(''); // primarySkill' eller 'areaOfMalmo'
 const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
 
+// hämtar alla options dynamiskt baserat på datan i rats
+const getFilterOptions = (filterKey) => {
+  if (!filterKey) return [];
+  return [...new Set(rats.map((rat) => rat[filterKey]))];
+};
+
+
 // computed property för att uppdatera 'filteredRats' vid filtering av rats
 const filteredRats = computed(() => {
   // 1) filtera baserat på söktext (i lowerCase)
-  let filtered = rats.filter((rat) =>
+    let filtered = rats.filter((rat) =>
     rat.name.toLowerCase().includes(searchText.value.toLowerCase()) ||
     rat.primarySkill.toLowerCase().includes(searchText.value.toLowerCase()) ||
     rat.areaOfMalmo.toLowerCase().includes(searchText.value.toLowerCase())

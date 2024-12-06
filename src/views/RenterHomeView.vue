@@ -1,11 +1,10 @@
 <script setup>
-import RatList from '@/components/Layouts/RatList.vue';
+
 </script>
 
 <template>
   <div class="container">
-    <h1>Rats For Rent</h1>
-    <RatList />
+<h1>Rats For Rent</h1>
   </div>
 
 </template>

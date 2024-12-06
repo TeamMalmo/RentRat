@@ -15,6 +15,10 @@ const selectedFilter = ref(''); // primarySkill' eller 'areaOfMalmo'
 const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
 
+onMounted(async() => {
+  await fetchRats();
+});
+
 // hämtar alla options dynamiskt baserat på datan i rats
 const getFilterOptions = (filterKey) => {
   if (!filterKey) return [];

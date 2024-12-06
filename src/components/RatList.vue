@@ -1,14 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRats } from '@/composables/useRats';
 
-const { rats } = useRats();
+const { rats, fetchRats } = useRats();
 
 // alla refs för filtering av rats
 const searchText = ref('');
 const selectedFilter = ref(''); // primarySkill' eller 'areaOfMalmo'
 const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
+
+onMounted(async() => {
+  await fetchRats();
+});
 
 // hämtar alla options dynamiskt baserat på datan i rats
 const getFilterOptions = (filterKey) => {

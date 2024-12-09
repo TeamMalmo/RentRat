@@ -1,33 +1,60 @@
-
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { ref, onMounted } from "vue";
+import { useRats } from "../composables/useRats";
 
-// Props för att ta in modallogik och råttdata från föräldern RatList
-defineProps({
-  isVisible: Boolean, // Styr om modalen är synlig
-  selectedRat: Object, // Håller den valda råttan
+// State för modalen
+const isModalVisible = ref(false);
+const selectedRat = ref(null);
+
+// Hämta råttorna med composable
+const { rats, isLoading, fetchRats } = useRats();
+
+// Hämta råttor när komponenten mountas
+onMounted(() => {
+  fetchRats();
 });
 
-// Emit för att signalera stängning av modalen
-const emit = defineEmits(["close"]);
+// Funktion för att öppna modalen med vald råtta
+const openModal = (rat) => {
+  selectedRat.value = rat;
+  isModalVisible.value = true;
+};
 
 // Funktion för att stänga modalen
-const close = () => {
-  emit("close");
+const closeModal = () => {
+  isModalVisible.value = false;
+  selectedRat.value = null;
 };
 </script>
 
 <template>
-  <div v-if="isVisible" class="modal-overlay" @click.self="close">
-    <div class="modal-content">
-      <button class="close-button" @click="close">×</button>
-      <template v-if="selectedRat">
-        <h2>{{ selectedRat.name }}</h2>
-        <p>Skill: {{ selectedRat.primarySkill }}</p>
-        <p>Area: {{ selectedRat.areaOfMalmo }}</p>
-        <p>Hourly rate: {{ selectedRat.price }}:-</p>
-        <img :src="selectedRat.imgUrl" :alt="selectedRat.name" />
-      </template>
+  <div>
+    <!-- Lista med råttor -->
+    <ul class="rat-list" v-if="!isLoading">
+      <li
+        v-for="rat in rats"
+        :key="rat.id"
+        class="rat-list-item"
+        @click="openModal(rat)"
+      >
+        <h2>{{ rat.name }}</h2>
+        <p>{{ rat.primarySkill }}</p>
+      </li>
+    </ul>
+    <p v-else>Loading rats...</p>
+
+    <!-- Modal -->
+    <div v-if="isModalVisible" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal">×</button>
+        <template v-if="selectedRat">
+          <h2>{{ selectedRat.name }}</h2>
+          <p>Skill: {{ selectedRat.primarySkill }}</p>
+          <p>Area: {{ selectedRat.areaOfMalmo }}</p>
+          <p>Hourly rate: {{ selectedRat.price }}:-</p>
+          <img :src="selectedRat.imgUrl" :alt="selectedRat.name" />
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -68,6 +95,23 @@ const close = () => {
 
 .close-button:hover {
   color: red;
+}
+
+.rat-list {
+  list-style: none;
+  padding: 0;
+}
+
+.rat-list-item {
+  cursor: pointer;
+  background: #f0f0f0;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.rat-list-item:hover {
+  background: #e0e0e0;
 }
 
 .modal-content img {

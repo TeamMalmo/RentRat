@@ -2,7 +2,7 @@
 <script setup>
 import { defineProps, defineEmits } from "vue";
 
-// Props för att ta in modallogik och råttdata
+// Props för att ta in modallogik och råttdata från föräldern RatList
 defineProps({
   isVisible: Boolean, // Styr om modalen är synlig
   selectedRat: Object, // Håller den valda råttan
@@ -25,7 +25,7 @@ const close = () => {
         <h2>{{ selectedRat.name }}</h2>
         <p>Skill: {{ selectedRat.primarySkill }}</p>
         <p>Area: {{ selectedRat.areaOfMalmo }}</p>
-        <p>Price: {{ selectedRat.price }}:-</p>
+        <p>Hourly rate: {{ selectedRat.price }}:-</p>
         <img :src="selectedRat.imgUrl" :alt="selectedRat.name" />
       </template>
     </div>

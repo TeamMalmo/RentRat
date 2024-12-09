@@ -15,6 +15,7 @@ const selectedFilter = ref(''); // primarySkill' eller 'areaOfMalmo'
 const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
 
+// OBS, ska vi använda denna? funktionen är fel (men det funkar så ska den användas?)
 onMounted(async() => {
   await fetchRats();
 });

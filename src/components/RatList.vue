@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from "vue";
 import { useFetchRats } from "../composables/useFetchRats";
 
+import RatSpecComponent from "./RatSpecComponent.vue";
 
     const { rats, isLoading, error, fetchAllRats } = useFetchRats();
 
@@ -15,7 +16,11 @@ const selectedFilter = ref(''); // primarySkill' eller 'areaOfMalmo'
 const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
 
-// OBS, ska vi använda denna? funktionen är fel (men det funkar så ska den användas?)
+// Modal refs
+const isModalVisible = ref(false); // Styr om modalen är synlig
+const selectedRat = ref(null); // Håller den valda råttan
+
+//OBS SKA DENNA VERKLIGEN VA KVAR??
 onMounted(async() => {
   await fetchRats();
 });
@@ -56,6 +61,18 @@ const filteredRats = computed(() => {
 
   return filtered;
 });
+
+
+// MODAL FUNCTIONS
+const openModal = (rat) => {
+  selectedRat.value = rat;
+  isModalVisible.value = true;
+};
+
+const closeModal = () => {
+  isModalVisible.value = false;
+  selectedRat.value = null;
+};
 
 </script>
 
@@ -111,7 +128,7 @@ const filteredRats = computed(() => {
 
   <!-- Render Filtered Rats -->
   <ul class="rat-list" v-if="filteredRats.length > 0">
-    <li v-for="rat in filteredRats" :key="rat.id" class="rat-list-item">
+    <li v-for="rat in filteredRats" :key="rat.id" class="rat-list-item" @click="openModal(rat)">
       <span>
         <h2>{{ rat.name }} in {{ rat.areaOfMalmo }}</h2>
         <p>Primary Skill: {{ rat.primarySkill }}</p>
@@ -134,6 +151,12 @@ const filteredRats = computed(() => {
       💔 No perfect rat found. Try adjusting your filters! 💔
     </p>
   </div>
+
+  <RatSpecComponent
+    :isVisible="isModalVisible"
+    :selectedRat="selectedRat"
+    @close="closeModal"
+  />
 </template>
 
 <style scoped>

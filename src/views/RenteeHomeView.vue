@@ -1,11 +1,10 @@
 <script setup>
-import RatList from '@/components/RatList.vue';
+import FindRats from '@/components/FindRats/FindRats.vue';
 </script>
 
 <template>
   <div class="container">
-    <h1>Rats For Rent</h1>
-    <RatList />
+    <FindRats  />
   </div>
 
 </template>

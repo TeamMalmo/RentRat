@@ -55,6 +55,12 @@ const routes = [
         component: RenteeRatsView,
       },
       {
+        path: 'rats/:id',
+        name: 'RenteeRatDetail',
+        component: () => import('@/components/RatSpecComponent.vue'),
+        props: true,
+      },
+      {
         path: 'profile',
         name: 'RenteeProfile',
         component: RenteeProfileView,

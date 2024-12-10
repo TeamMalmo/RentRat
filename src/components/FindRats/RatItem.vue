@@ -6,7 +6,7 @@ defineProps({
 </script>
 
 <template>
-  <li class="rat-list-item" @click="$router.push(`/rentee/rats/${rat.id}`)">
+  <li class="rat-list-item">
       <span>
         <h2>{{ rat.name }} in {{ rat.areaOfMalmo }}</h2>
         <p>Primary Skill: {{ rat.primarySkill }}</p>

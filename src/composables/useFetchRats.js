@@ -42,7 +42,7 @@ export function useFetchRats() {
       const response = await fetch('https://api.jsonbin.io/v3/b/6752bc1ead19ca34f8d68e9f', {
         headers: {
           'Content-Type': 'application/json',
-          'X-Master-Key': apiKey, // Lägger till API-nyckeln i headers
+          'X-Master-Key': '\$2a\$10\$Iq84zZpLIaL/WqiZVw7dfevjyFwugit1keetb4ND6uboi9um3N7ra', // Lägger till API-nyckeln i headers
         },
       });
       const data = await response.json(); // Hämtar och omvandlar svaret till JSON

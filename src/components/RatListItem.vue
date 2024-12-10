@@ -38,7 +38,7 @@ const bookRat = () => {
 };
 
 onMounted(() => {
-    fetchItems();
+    fetchRats();
 });
 
 </script>

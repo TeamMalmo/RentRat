@@ -16,7 +16,7 @@ const filterValue = ref(''); // baseras på getFilterOptions()
 const sortOrder = ref(''); //  'low-to-high' eller 'high-to-low'
 
 onMounted(async() => {
-  await fetchRats();
+  await fetchAllRats();
 });
 
 // hämtar alla options dynamiskt baserat på datan i rats

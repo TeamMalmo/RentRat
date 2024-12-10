@@ -24,9 +24,7 @@ onMounted(() => {
 </template>
 
 <style>
-body {
-  background-color: #8ace00;
-}
+
 .svg-object {
   max-width: 100%;
 }

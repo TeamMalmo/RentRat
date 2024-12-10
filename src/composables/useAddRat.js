@@ -75,5 +75,5 @@ export function useAddRat() {
   };
 
   // Return the necessary methods and reactive data
-  return { addRat, error, isLoading, successMessage };
+  return { addRat, error, isLoading, successMessage, assignImgUrl };
 }

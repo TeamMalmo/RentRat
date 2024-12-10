@@ -39,5 +39,5 @@ export function useRemoveRat() {
     }
   };
 
-  return { removeRatById };
+  return { removeRatById, saveRatsToDatabase };
 }

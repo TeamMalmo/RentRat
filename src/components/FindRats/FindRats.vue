@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue";
 import { useFetchRats } from "@/composables/useFetchRats";
 import RatFilter from "./RatFilter.vue";
 import RatItem from "./RatItem.vue";
+import RatSpecComponent from "../RatSpecComponent.vue";
 
 const { rats, isLoading, error, fetchAllRats } = useFetchRats();
 
@@ -16,6 +17,29 @@ const sortOrder = ref("");
 onMounted(() => {
   fetchAllRats();
 });
+
+// Ref för den valda råttan
+const selectedRat = ref(null);
+
+// Visibility state för modalen
+const isModalVisible = ref(false);
+
+// Funktion som hanterar den valda råttan och öppnar/stänger modalen
+const handleRatClick = (rat) => {
+  if (isModalVisible.value && selectedRat.value?.id === rat.id) {
+    // Om modalen redan är öppen för samma råtta, stäng den
+    isModalVisible.value = false;
+  } else {
+    // Annars öppna modalen för den valda råttan
+    selectedRat.value = rat;
+    isModalVisible.value = true;
+  }
+};
+
+// Stäng modalen
+const closeModal = () => {
+  isModalVisible.value = false; // Stäng modalen
+};
 
 const filteredRats = computed(() => {
   const allRats = rats.value || [];
@@ -72,6 +96,7 @@ const handleFilterChange = (filters) => {
       v-for="rat in filteredRats"
       :key="rat.id"
       :rat="rat"
+      @click="handleRatClick(rat)"
     />
   </ul>
 
@@ -91,6 +116,13 @@ const handleFilterChange = (filters) => {
       💔 No perfect rat found. Try adjusting your filters! 💔
     </p>
   </div>
+
+  <!-- Om en råtta är vald, visa den i en modal -->
+  <div v-if="isModalVisible" class="modal">
+    <RatSpecComponent :rat="selectedRat" />
+    <button @click="closeModal">Close</button>
+  </div>
+
 </template>
 
 <style scoped>

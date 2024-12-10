@@ -1,85 +1,65 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRats } from "../composables/useRats";
+import { ref } from 'vue';
 
-// State för modalen
-const isModalVisible = ref(false);
-const selectedRat = ref(null);
-
-// Hämta råttorna med composable
-const { rats, isLoading, fetchRats } = useRats();
-
-// Hämta råttor när komponenten mountas
-onMounted(() => {
-  fetchRats();
+defineProps({
+  rat: Object, // Data för en specifik råtta
 });
 
-// Funktion för att öppna modalen med vald råtta
-const openModal = (rat) => {
-  selectedRat.value = rat;
-  isModalVisible.value = true;
-};
+// State för att hantera modalens synlighet
+const isModalVisible = ref(true);
 
 // Funktion för att stänga modalen
 const closeModal = () => {
   isModalVisible.value = false;
-  selectedRat.value = null;
 };
 </script>
 
 <template>
-  <div>
-    <!-- Lista med råttor -->
-    <ul class="rat-list" v-if="!isLoading">
-      <li
-        v-for="rat in rats"
-        :key="rat.id"
-        class="rat-list-item"
-        @click="openModal(rat)"
-      >
-        <h2>{{ rat.name }}</h2>
-        <p>{{ rat.primarySkill }}</p>
-      </li>
-    </ul>
-    <p v-else>Loading rats...</p>
+  <!-- Modal-overlay -->
+  <div v-if="isModalVisible" class="modal-overlay" @click.self="closeModal">
+    <div class="modal-content">
+      <!-- Stängknapp -->
+      <button class="close-button" @click="closeModal">×</button>
 
-    <!-- Modal -->
-    <div v-if="isModalVisible" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content">
-        <button class="close-button" @click="closeModal">×</button>
-        <template v-if="selectedRat">
-          <h2>{{ selectedRat.name }}</h2>
-          <p>Skill: {{ selectedRat.primarySkill }}</p>
-          <p>Area: {{ selectedRat.areaOfMalmo }}</p>
-          <p>Hourly rate: {{ selectedRat.price }}:-</p>
-          <img :src="selectedRat.imgUrl" :alt="selectedRat.name" />
-        </template>
-      </div>
+      <!-- Visar information om råttan -->
+      <span>
+        <h2>{{ rat.name }} in {{ rat.areaOfMalmo }}</h2>
+        <p>Primary Skill: {{ rat.primarySkill }}</p>
+        <p>Other Skills: {{ rat.skills.join(', ') }}</p>
+        <p>Available? {{ rat.availability ? 'Yes' : 'No' }}</p>
+        <p>Renter: {{ rat.renter }}</p>
+      </span>
+      <span>
+        <img :src="rat.imgUrl" alt="rat-image" class="rat-image" />
+        <p>Hourly Rate: {{ rat.price }}:-</p>
+      </span>
     </div>
   </div>
 </template>
 
 <style scoped>
+/* Modal-overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Make sure it's above other elements */
+  z-index: 1000;
 }
 
+/* Modal-content */
 .modal-content {
-  background: #fff;
-  border-radius: 8px;
+  background: white;
   padding: 20px;
-  width: 90%; /* Max width to fit smaller screens */
-  max-width: 500px; /* Don't grow beyond this size */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
@@ -89,7 +69,7 @@ const closeModal = () => {
   right: 10px;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
 }
 
@@ -97,27 +77,10 @@ const closeModal = () => {
   color: red;
 }
 
-.rat-list {
-  list-style: none;
-  padding: 0;
-}
-
-.rat-list-item {
-  cursor: pointer;
-  background: #f0f0f0;
-  margin: 5px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.rat-list-item:hover {
-  background: #e0e0e0;
-}
-
-.modal-content img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+.rat-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 </style>

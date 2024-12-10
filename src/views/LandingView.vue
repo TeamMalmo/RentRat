@@ -1,18 +1,29 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref } from 'vue';
 
-onMounted(() => {
-  console.log('mounted, bitch')
-})
+const isLogoLoaded = ref(false); 
+
+const onLogoLoad = () => {
+  isLogoLoaded.value = true;
+};
+
+const onLogoError = () => {
+  isLogoLoaded.value = false;
+};
+
+
 </script>
 
 <template>
   <div>
-    <h1 class="">Rent a Rat</h1>
+    <!-- v-bind to hide if logo loads, otherwise show -->
+    <h1 :style="{ visibility: isLogoLoaded ? 'hidden' : 'visible' }">Rent a Rat</h1>
     <object
       type="image/svg+xml"
       data="/images/rent-a-rat-vector.svg"
       class="svg-object"
+      @load="onLogoLoad"
+      @error="onLogoError"
     ></object>
     <RouterLink to="/renter">
       <button>I am a Renter</button>
@@ -24,7 +35,6 @@ onMounted(() => {
 </template>
 
 <style>
-
 .svg-object {
   max-width: 100%;
 }

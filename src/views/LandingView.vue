@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const isLogoLoaded = ref(true); 
+const isLogoLoaded = ref(false); 
 
 const onLogoLoad = () => {
   isLogoLoaded.value = true;
@@ -17,10 +17,10 @@ const onLogoError = () => {
 <template>
   <div>
     <!-- v-bind to hide if logo loads, otherwise show -->
-    <h1 :style="{ visibility: !isLogoLoaded ? 'hidden' : 'visible' }">Rent a Rat</h1>
+    <h1 v-show="!isLogoLoaded">Rent a Rat</h1>
     <object
       type="image/svg+xml"
-      data="/images/rent-a-at-vector.svg"
+      data="/images/rent-a-rat-vector.svg"
       class="svg-object"
       @load="onLogoLoad"
       @error="onLogoError"

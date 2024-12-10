@@ -72,6 +72,7 @@ const handleFilterChange = (filters) => {
       v-for="rat in filteredRats"
       :key="rat.id"
       :rat="rat"
+      @click="$router.push(`/rentee/rats/${rat.id}`)"
     />
   </ul>
 

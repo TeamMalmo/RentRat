@@ -30,14 +30,80 @@ onMounted(async () => {
 });
 </script>
 
+
 <template>
-  <div v-if="isLoading">Loading rat...</div>
-  <div v-else-if="error">{{ error }}</div>
-  <div v-else>
-    <h1>{{ rat.name }}</h1>
-    <img :src="rat.imgUrl" alt="rat image" />
-    <p>Skills: {{ rat.skills.join(', ') }}</p>
-    <p>Price: {{ rat.price }} SEK</p>
-    <p>Description: {{ rat.description }}</p>
+  <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>
+  <div v-else-if="error" class="error-message">❌ {{ error }}</div>
+  <div v-else class="rat-container">
+    <div class="rat-info">
+      <h1 class="rat-name">{{ rat.name }}</h1>
+      <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
+      <p><strong>Price:</strong> {{ rat.price }} SEK</p>
+      <p><strong>Description:</strong> {{ rat.description }}</p>
+    </div>
+    <div class="rat-image-container">
+      <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.rat-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid #8ACE00;
+  border-radius: 10px;
+  background-color: rgba(128, 128, 128, 0.534);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.rat-info {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.rat-name {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.rat-image-container {
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 0; /* Fyrkantig från början */
+  animation: circleAnimation 1.5s ease-out forwards; /* Animering vid laddning */
+}
+
+.rat-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes circleAnimation {
+  0% {
+    border-radius: 0%; /* Fyrkantig */
+  }
+  100% {
+    border-radius: 50%; /* Cirkulär */
+  }
+}
+
+.loading-message,
+.error-message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  color: #666;
+}
+</style>

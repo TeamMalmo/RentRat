@@ -46,6 +46,7 @@ defineProps({
     .rat-list-item:hover{
         transform: scale(1.05);
         transition: 0.2s ease-in-out;
+        cursor: pointer;
     }
 
     .rat-image {

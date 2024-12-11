@@ -37,7 +37,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BookForm v-if="isBooking && rat" :rat="rat" @closeModal="closeModal" />
+  <BookForm
+    v-if="isBooking && rat"
+    :rat="rat"
+    @closeModal="closeModal"
+    :renterId="ratId" />
   <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
   <div v-else class="rat-container">

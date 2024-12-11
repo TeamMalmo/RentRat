@@ -1,41 +1,45 @@
 <script setup>
 // import { useRats } from '@/composables/useRats';
 import { ref, onMounted, defineProps } from "vue";
+import { useBookings } from "../composables/useBookings";
 
 // const { rats, isLoading, fetchrats } = useRats();
-defineProps(["rat"]);
+const props = defineProps({ rat: Object, renterId: String });
+// const renterId = route.params.id;
 
-const showBookForm = ref(false);
+const { isAddingBooking, fetchBookings, addBooking, bookings, error } =
+  useBookings();
+
 const selectedRat = ref(null);
 const bookDate = ref("");
 const bookTime = ref("");
 
 const bookedRats = ref([]);
 
-// Öppna bokningsformuläret
-const openBookForm = (rat) => {
-  selectedRat.value = rat;
-  showBookForm.value = true;
-};
-
-// Stäng bokningsformuläret
-const closeBookForm = () => {
-  emit("closeModal");
-};
-
 // Boka objekt med dag och tid
-const bookRat = () => {
-  const bookDetails = {
-    rat: selectedRat.value.id,
+// const bookRat = () => {
+//   const bookDetails = {
+//     rat: selectedRat.value.id,
+//     date: bookDate.value,
+//     time: bookTime.value,
+//   };
+//   bookedRats.value.push(bookDetails);
+//   alert(
+//     `Du har nu bokat råttan: ${selectedRat.value.title} den ${bookDate.value} kl. ${bookTime.value}`
+//   );
+// };
+
+const handleAddBooking = () => {
+  addBooking({
+    id: Date.now() % 100000,
+    ratId: props.rat.id,
+    RenterId: props.renterId,
     date: bookDate.value,
     time: bookTime.value,
-  };
-  bookedRats.value.push(bookDetails);
-  alert(
-    `Du har nu bokat råtan: ${selectedRat.value.title} den %{bookDate.value} kl. ${bookTime.value}`
-  );
-  closeBookForm();
+  });
 };
+
+fetchBookings();
 </script>
 
 <template>
@@ -54,7 +58,9 @@ const bookRat = () => {
             <input type="time" id="time" v-model="bookTime" required />
           </div>
           <div class="formAction">
-            <button type="submit">Bekräfta Bokning</button>
+            <button type="submit" @click="handleAddBooking">
+              Bekräfta Bokning
+            </button>
             <button @click="$emit('closeModal')">Avbryt</button>
           </div>
         </div>

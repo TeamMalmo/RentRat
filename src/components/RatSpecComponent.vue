@@ -13,6 +13,10 @@ const isLoading = ref(true);
 
 const { fetchAllRats, rats } = useFetchRats();
 
+const closeModal = () => {
+  isBooking.value = false;
+};
+
 onMounted(async () => {
   isLoading.value = true;
 
@@ -33,7 +37,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BookForm v-if="isBooking"></BookForm>
+  <BookForm v-if="isBooking && rat" :rat="rat" @closeModal="closeModal" />
   <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
   <div v-else class="rat-container">

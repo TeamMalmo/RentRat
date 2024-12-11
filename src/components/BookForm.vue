@@ -1,9 +1,10 @@
 <script setup>
 // import { useRats } from '@/composables/useRats';
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineProps } from "vue";
 
 // const { rats, isLoading, fetchrats } = useRats();
-defineProps({ rat: Object });
+defineProps(["rat"]);
+
 const showBookForm = ref(false);
 const selectedRat = ref(null);
 const bookDate = ref("");
@@ -19,10 +20,7 @@ const openBookForm = (rat) => {
 
 // Stäng bokningsformuläret
 const closeBookForm = () => {
-  showBookForm.value = false;
-  selectedRat.value = null;
-  bookDate.value = "";
-  bookTime.value = "";
+  emit("closeModal");
 };
 
 // Boka objekt med dag och tid
@@ -46,7 +44,7 @@ const bookRat = () => {
   <!-- Bokningsformulär -->
   <div class="bookFormModal">
     <div class="bookFormContainer">
-      <h3>Boka {{ selectedRat?.title }}</h3>
+      <h3>Boka {{ rat.name }}</h3>
       <form @submit.prevent="bookRat">
         <div class="formDateTime">
           <label for="date">Välj Datum:</label>
@@ -57,7 +55,7 @@ const bookRat = () => {
           </div>
           <div class="formAction">
             <button type="submit">Bekräfta Bokning</button>
-            <button @click="closeBookForm">Avbryt</button>
+            <button @click="$emit('closeModal')">Avbryt</button>
           </div>
         </div>
       </form>

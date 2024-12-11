@@ -1,9 +1,9 @@
 <script setup>
-import { useRats } from '@/composables/useRats';
+// import { useRats } from '@/composables/useRats';
 import { ref, onMounted } from 'vue';
 
-const { items, isLoading, fetchItems } = useRats();
-
+// const { rats, isLoading, fetchrats } = useRats();
+defineProps({ rat: Object });
 const showBookForm = ref(false);
 const selectedRat = ref(null);
 const bookDate = ref('');
@@ -12,8 +12,8 @@ const bookTime = ref('');
 const bookedRats = ref([]);
 
 // Öppna bokningsformuläret
-const openBookForm = (item) => {
-    selectedRat.value = item;
+const openBookForm = (rat) => {
+    selectedRat.value = rat;
     showBookForm.value = true;
 };
 
@@ -37,28 +37,23 @@ const bookRat = () => {
     closeBookForm();    
 };
 
-onMounted(() => {
-    fetchRats();
-});
+
 
 </script>
 
 <template>
-    <p v-if="isLoading">Laddar...</p>
-    <div v-if="!isLoading">
-        <h2>Råtar</h2>        
-        <div class="itemContainer">
-        <div v-for="item in items" :key="item.id" class="class">
-            <h3>{{ item.title }}</h3>
-            <img :src="item.image.url" :alt="item.image.alt" />
-            <p>{{ item.description }}</p>
-            <p>Skapad av: {{ item.createdBy }}</p>
-            <p>Pris: {{ item.price }}</p>
-            <p>Ägare: {{ item.owner }}</p>
-            <button @click="openBookForm(item)">Boka</button>
+           
+        
+        <div class="class">
+            <h3>{{ rat.name }}</h3>
+            <img :src="rat.imageUrl" />
+            <p>{{ rat.description }}</p>
+            <!-- <p>Skapad av: {{ rat.createdBy }}</p> -->
+            <p>Pris: {{ rat.price }}</p>
+            <p>Ägare: {{ rat.owner }}</p>
+            <button @click="openBookForm(rat)">Boka</button>
         </div>
-    </div>
-   </div>
+    
 
     <!-- Bokningsformulär -->
      <div v-if="showBookForm" class="bookFormModal">
@@ -92,13 +87,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.ItemContainer {
+.ratContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
 }
 
-.item {
+.rat {
     border: 3px solid black;
     width: 1fr;
     margin: 1rem;
@@ -134,7 +129,7 @@ onMounted(() => {
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-rats: center;
 }
 
 .bookFormContainer {

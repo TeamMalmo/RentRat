@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
 import { useFetchRats } from "../composables/useFetchRats";
-
+import RatListItem from "../components/RatListItem.vue";
 
     const { rats, isLoading, error, fetchAllRats } = useFetchRats();
 
@@ -109,7 +109,7 @@ const filteredRats = computed(() => {
   </div>
 
   <!-- Render Filtered Rats -->
-  <ul class="rat-list" v-if="filteredRats.length > 0">
+  <!-- <ul class="rat-list" v-if="filteredRats.length > 0">
     <li v-for="rat in filteredRats" :key="rat.id" class="rat-list-item">
       <span>
         <h2>{{ rat.name }} in {{ rat.areaOfMalmo }}</h2>
@@ -127,7 +127,10 @@ const filteredRats = computed(() => {
         <p>Hourly Rate: {{ rat.price }}:-</p>
       </span>
     </li>
-  </ul>
+  </ul> -->
+  <div v-if="filteredRats.length > 0"><RatListItem v-for="rat in filteredRats" :key="rat.id" :rat="rat" /></div>
+  
+
   <div v-else>
     <p style="text-align: center; font-size: 1.2rem; color: red; margin-top: 1rem;">
       💔 No perfect rat found. Try adjusting your filters! 💔

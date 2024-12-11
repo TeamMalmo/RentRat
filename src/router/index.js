@@ -82,21 +82,35 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  // innan varje route körs hämtas den inloggade användarens data
-  const auth = useAuth();
 
-  // kontrollerar om användaren är inloggad
-  if (to.meta.requiresAuth) {
-    if (!auth.value.isAuthenticated) {
-      return next({ name: 'Landing' }); // hoppa till inloggningssidan
-    }
-    // kontrollerar om användaren har rätt roll
-    if (to.meta.role && to.meta.role !== auth.value.role) {
-      return next({ name: 'Landing' }); // hoppa till inloggningssidan
+router.beforeEach(async (to, from, next) => {
+  const auth = await useAuth(); // Wait for the authentication state to load
+  const isLoggedIn = auth.value.isAuthenticated; // Check if the user is authenticated
+
+  // If the user is not logged in and the route requires authentication, redirect to the landing page
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    return next({ name: 'Landing' });
+  }
+
+  // If the user is logged in and tries to access the Landing page, redirect to the respective HomeView
+  if (to.name === 'Landing' && isLoggedIn) {
+    if (auth.value.role === 'renter') {
+      return next({ name: 'RenterHome' });
+    } else if (auth.value.role === 'rentee') {
+      return next({ name: 'RenteeHome' });
     }
   }
 
+  // If the user is logged in but does not have the required role for the route, redirect to the respective HomeView
+  if (to.meta.requiresAuth && to.meta.role && to.meta.role !== auth.value.role) {
+    if (auth.value.role === 'renter') {
+      return next({ name: 'RenterHome' });
+    } else if (auth.value.role === 'rentee') {
+      return next({ name: 'RenteeHome' });
+    }
+  }
+
+  // For all other cases, proceed to the requested route
   next();
 });
 

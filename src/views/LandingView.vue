@@ -1,6 +1,6 @@
 
-<script>
-export default {};
+<script setup>
+import LoginForm from '@/components/Auth/LoginForm.vue';
 </script>
 
 <template>
@@ -12,5 +12,7 @@ export default {};
   <RouterLink to="/rentee">
     <button>I am a Rentee</button>
   </RouterLink>
+
 </div>
+<LoginForm/>
 </template>

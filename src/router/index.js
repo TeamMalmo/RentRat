@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+//hämtar authentication
+import { useAuth } from '@/composables/useUser'; 
 //ALLA VIEWS BORDE HA NAMING CONVENTION NameView.vue
 // Import views
 import LandingView from '@/views/LandingView.vue';
@@ -10,7 +12,6 @@ import RenteeRatsView from '@/views/RenteeRatsView.vue';
 import RenteeProfileView from '@/views/RenteeProfileView.vue';
 import RenteeInboxView from '@/views/RenteeInboxView.vue';
 
-
 const routes = [
   {
     path: '/',
@@ -21,6 +22,7 @@ const routes = [
     path: '/renter',
     name: 'Renter',
     component: () => import('@/components/Layouts/RenterLayout.vue'), // Dynamic import
+    meta: { requiresAuth: true, role: 'renter' }, //protected route
     children: [
       {
         path: '',
@@ -43,6 +45,7 @@ const routes = [
     path: '/rentee',
     name: 'Rentee',
     component: () => import('@/components/Layouts/RenteeLayout.vue'), // Dynamic import
+    meta: { requiresAuth: true, role: 'rentee' }, // protected route
     children: [
       {
         path: '',
@@ -77,6 +80,24 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  // innan varje route körs hämtas den inloggade användarens data
+  const auth = useAuth();
+
+  // kontrollerar om användaren är inloggad
+  if (to.meta.requiresAuth) {
+    if (!auth.value.isAuthenticated) {
+      return next({ name: 'Landing' }); // hoppa till inloggningssidan
+    }
+    // kontrollerar om användaren har rätt roll
+    if (to.meta.role && to.meta.role !== auth.value.role) {
+      return next({ name: 'Landing' }); // hoppa till inloggningssidan
+    }
+  }
+
+  next();
 });
 
 export default router;

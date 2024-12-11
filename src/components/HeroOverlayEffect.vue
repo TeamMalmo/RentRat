@@ -3,6 +3,13 @@ import { ref, onMounted, onUnmounted } from "vue";
 
 const canvas = ref(null);
 let effect = ref(null);
+let reduceMotion = ref(false); // to store the user's motion preference
+
+// Check system's motion preference
+const checkReduceMotion = () => {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  reduceMotion.value = prefersReducedMotion;
+};
 
 const resizeCanvas = () => {
   if (!canvas.value) return;
@@ -34,6 +41,9 @@ onMounted(() => {
   // Set initial canvas size
   resizeCanvas();
 
+  // Check if reduce motion is enabled
+  checkReduceMotion();
+
   class Particle {
     constructor(x, y, effect) {
       this.originX = x;
@@ -62,6 +72,8 @@ onMounted(() => {
     }
 
     update() {
+      if (reduceMotion.value) return; // Skip animation if reduced motion is enabled
+
       const dx = this.effect.mouse.x - this.originX;
       const dy = this.effect.mouse.y - this.originY;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -143,7 +155,7 @@ onMounted(() => {
   effect.value = new Effect(canvasElement.width, canvasElement.height, ctx);
 
   function animate() {
-    if (effect.value) {
+    if (!reduceMotion.value && effect.value) {
       effect.value.update();
       requestAnimationFrame(animate);
     }
@@ -153,11 +165,15 @@ onMounted(() => {
 
   // Add resize event listener
   window.addEventListener("resize", resizeCanvas);
+
+  // Listen for changes in the motion preference
+  window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener('change', checkReduceMotion);
 });
 
 // Clean up event listeners
 onUnmounted(() => {
-  window.removeEventListener("resize", resizeCanvas);
+  window.removeEventListener('resize', resizeCanvas);
+  window.matchMedia("(prefers-reduced-motion: reduce)").removeEventListener('change', checkReduceMotion);
 });
 </script>
 

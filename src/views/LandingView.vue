@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
+import NoiseOverlay from "@/components/NoiseOverlay.vue";
 
 const isLogoLoaded = ref(false);
 const isHoverRenter = ref(false);
@@ -36,63 +37,65 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="hero-container">
-    <HeroOverlayEffect />
+  <main>
+    <div class="hero-container">
+      <HeroOverlayEffect />
 
-    <header>
-      <h1 v-show="!isLogoLoaded">Rent a Rat</h1>
-      <object
-        type="image/svg+xml"
-        data="/images/rent-a-rat-vector.svg"
-        class="svg-object"
-        @load="onLogoLoad"
-        @error="onLogoError"
-      ></object>
-    </header>
-    <div
-      v-if="isTouchScreen"
-      @touchstart="showInfo = true"
-      class="touch-help-container"
-    >
-      <button>?</button>
-    </div>
-    <nav class="hero-nav">
-      <RouterLink to="/renter">
-        <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
-          I want rats
-        </button>
-      </RouterLink>
-      <RouterLink to="/rentee">
-        <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
-          I have rats
-        </button>
-      </RouterLink>
-    </nav>
+      <header>
+        <h1 v-show="!isLogoLoaded">Rent a Rat</h1>
+        <object
+          type="image/svg+xml"
+          data="/images/rent-a-rat-vector.svg"
+          class="svg-object"
+          @load="onLogoLoad"
+          @error="onLogoError"
+        ></object>
+      </header>
+      <div
+        v-if="isTouchScreen"
+        @touchstart="showInfo = true"
+        class="touch-help-container"
+      >
+        <button>?</button>
+      </div>
+      <nav class="hero-nav">
+        <RouterLink to="/renter">
+          <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
+            I want rats
+          </button>
+        </RouterLink>
+        <RouterLink to="/rentee">
+          <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
+            I have rats
+          </button>
+        </RouterLink>
+      </nav>
 
-    <div class="hover-info-container">
-      <div v-show="isHoverRenter" class="hover-info-renter">
-        <p>I'm looking for helpful rats!</p>
+      <div class="hover-info-container">
+        <div v-show="isHoverRenter" class="hover-info-renter">
+          <p>I'm looking for helpful rats!</p>
+        </div>
+        <div v-show="isHoverRentee" class="hover-info-rentee">
+          <p>I have rats- at your service!</p>
+        </div>
       </div>
-      <div v-show="isHoverRentee" class="hover-info-rentee">
-        <p>I have rats- at your service!</p>
-      </div>
-    </div>
 
-    <div v-show="showInfo" class="touch-info-container">
-      <div class="touch-renter-info">
-        <p>
-          If you're looking to rent a rat- simply click "I want rats" to explore
-          available options.
-        </p>
-      </div>
-      <div class="touch-rentee-info">
-        <p>
-          If you have rats that you'd like to rent out to others, click "I have
-          rats" to list your rats.
-        </p>
+      <div v-show="showInfo" class="touch-info-container">
+        <div class="touch-renter-info">
+          <p>
+            If you're looking to rent a rat- simply click "I want rats" to
+            explore available options.
+          </p>
+        </div>
+        <div class="touch-rentee-info">
+          <p>
+            If you have rats that you'd like to rent out to others, click "I
+            have rats" to list your rats.
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
@@ -218,8 +221,8 @@ button {
   }
 
   nav {
-  margin-top: 10%;
-}
+    margin-top: 10%;
+  }
 
   button {
     padding: 3rem;
@@ -245,7 +248,6 @@ button {
   .hover-info-container {
     width: 60%;
   }
-
 
   .hover-info-container > * {
     margin-top: -5%;

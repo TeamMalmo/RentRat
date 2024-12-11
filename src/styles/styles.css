@@ -4,7 +4,7 @@ body {
   overflow-x: hidden;
 }
 
-body::before {
+/* body::before {
   content: "";
   position: fixed;
   top: 0;
@@ -16,7 +16,7 @@ body::before {
   pointer-events: none;
   z-index: 5;
   opacity: 0.3;
-}
+} */
 
 header {
   display: flex;

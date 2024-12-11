@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
 
 const isLogoLoaded = ref(false);
 
@@ -14,6 +15,8 @@ const onLogoError = () => {
 
 <template>
   <div class="hero-container">
+    <HeroOverlayEffect />
+
     <header>
       <h1 v-show="!isLogoLoaded">Rent a Rat</h1>
       <object
@@ -37,6 +40,7 @@ const onLogoError = () => {
 
 <style scoped>
 .hero-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,6 +62,7 @@ button {
   margin: 10rem 0 0;
   max-width: 100%;
   object-fit: contain;
+  z-index: -2;
 }
 
 /* mobile  */

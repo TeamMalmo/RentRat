@@ -2,11 +2,15 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { login, useAuth } from '@/composables/useUser';
+  import RegisterForm from './RegisterForm.vue';
   
       const username = ref('');
       const password = ref('');
       const errorMessage = ref('');
       const router = useRouter();
+      const showRegisterForm = ref(false);
+
+
   
       const handleSubmit = async () => {
         // testar att login fungerar
@@ -36,10 +40,12 @@
           <label for="password">Password:</label>
           <input v-model="password" type="password" id="password" required />
         </div>
-        <button type="submit">Login</button>
-      </form>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <button type="submit">Login</button> 
+    </form>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    <button @click="showRegisterForm = true">Register</button>
     </div>
+    <RegisterForm v-show="showRegisterForm" @close="showRegisterForm = false" />
   </template>
   
   

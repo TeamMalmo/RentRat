@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useFetchRats } from '@/composables/useFetchRats';
+// import av BookingForm.vue
 
 const route = useRoute();
 const ratId = route.params.id; // Läs ID från URL
@@ -45,6 +46,11 @@ onMounted(async () => {
       <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
     </div>
   </div>
+  <!-- <BookingForm :rat="rat" /> -->
+   <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
+    eva.bjorling@chasacademy.se || rentarat2024
+    använd url från din skapade bin
+    -->
 </template>
 
 <style scoped>

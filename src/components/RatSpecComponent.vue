@@ -1,14 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useFetchRats } from '@/composables/useFetchRats';
-import BookForm from '@/components/BookForm.vue';
-// import av BookingForm.vue
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useFetchRats } from "@/composables/useFetchRats";
+import BookForm from "@/components/BookForm.vue";
 
 const route = useRoute();
 const ratId = route.params.id; // Läs ID från URL
 const rat = ref(null);
 const error = ref(null);
+const isBooking = ref(false);
 const isLoading = ref(true);
 
 const { fetchAllRats, rats } = useFetchRats();
@@ -25,31 +25,32 @@ onMounted(async () => {
       throw new Error(`Rat with ID ${ratId} not found`);
     }
   } catch (err) {
-    error.value = err.message || 'Failed to load rat data';
+    error.value = err.message || "Failed to load rat data";
   } finally {
     isLoading.value = false;
   }
 });
 </script>
 
-
 <template>
+  <BookForm v-if="isBooking"></BookForm>
   <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
   <div v-else class="rat-container">
     <div class="rat-info">
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
+      <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
+      <button @click="() => (isBooking = !isBooking)">Book this rat!</button>
       <p><strong>Description:</strong> {{ rat.description }}</p>
     </div>
     <div class="rat-image-container">
       <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
     </div>
   </div>
-  <div v-if="filteredRats.length > 0"><BookForm v-for="rat in filteredRats" :key="rat.id" :rat="rat" /></div>
+
   <!-- <BookingForm :rat="rat" /> -->
-   <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
+  <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
     eva.bjorling@chasacademy.se || rentarat2024
     använd url från din skapade bin
     -->
@@ -61,7 +62,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border: 2px solid #8ACE00;
+  border: 2px solid #8ace00;
   border-radius: 10px;
   background-color: rgba(128, 128, 128, 0.534);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

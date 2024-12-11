@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useFetchRats } from '@/composables/useFetchRats';
+import BookForm from '@/components/BookForm.vue';
 // import av BookingForm.vue
 
 const route = useRoute();
@@ -46,6 +47,7 @@ onMounted(async () => {
       <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
     </div>
   </div>
+  <div v-if="filteredRats.length > 0"><BookForm v-for="rat in filteredRats" :key="rat.id" :rat="rat" /></div>
   <!-- <BookingForm :rat="rat" /> -->
    <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
     eva.bjorling@chasacademy.se || rentarat2024

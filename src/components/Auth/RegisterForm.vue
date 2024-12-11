@@ -80,10 +80,10 @@ const handleRegister = async () => {
 
       <!-- Username -->
       <div class="div">
-        <label for="username">Username:</label>
+        <label for="NewUserUsername">Username:</label>
         <input
           type="text"
-          id="username"
+          id="NewUserUsername"
           required
           v-model="newUser.username"
         />
@@ -91,10 +91,10 @@ const handleRegister = async () => {
 
       <!-- Password -->
       <div class="div">
-        <label for="password">Password:</label>
+        <label for="newUserPassword">Password:</label>
         <input
           type="password"
-          id="password"
+          id="newUserPassword"
           required
           v-model="newUser.password"
         />

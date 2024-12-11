@@ -39,12 +39,12 @@ const onLogoError = () => {
 </template>
 
 <style scoped>
-.hero-container {
+/* .hero-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 nav {
   border: 1px solid blue;
   display: flex;

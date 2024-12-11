@@ -11,15 +11,19 @@ const resizeCanvas = () => {
   const ctx = canvasElement.getContext("2d");
 
   const ratio = window.devicePixelRatio || 1;
-  
+
+  // Set canvas internal resolution
   canvasElement.width = window.innerWidth * ratio;
   canvasElement.height = window.innerHeight * ratio;
-  
-  canvasElement.style.width = '100%';
-  canvasElement.style.height = '100%';
+
+  // Set canvas CSS size (to ensure full screen)
+  canvasElement.style.width = "100%";
+  canvasElement.style.height = "100%";
   
   if (effect.value) {
-    effect.value = new Effect(canvasElement.width, canvasElement.height, ctx);
+    effect.value.width = canvasElement.width;
+    effect.value.height = canvasElement.height;
+    effect.value.resize(); // Call resize to adjust particles
   }
 };
 
@@ -27,8 +31,7 @@ onMounted(() => {
   const canvasElement = canvas.value;
   const ctx = canvasElement.getContext("2d");
 
-  const ratio = window.devicePixelRatio || 1;
-  
+  // Set initial canvas size
   resizeCanvas();
 
   class Particle {
@@ -44,48 +47,43 @@ onMounted(() => {
       this.vz = 0;
       this.ease = 0.2;
       this.friction = 0.9;
-      
-      // Base size with more randomness
       this.baseSize = Math.random() * 3 + 1;
       this.currentSize = this.baseSize;
       this.maxSize = this.baseSize * 3; // Allow significant expansion
     }
-    
+
     draw() {
       const scale = 1 + this.z * 0.01;
-      this.effect.ctx.globalAlpha = .5;  
-      this.effect.ctx.fillStyle = "#ffffff";
+      this.effect.ctx.globalAlpha = 0.7;
+      this.effect.ctx.fillStyle = "black";
       this.effect.ctx.beginPath();
       this.effect.ctx.arc(this.x, this.y, this.currentSize * scale, 0, Math.PI * 2);
       this.effect.ctx.fill();
     }
-    
+
     update() {
       const dx = this.effect.mouse.x - this.originX;
       const dy = this.effect.mouse.y - this.originY;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       // Reset size when far from cursor
       if (distance >= this.effect.mouse.radius) {
         this.currentSize = this.baseSize;
       }
-      
+
       if (distance < this.effect.mouse.radius) {
         const angle = Math.atan2(dy, dx);
         const force =
           (this.effect.mouse.radius - distance) / this.effect.mouse.radius;
-        
+
         // Increase size based on proximity to cursor
-        this.currentSize = Math.min(
-          this.maxSize, 
-          this.baseSize * (1 + force * 2)
-        );
-        
+        this.currentSize = Math.min(this.maxSize, this.baseSize * (1 + force * 2));
+
         this.vx += Math.cos(angle) * force * 5;
         this.vy += Math.sin(angle) * force * 5;
         this.vz += force * 20;
       }
-      
+
       this.vx *= this.friction;
       this.vy *= this.friction;
       this.vz *= this.friction;
@@ -102,14 +100,14 @@ onMounted(() => {
       this.height = height;
       this.ctx = context;
       this.particlesArray = [];
-      
+
       // Dynamically adjust gap based on screen size
       this.gap = Math.min(50, Math.max(20, Math.floor(Math.min(width, height) / 40)));
-      
-      this.mouse = { 
-        x: undefined, 
-        y: undefined, 
-        radius: Math.min(300, Math.max(150, Math.floor(Math.min(width, height) / 6))) 
+
+      this.mouse = {
+        x: undefined,
+        y: undefined,
+        radius: Math.min(300, Math.max(150, Math.floor(Math.min(width, height) / 6))),
       };
 
       window.addEventListener("mousemove", (e) => {
@@ -120,7 +118,7 @@ onMounted(() => {
 
       this.init();
     }
-    
+
     init() {
       this.particlesArray = [];
       for (let y = 0; y < this.height; y += this.gap) {
@@ -129,7 +127,13 @@ onMounted(() => {
         }
       }
     }
-    
+
+    resize() {
+      this.gap = Math.min(50, Math.max(20, Math.floor(Math.min(this.width, this.height) / 40)));
+      this.particlesArray = []; // Reset particles array
+      this.init(); // Reinitialize the particles with new gap size
+    }
+
     update() {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.particlesArray.forEach((particle) => particle.update());
@@ -144,15 +148,16 @@ onMounted(() => {
       requestAnimationFrame(animate);
     }
   }
+
   animate();
 
   // Add resize event listener
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener("resize", resizeCanvas);
 });
 
 // Clean up event listeners
 onUnmounted(() => {
-  window.removeEventListener('resize', resizeCanvas);
+  window.removeEventListener("resize", resizeCanvas);
 });
 </script>
 

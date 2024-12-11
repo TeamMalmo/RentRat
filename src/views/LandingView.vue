@@ -71,17 +71,17 @@ onMounted(() => {
 
     <div class="hover-info-container">
       <div v-show="isHoverRenter" class="hover-info-renter">
-        <p>Renter</p>
+        <p>I'm looking for helpful rats!</p>
       </div>
       <div v-show="isHoverRentee" class="hover-info-rentee">
-        <p>Retnee</p>
+        <p>I have rats- at your service!</p>
       </div>
     </div>
 
     <div v-show="showInfo" class="touch-info-container">
       <div class="touch-renter-info">
         <p>
-          If you're looking to rent a rat-simply click "I want rats" to explore
+          If you're looking to rent a rat- simply click "I want rats" to explore
           available options.
         </p>
       </div>
@@ -105,7 +105,6 @@ nav {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  border: 1px solid red;
   margin-top: 20%;
 }
 
@@ -172,7 +171,29 @@ button {
 }
 
 .hover-info-container {
-  border: 1px solid white;
+  color: #8ace00;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.hover-info-container > * {
+  background-color: black;
+  align-self: flex-start;
+  border-radius: 1rem;
+  height: 10rem;
+  width: 10rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  margin-top: -2.5%;
+  padding: 2%;
+}
+
+.hover-info-rentee {
+  text-align: end;
+  align-self: flex-end;
 }
 
 /* mobile  */
@@ -196,9 +217,21 @@ button {
     margin-top: 2rem;
   }
 
+  nav {
+  margin-top: 10%;
+}
+
   button {
     padding: 3rem;
     font-size: 1.5rem;
+  }
+
+  .hover-info-container {
+    width: 80%;
+  }
+
+  .hover-info-container > * {
+    margin-top: -3%;
   }
 }
 
@@ -207,6 +240,15 @@ button {
   .svg-object {
     margin-top: 2.5rem;
     max-width: 65%;
+  }
+
+  .hover-info-container {
+    width: 60%;
+  }
+
+
+  .hover-info-container > * {
+    margin-top: -5%;
   }
 
   button {

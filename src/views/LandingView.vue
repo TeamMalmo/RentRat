@@ -88,7 +88,6 @@ onMounted(() => {
 }
 
 nav {
-  border: 1px solid red;
   max-width: 100%;
   display: flex;
   flex-direction: row;
@@ -96,7 +95,6 @@ nav {
 }
 
 nav > * {
-  border: 1px solid blue;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -119,37 +117,43 @@ button {
   object-fit: contain;
   z-index: -2;
 }
+
 .touch-info-container {
-  border: 1px solid red;
   max-width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
+  /* justify-content: space-around;
+  gap: 2rem; */
 }
 
 .touch-info-container > * {
-  border: 1px solid paleturquoise;
   width: 100%;
   background-color: black;
   color: #8ace00;
   border-radius: 1rem;
   padding: 0.5rem;
   letter-spacing: 0.1rem;
-  font-weight: 100;
   line-height: 1.5;
+  font-size: small;
 }
 
 .touch-help-container {
-  border: 1px solid salmon;
+  margin-top: 10%;
   display: flex;
   justify-content: center;
 }
 
 .touch-help-container button {
-  padding: 0.5rem;
+  padding: 0;
   margin: 0 auto;
-  border-radius: 5%;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
 }
 
 /* mobile  */

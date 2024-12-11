@@ -57,7 +57,7 @@ const routes = [
       {
         path: 'rats/:id',
         name: 'RenteeRatDetail',
-        component: () => import('@/components/RatSpecComponent.vue'),
+        component: () => import('@/views/RatSpecificationView.vue'),
         props: true,
       },
       {

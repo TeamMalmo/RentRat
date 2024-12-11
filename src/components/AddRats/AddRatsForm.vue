@@ -1,9 +1,11 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { useAuth } from '@/composables/useUser';
 
 // emitar data till parenten
 const emit = defineEmits(['submit']);
 
+const auth = useAuth();
 const primarySkillSelect = ref('');
 const skillInput = ref('');
 
@@ -17,7 +19,7 @@ const newRat = ref({
   price: 0,
   availability: true,
   areaOfMalmo: '',
-  renter: '',
+  renter: auth.value.username, // hämtar användarens namn
   description: ''
 });
 
@@ -106,11 +108,11 @@ const submitForm = () => {
           Area of Malmö:
           <input v-model="newRat.areaOfMalmo" type="text" required />
         </label>
-  
+<!--   
         <label for="renter">
           Renter:
           <input id="renter" v-model="newRat.renter" type="text" required />
-        </label>
+        </label> -->
   
         <label for="description">
           Description:

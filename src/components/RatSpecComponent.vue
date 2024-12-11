@@ -2,6 +2,7 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useFetchRats } from '@/composables/useFetchRats';
+// import av BookingForm.vue
 
 const route = useRoute();
 const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den. 
@@ -128,6 +129,11 @@ const isLastRat = computed(() => {
       </div>
     </div>
   </div>
+  <!-- <BookingForm :rat="rat" /> -->
+   <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
+    eva.bjorling@chasacademy.se || rentarat2024
+    använd url från din skapade bin
+    -->
 </template>
 <style scoped>
 .rat-container {

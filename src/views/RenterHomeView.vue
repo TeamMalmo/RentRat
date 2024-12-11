@@ -1,10 +1,10 @@
 <script setup>
-
+import AddRats from '@/components/AddRats/AddRats.vue';
 </script>
 
 <template>
   <div class="container">
-<h1>Rats For Rent</h1>
+    <AddRats/>
   </div>
 
 </template>

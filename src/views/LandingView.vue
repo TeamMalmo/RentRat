@@ -3,7 +3,8 @@ import { ref, onMounted } from "vue";
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
 
 const isLogoLoaded = ref(false);
-const isHover = ref(false);
+const isHoverRenter = ref(false);
+const isHoverRentee = ref(false);
 const isTouchScreen = ref(false);
 const showInfo = ref(false);
 
@@ -15,12 +16,17 @@ const onLogoError = () => {
   isLogoLoaded.value = false;
 };
 
-const onHover = () => {
-  isHover.value = true;
+const onHoverRenter = () => {
+  isHoverRenter.value = true;
+};
+
+const onHoverRentee = () => {
+  isHoverRentee.value = true;
 };
 
 const onHoverLeave = () => {
-  isHover.value = false;
+  isHoverRenter.value = false;
+  isHoverRentee.value = false;
 };
 
 onMounted(() => {
@@ -52,19 +58,26 @@ onMounted(() => {
     </div>
     <nav class="hero-nav">
       <RouterLink to="/renter">
-        <button @mouseover="onHover" @mouseleave="onHoverLeave">
+        <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
           I want rats
         </button>
       </RouterLink>
       <RouterLink to="/rentee">
-        <button @mouseover="onHover" @mouseleave="onHoverLeave">
+        <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
           I have rats
         </button>
       </RouterLink>
     </nav>
-    <div v-show="isHover" class="hover-info">
-      <p>bajs</p>
+
+    <div class="hover-info-container">
+      <div v-show="isHoverRenter" class="hover-info-renter">
+        <p>Renter</p>
+      </div>
+      <div v-show="isHoverRentee" class="hover-info-rentee">
+        <p>Retnee</p>
+      </div>
     </div>
+
     <div v-show="showInfo" class="touch-info-container">
       <div class="touch-renter-info">
         <p>
@@ -92,6 +105,8 @@ nav {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  border: 1px solid red;
+  margin-top: 20%;
 }
 
 nav > * {
@@ -156,6 +171,10 @@ button {
   font-size: 2rem;
 }
 
+.hover-info-container {
+  border: 1px solid white;
+}
+
 /* mobile  */
 @media (max-width: 600px) {
   .svg-object {
@@ -197,6 +216,7 @@ button {
 
   nav {
     padding: 5% 20% 0;
+    margin-top: 0;
   }
 }
 </style>

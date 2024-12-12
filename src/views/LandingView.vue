@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
+import GlowButton from "@/components/GlowButton.vue";
 
 const isLogoLoaded = ref(false);
 const isHoverRenter = ref(false);
@@ -71,18 +72,18 @@ onMounted(() => {
         @touchstart="showInfo = true"
         class="touch-help-container"
       >
-        <button>?</button>
+        <GlowButton>?</GlowButton>
       </div>
       <nav class="hero-nav">
         <RouterLink to="/renter">
-          <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave" class="glow-button">
+          <GlowButton @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
             I want rats
-          </button>
+          </GlowButton>
         </RouterLink>
         <RouterLink to="/rentee">
-          <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave" class="glow-button">
+          <GlowButton @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
             I have rats
-          </button>
+          </GlowButton>
         </RouterLink>
       </nav>
 

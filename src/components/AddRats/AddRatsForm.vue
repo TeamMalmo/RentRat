@@ -5,7 +5,7 @@ import { useAuth } from '@/composables/useUser';
 // emitar data till parenten
 const emit = defineEmits(['submit']);
 
-const auth = useAuth();
+const {auth} = useAuth();
 const primarySkillSelect = ref('');
 const skillInput = ref('');
 

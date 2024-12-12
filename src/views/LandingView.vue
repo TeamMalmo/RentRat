@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
-import NoiseOverlay from "@/components/NoiseOverlay.vue";
 
 const isLogoLoaded = ref(false);
 const isHoverRenter = ref(false);
@@ -34,6 +33,22 @@ onMounted(() => {
   // Check if the device has a coarse pointer (likely a touchscreen)
   isTouchScreen.value = window.matchMedia("(pointer: coarse)").matches;
 });
+
+
+// button glow 
+(function setGlowEffectRx() {
+  const glowEffects = document.querySelectorAll(".glow-effect");
+
+  glowEffects.forEach((glowEffect) => {
+    const glowLines = glowEffect.querySelectorAll("rect");
+    const rx = getComputedStyle(glowEffect).borderRadius;
+
+    glowLines.forEach((line) => {
+      line.setAttribute("rx", rx);
+    });
+  });
+})();
+
 </script>
 
 <template>
@@ -60,12 +75,12 @@ onMounted(() => {
       </div>
       <nav class="hero-nav">
         <RouterLink to="/renter">
-          <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
+          <button @mouseover="onHoverRenter" @mouseleave="onHoverLeave" class="glow-button">
             I want rats
           </button>
         </RouterLink>
         <RouterLink to="/rentee">
-          <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
+          <button @mouseover="onHoverRentee" @mouseleave="onHoverLeave" class="glow-button">
             I have rats
           </button>
         </RouterLink>
@@ -118,7 +133,7 @@ nav > * {
   justify-content: center;
 }
 
-button {
+/* button {
   padding: 1rem;
   text-transform: uppercase;
   background-color: black;
@@ -127,7 +142,7 @@ button {
   border-radius: 1rem;
   letter-spacing: 0.2rem;
   font-weight: 800;
-}
+} */
 
 .svg-object {
   margin-top: calc(1rem);

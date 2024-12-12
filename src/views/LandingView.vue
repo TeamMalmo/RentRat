@@ -26,10 +26,8 @@ const onHoverRentee = () => {
 };
 
 const onHoverLeave = () => {
-  setTimeout(() => {
-    isHoverRenter.value = false;
-    isHoverRentee.value = false;
-  }, 100);
+  isHoverRenter.value = false;
+  isHoverRentee.value = false;
 };
 
 onMounted(() => {
@@ -101,15 +99,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-main {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-
 .hero-container {
   overflow: hidden;
 }
@@ -140,7 +129,9 @@ button {
 }
 
 .svg-object {
-  margin: 10rem 0 0;
+  margin-top: calc(1rem);
+  /* margin: 10rem 0 0; */
+  width: calc(50%);
   max-width: 100%;
   object-fit: contain;
   z-index: -2;
@@ -213,6 +204,7 @@ button {
 /* mobile  */
 @media (max-width: 600px) {
   .svg-object {
+    width: calc(100%);
     max-width: 160%;
   }
 }

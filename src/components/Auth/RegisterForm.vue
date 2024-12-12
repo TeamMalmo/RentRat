@@ -17,9 +17,12 @@ const newUser = ref({
   role: '',
 });
 
+defineEmits(['back']);
+
 const confirmPassword = ref('');
 const errorMessage = ref('');
 const isLoading = ref(false); // Added loading state
+
 
 const handleRegister = async () => {
   errorMessage.value = ''; // Clear any previous error messages
@@ -97,6 +100,7 @@ const handleRegister = async () => {
       <!-- Submit Button -->
       <button type="submit" :disabled="isLoading">Register</button>
     </form>
+    <button @click="$emit('back')">Back</button>
   </div>
 </template>
 

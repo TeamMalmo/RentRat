@@ -34,7 +34,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="login-form">
+  <div class="login-form" v-if="!showRegisterForm">
     <h2>Login</h2>
     <form @submit.prevent="handleSubmit">
       <div>
@@ -51,8 +51,8 @@ const handleSubmit = async () => {
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <button @click="showRegisterForm = true" v-if="!showRegisterForm">Register</button>
     
-    <RegisterForm v-show="showRegisterForm" @close="showRegisterForm = false" />
   </div>
+  <RegisterForm v-else @close="showRegisterForm = false" @back="showRegisterForm = false" />
 </template>
 
 <style scoped>

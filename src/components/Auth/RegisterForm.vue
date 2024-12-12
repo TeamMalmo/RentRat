@@ -1,14 +1,15 @@
 <script setup>
 import { ref } from 'vue';
-import { addUser, login } from '@/composables/useUser';
+import { useAuth } from '@/composables/useUser';
 import { uid } from 'uid';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
+const { addUser, login } = useAuth();
 
+const router = useRouter();
 const id = uid(5);
 
-//state för ny användare
+// State for new user
 const newUser = ref({
   id,
   username: '',
@@ -16,12 +17,15 @@ const newUser = ref({
   role: '',
 });
 
+defineEmits(['back']);
+
 const confirmPassword = ref('');
 const errorMessage = ref('');
+const isLoading = ref(false); // Added loading state
+
 
 const handleRegister = async () => {
   errorMessage.value = ''; // Clear any previous error messages
-
   if (!newUser.value.role) {
     errorMessage.value = 'Please select a role.';
     return;
@@ -33,9 +37,9 @@ const handleRegister = async () => {
   }
 
   try {
+    isLoading.value = true;
     const success = await addUser(newUser.value, confirmPassword.value);
     if (success) {
-      alert('Registration successful!');
       const loginSuccess = await login(newUser.value.username, newUser.value.password);
       if (loginSuccess) {
         const redirectRoute = newUser.value.role === 'renter' ? '/renter' : '/rentee';
@@ -48,6 +52,8 @@ const handleRegister = async () => {
     }
   } catch (error) {
     errorMessage.value = `An unexpected error occurred: ${error.message}`;
+  } finally {
+    isLoading.value = false; // Stop loading
   }
 };
 </script>
@@ -59,21 +65,11 @@ const handleRegister = async () => {
       <!-- Role Selection -->
       <div class="roles">
         <label>
-          <input
-            type="radio"
-            value="renter"
-            v-model="newUser.role"
-            aria-label="I want to rent out rats"
-          />
+          <input type="radio" value="renter" v-model="newUser.role" />
           ✅🐀 I have rats - I want to rent them out
         </label>
         <label>
-          <input
-            type="radio"
-            value="rentee"
-            v-model="newUser.role"
-            aria-label="I want to rent rats"
-          />
+          <input type="radio" value="rentee" v-model="newUser.role" />
           ❌🐀 I have no rats - I want to rent!
         </label>
       </div>
@@ -81,34 +77,19 @@ const handleRegister = async () => {
       <!-- Username -->
       <div class="div">
         <label for="NewUserUsername">Username:</label>
-        <input
-          type="text"
-          id="NewUserUsername"
-          required
-          v-model="newUser.username"
-        />
+        <input type="text" id="NewUserUsername" required v-model="newUser.username" />
       </div>
 
       <!-- Password -->
       <div class="div">
         <label for="newUserPassword">Password:</label>
-        <input
-          type="password"
-          id="newUserPassword"
-          required
-          v-model="newUser.password"
-        />
+        <input type="password" id="newUserPassword" required v-model="newUser.password" />
       </div>
 
       <!-- Confirm Password -->
       <div class="div">
         <label for="confirm-password">Confirm Password:</label>
-        <input
-          type="password"
-          id="confirm-password"
-          required
-          v-model="confirmPassword"
-        />
+        <input type="password" id="confirm-password" required v-model="confirmPassword" />
       </div>
 
       <!-- Error Message -->
@@ -117,8 +98,9 @@ const handleRegister = async () => {
       </div>
 
       <!-- Submit Button -->
-      <button type="submit">Register</button>
+      <button type="submit" :disabled="isLoading">Register</button>
     </form>
+    <button @click="$emit('back')">Back</button>
   </div>
 </template>
 
@@ -159,17 +141,21 @@ form {
   justify-content: space-between;
 }
 
-button[type="submit"] {
-  margin-top: 10px;
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button {
   padding: 10px 20px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-button[type="submit"]:hover {
+button:hover {
   background-color: #0056b3;
 }
 </style>

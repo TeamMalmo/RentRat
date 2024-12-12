@@ -1,120 +1,45 @@
-import axios from 'axios';
 import { ref } from 'vue';
+import axios from 'axios';
 import { CONFIG } from '@/constant/config';
 
+// Auth state
 const auth = ref({
   isAuthenticated: false,
+  userId: null,
   role: null,
   username: null,
 });
 
-const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/67595726acd3cb34a8b7b992';
+const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
 const apiKey = CONFIG.JSONBIN_API_KEY;
 
-// Ladda autentiseringstillstånd från JSONbin
-const loadAuthFromDB = async () => {
-  try {
-    const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
-    });
-
-    const session = response.data.record.session;
-
-    if (session && session.isAuthenticated) {
-      // Set the auth state based on the session
-      auth.value = session;
-    } else {
-      console.log('Ingen session hittades, användaren måste logga in.');
-      auth.value.isAuthenticated = false;
-      auth.value.role = null;
-      auth.value.username = null;
-    }
-  } catch (e) {
-    console.error('Fel vid laddning av session från DB:', e);
-  }
-};
-
-// Spara endast autentiseringstillståndet till JSONbin
-const saveAuthToDB = async () => {
-  try {
-    // Hämtar den aktuella användardatan från JSONbin
-    const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
-    });
-
-    // Vi gör inte några ändringar i användarlistan, vi sparar bara sessionen
-    const users = response.data.record.users;
-
-    await axios.put(
-      JSON_BIN_URL,
-      {
-        users, // Behåll användarna oförändrade
-        session: auth.value, // Uppdatera bara sessionen
-      },
-      {
-        headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    console.log('Session sparad i DB');
-  } catch (e) {
-    console.error('Fel vid sparande av session till DB:', e);
-  }
-};
-
-// Inloggningsfunktion
-export const login = async (username, password) => {
+const login = async (username, password) => {
   try {
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });
 
     const users = response.data.record.users;
+    const sessions = response.data.record.sessions;
 
-    // Verifiera användarens uppgifter
     const user = users.find((u) => u.username === username && u.password === password);
+    if (!user) throw new Error('Invalid username or password');
 
-    if (user) {
-      // Sätt auth-state och spara session i DB
-      auth.value.isAuthenticated = true;
-      auth.value.role = user.role;
-      auth.value.username = user.username;
+    auth.value = {
+      isAuthenticated: true,
+      userId: user.id,
+      role: user.role,
+      username: user.username,
+    };
 
-      // Spara sessiondata i JSONbin utan att ändra användarlistan
-      await saveAuthToDB();
-      return true;
-    } else {
-      throw new Error('Ogiltigt användarnamn eller lösenord');
-    }
-  } catch (error) {
-    console.error('Inloggning misslyckades:', error);
-    return false;
-  }
-};
-
-// Utloggningsfunktion
-export const logout = async () => {
-  try {
-    // Återställ auth-state lokalt
-    auth.value.isAuthenticated = false;
-    auth.value.role = null;
-    auth.value.username = null;
-
-    // Ta bort sessiondata från JSONbin
-    const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
-    });
-
-    const users = response.data.record.users;
+    sessions[user.id] = {
+      isAuthenticated: true,
+      lastLogin: new Date().toISOString(),
+    };
 
     await axios.put(
       JSON_BIN_URL,
-      {
-        users, // Behåll användarlistan oförändrad
-        session: null, // Radera sessionen
-      },
+      { users, sessions },
       {
         headers: {
           'X-Master-Key': apiKey,
@@ -123,20 +48,88 @@ export const logout = async () => {
       }
     );
 
-    console.log('Session raderad från DB');
     return true;
   } catch (error) {
-    console.error('Fel vid utloggning:', error);
+    console.error('Login failed:', error);
     return false;
-  } 
+  }
 };
 
+const logout = async (userId) => {
+  try {
+    auth.value = {
+      isAuthenticated: false,
+      userId: null,
+      role: null,
+      username: null,
+    };
 
-// Lägg till ny användare
+    const response = await axios.get(JSON_BIN_URL, {
+      headers: { 'X-Master-Key': apiKey },
+    });
+
+    const sessions = response.data.record.sessions;
+
+    if (sessions[userId]) {
+      sessions[userId].isAuthenticated = false;
+    } else {
+      throw new Error('Session not found for user');
+    }
+
+    await axios.put(
+      JSON_BIN_URL,
+      response.data.record,
+      {
+        headers: {
+          'X-Master-Key': apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log('Logout successful');
+    return true;
+  } catch (error) {
+    console.error('Logout failed:', error);
+    return false;
+  }
+};
+
+const loadUserSession = async () => {
+  try {
+    const response = await axios.get(JSON_BIN_URL, {
+      headers: { 'X-Master-Key': apiKey },
+    });
+
+    const users = response.data.record.users;
+    const sessions = response.data.record.sessions;
+
+    const activeSession = Object.entries(sessions).find(
+      ([id, session]) => session.isAuthenticated
+    );
+
+    if (activeSession) {
+      const [userId, session] = activeSession;
+      const user = users.find((u) => u.id === userId);
+
+      if (user) {
+        auth.value = {
+          isAuthenticated: true,
+          userId,
+          role: user.role,
+          username: user.username,
+        };
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load user session:', error);
+  }
+};
+
 export const addUser = async (newUser, confirmPassword) => {
   try {
     if (newUser.password !== confirmPassword) {
-      throw new Error('Lösenorden matchar inte.');
+      throw new Error('Passwords do not match.');
     }
 
     const response = await axios.get(JSON_BIN_URL, {
@@ -144,17 +137,27 @@ export const addUser = async (newUser, confirmPassword) => {
     });
 
     const users = response.data.record.users;
+    const sessions = response.data.record.sessions;
 
+    // Check if the username already exists
     const existingUser = users.find((u) => u.username === newUser.username);
     if (existingUser) {
-      throw new Error('Användarnamnet är redan upptaget.');
+      throw new Error('Username is already taken.');
     }
 
+    // Add the user
     users.push(newUser);
 
+    // Initialize a session for the new user
+    sessions[newUser.id] = {
+      isAuthenticated: false,
+      lastLogin: null,
+    };
+
+    // Save the updated data
     await axios.put(
       JSON_BIN_URL,
-      { users }, // Endast användarlistan ändras
+      { users, sessions },
       {
         headers: {
           'X-Master-Key': apiKey,
@@ -163,16 +166,24 @@ export const addUser = async (newUser, confirmPassword) => {
       }
     );
 
-    console.log('Användare har lagts till.');
+    console.log('User added successfully');
     return true;
   } catch (error) {
-    console.error('Misslyckades med att lägga till användare:', error);
+    console.error('Failed to add user:', error);
     return false;
   }
 };
 
-// Ge åtkomst till auth-state
+
+
+loadUserSession(); // Initialize session on load
+
 export const useAuth = () => {
-  loadAuthFromDB(); // Ladda autentiseringstillstånd från DB vid appens start
-  return auth;
+  return {
+    auth,
+    login,
+    logout,
+    loadUserSession,
+    addUser
+  };
 };

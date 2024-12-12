@@ -68,7 +68,7 @@ const handleEditRat = async (ratData) => {
 
     <!-- Prompt om ingen råtta är vald -->
     <div>
-      <p v-if="!selectedRat">Välj en råtta att redigera</p>
+      <p v-if="!selectedRat">Pick a rat to edit</p>
       <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
         v-else 

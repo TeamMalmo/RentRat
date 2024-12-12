@@ -257,7 +257,7 @@ button {
   }
 
   button {
-    padding: 4rem;
+    padding: 5rem;
     font-size: 1.8rem;
   }
 

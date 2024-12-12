@@ -19,7 +19,7 @@ const handleSubmit = async () => {
   try {
     const success = await login(username.value, password.value);
     if (success) {
-      const auth = useAuth();
+      const {auth} = useAuth();
       const redirectRoute = auth.value.role === 'renter' ? '/renter' : '/rentee';
       router.push(redirectRoute); 
     } else {

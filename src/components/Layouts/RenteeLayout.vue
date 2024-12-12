@@ -21,8 +21,8 @@ function switchToRenter() {
       <button @click="switchToRenter" class="toggle-btn">
         Switch to Renter Layout
       </button>
+      <LogoutButton />
     </nav>
-    <LogoutButton />
   </header>
 
   <main>

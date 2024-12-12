@@ -1,9 +1,11 @@
 <script setup>
+import WelcomeMessage from '@/components/Auth/WelcomeMessage.vue';
 import FindRats from '@/components/FindRats/FindRats.vue';
 </script>
 
 <template>
   <div class="container">
+    <WelcomeMessage />
     <FindRats  />
   </div>
 

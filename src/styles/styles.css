@@ -12,7 +12,7 @@ body {
   overflow-x: hidden;
 }
 
-/* body::before {
+body::before {
   content: "";
   position: fixed;
   top: 0;
@@ -23,8 +23,8 @@ body {
   mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 5;
-  opacity: 0.3;
-} */
+  opacity: 0.2;
+}
 
 header {
   display: flex;
@@ -34,7 +34,6 @@ header {
 button:hover {
   cursor: pointer;
 }
-
 
 a {
   text-decoration: none;

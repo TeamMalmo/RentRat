@@ -107,12 +107,13 @@ nav {
   max-width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   margin-top: 20%;
+  gap: 10%;
 }
 
 nav > * {
-  width: 100%;
+  width: fit-content;
   display: flex;
   justify-content: center;
 }

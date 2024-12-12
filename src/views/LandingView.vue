@@ -26,8 +26,10 @@ const onHoverRentee = () => {
 };
 
 const onHoverLeave = () => {
-  isHoverRenter.value = false;
-  isHoverRentee.value = false;
+  setTimeout(() => {
+    isHoverRenter.value = false;
+    isHoverRentee.value = false;
+  }, 100);
 };
 
 onMounted(() => {
@@ -99,6 +101,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+main {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
 .hero-container {
   overflow: hidden;
 }

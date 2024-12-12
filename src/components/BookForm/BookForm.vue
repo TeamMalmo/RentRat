@@ -1,67 +1,72 @@
 <script setup>
-// import { useRats } from '@/composables/useRats';
-import { ref, onMounted, defineProps } from "vue";
-import { useBookings } from "../composables/useBookings";
+import { ref, onMounted, watch } from "vue";
+import { useAuth } from "@/composables/useUser";
+import { useBookings } from "@/composables/useBookings";
 
-// const { rats, isLoading, fetchrats } = useRats();
-const props = defineProps({ rat: Object, renterId: String });
-// const renterId = route.params.id;
+const p = defineProps({ rat: Object });
+const emit = defineEmits(["closeModal"]);
 
 const { isAddingBooking, fetchBookings, addBooking, bookings, error } =
   useBookings();
 
-const selectedRat = ref(null);
+const auth = useAuth();
 const bookDate = ref("");
 const bookTime = ref("");
 
-const bookedRats = ref([]);
+// Fetch all bookings on load
+onMounted(() => {
+  fetchBookings();
+});
 
-// Boka objekt med dag och tid
-// const bookRat = () => {
-//   const bookDetails = {
-//     rat: selectedRat.value.id,
-//     date: bookDate.value,
-//     time: bookTime.value,
-//   };
-//   bookedRats.value.push(bookDetails);
-//   alert(
-//     `Du har nu bokat råttan: ${selectedRat.value.title} den ${bookDate.value} kl. ${bookTime.value}`
-//   );
-// };
+// Close the modal when adding of booking is complete
+watch(
+  () => isAddingBooking.value,
+  (newValue) => {
+    if (!newValue) emit("closeModal");
+  }
+);
 
+// Add a booking
 const handleAddBooking = () => {
+  if (!p.rat) {
+    console.error("No rat data available!");
+    alert("No rat data was found!");
+    return;
+  }
+
+  if (bookDate.value === "" || bookTime.value === "") {
+    alert("Date and time cannot be omitted!");
+    return;
+  }
+
   addBooking({
-    id: Date.now() % 100000,
-    ratId: props.rat.id,
-    RenterId: props.renterId,
+    Id: Date.now() % 100000,
+    ratId: auth.value.username,
+    RenterId: p.rat.id,
     date: bookDate.value,
     time: bookTime.value,
+    accepted: false,
   });
 };
-
-fetchBookings();
 </script>
 
 <template>
-  <!-- placeholder <div v-if="filteredRats.length > 0"><RatListItem v-for="rat in filteredRats" :key="rat.id" :rat="rat" /></div> -->
-
-  <!-- Bokningsformulär -->
   <div class="bookFormModal">
     <div class="bookFormContainer">
-      <h3>Boka {{ rat.name }}</h3>
+      <h3>Boka {{ p.rat.name }}</h3>
       <form @submit.prevent="bookRat">
         <div class="formDateTime">
           <label for="date">Välj Datum:</label>
           <input type="date" id="date" v-model="bookDate" required />
           <div class="formDateTime">
-            <label for="time">Tid:</label>
+            <label for="time">Välj Tid:</label>
             <input type="time" id="time" v-model="bookTime" required />
           </div>
           <div class="formAction">
             <button type="submit" @click="handleAddBooking">
               Bekräfta Bokning
             </button>
-            <button @click="$emit('closeModal')">Avbryt</button>
+            <button @click="emit('closeModal')">Avbryt</button>
           </div>
         </div>
       </form>

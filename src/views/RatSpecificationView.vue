@@ -1,17 +1,23 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useFetchRats } from '@/composables/useFetchRats';
-// import av BookingForm.vue
+import { ref, onMounted, watch, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useFetchRats } from "@/composables/useFetchRats";
+import BookForm from "../components/BookForm/BookForm.vue";
 
 const route = useRoute();
-const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den. 
+const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den.
 const ratId = ref(route.params.id); // Gör ratId reaktiv för att lyssna på förändringar
 const rat = ref(null);
 const error = ref(null);
 const isLoading = ref(true);
+const isBooking = ref(false);
 
 const { fetchAllRats, rats } = useFetchRats(); // Tar in info från vår composable
+
+// Togglar booking modalen
+const toggleModal = () => {
+  isBooking.value = !isBooking.value;
+};
 
 // Funktion för att ladda en råtta baserat på ID
 const loadRat = async (id) => {
@@ -30,7 +36,7 @@ const loadRat = async (id) => {
       throw new Error(`Rat with ID ${id} not found`);
     }
   } catch (err) {
-    error.value = err.message || 'Failed to load rat data';
+    error.value = err.message || "Failed to load rat data";
   } finally {
     isLoading.value = false;
   }
@@ -52,7 +58,7 @@ watch(
 
 // Navigera tillbaka till råttornas sida
 const goBack = () => {
-  router.push('/rentee');
+  router.push("/rentee");
 };
 
 // Navigera till föregående råtta
@@ -99,10 +105,12 @@ const isLastRat = computed(() => {
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
 
   <div v-else class="rat-container">
+    <BookForm v-if="isBooking" :rat="rat" @closeModal="toggleModal" />
     <div class="rat-info">
       <button class="back-button" @click="goBack">Tillbaka</button>
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
+      <button @click="toggleModal">Rent this rat</button>
+      <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>
     </div>
@@ -112,25 +120,21 @@ const isLastRat = computed(() => {
         <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
       </div>
       <div class="navigation-buttons">
-        <button 
-          @click="goToPreviousRat" 
-          class="prev-button" 
-          :disabled="isFirstRat"
-        >
+        <button
+          @click="goToPreviousRat"
+          class="prev-button"
+          :disabled="isFirstRat">
           Föregående råtta
         </button>
-        <button 
-          @click="goToNextRat" 
-          class="next-button" 
-          :disabled="isLastRat"
-        >
+        <button @click="goToNextRat" class="next-button" :disabled="isLastRat">
           Nästa råtta
         </button>
       </div>
     </div>
   </div>
+
   <!-- <BookingForm :rat="rat" /> -->
-   <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
+  <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
     eva.bjorling@chasacademy.se || rentarat2024
     använd url från din skapade bin
     -->
@@ -141,7 +145,7 @@ const isLastRat = computed(() => {
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px;
-  border: 2px solid #8ACE00;
+  border: 2px solid #8ace00;
   border-radius: 10px;
   background-color: rgba(128, 128, 128, 0.534);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

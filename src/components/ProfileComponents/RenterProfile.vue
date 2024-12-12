@@ -3,6 +3,7 @@ import { ref } from "vue";
 import ProfileInfo from "./ProfileInfo.vue";
 import EditRats from "../EditRats/EditRats.vue";
 
+
 // Open on my rats, track active tab
 const activeTab = ref("Rats");
 
@@ -15,7 +16,6 @@ const tabs = {
 
 <template>
   <main>
-    <h1>Welcome bajs</h1>
     <nav>
       <div>
         <!-- Loop through the tabs in tabs object -->
@@ -32,6 +32,7 @@ const tabs = {
         </button>
       </div>
     </nav>
+    <!-- Render the tabs component dynamically  -->
     <component :is="tabs[activeTab]" />
   </main>
 </template>

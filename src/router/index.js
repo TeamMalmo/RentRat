@@ -45,7 +45,7 @@ const routes = [
     path: '/rentee',
     name: 'Rentee',
     component: () => import('@/components/Layouts/RenteeLayout.vue'), // Dynamic import
-    meta: { requiresAuth: true, role: 'rentee' }, // protected route
+    // meta: { requiresAuth: true, role: 'rentee' }, // protected route
     children: [
       {
         path: '',

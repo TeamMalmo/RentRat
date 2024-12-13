@@ -77,7 +77,7 @@ const handleRegister = async () => {
       <!-- Username -->
       <div class="div">
         <label for="NewUserUsername">Username:</label>
-        <input type="text" id="NewUserUsername" required v-model="newUser.username" />
+        <input type="text" id="NewUserUsername" placeholder="ratsummer" required v-model="newUser.username" />
       </div>
 
       <!-- Password -->
@@ -105,19 +105,34 @@ const handleRegister = async () => {
 </template>
 
 <style scoped>
+
+*{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box ;
+        text-transform:lowercase;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 .register-form {
   max-width: 400px;
   margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 8px;
+  background-color: #8ACE00;
 }
+
 
 form {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+}
+
+input{
+  background-color: #8ACE00;
 }
 
 .roles {
@@ -147,15 +162,18 @@ button:disabled {
 }
 
 button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  padding: 0.5rem 1rem;
+  background-color: #8ACE00;
+  color: black;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  border: 1px solid black;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #abff03;
 }
 </style>

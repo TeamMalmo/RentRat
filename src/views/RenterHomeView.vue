@@ -1,11 +1,12 @@
 <script setup>
-import RatList from '@/components/Layouts/RatList.vue';
+import AddRats from '@/components/AddRats/AddRats.vue';
+import WelcomeMessage from '@/components/Auth/WelcomeMessage.vue';
 </script>
 
 <template>
   <div class="container">
-    <h1>Rats For Rent</h1>
-    <RatList />
+    <WelcomeMessage />
+    <AddRats/>
   </div>
 
 </template>

@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
 import GlowButton from "@/components/GlowButton.vue";
+import LoginForm from '@/components/Auth/LoginForm.vue';
+
 
 const isLogoLoaded = ref(false);
 const isHoverRenter = ref(false);
@@ -284,3 +286,4 @@ nav > * {
   }
 }
 </style>
+

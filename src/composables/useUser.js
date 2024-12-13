@@ -1,6 +1,6 @@
-import { ref } from 'vue';
-import axios from 'axios';
-import { CONFIG } from '@/constant/config';
+import { ref } from "vue";
+import axios from "axios";
+import { CONFIG } from "@/constant/config";
 
 // Auth state
 const auth = ref({
@@ -10,20 +10,22 @@ const auth = ref({
   username: null,
 });
 
-const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
+const JSON_BIN_URL = "https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088";
 const apiKey = CONFIG.JSONBIN_API_KEY;
 
 const login = async (username, password) => {
   try {
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
     const sessions = response.data.record.sessions;
 
-    const user = users.find((u) => u.username === username && u.password === password);
-    if (!user) throw new Error('Invalid username or password');
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (!user) throw new Error("Invalid username or password");
 
     auth.value = {
       isAuthenticated: true,
@@ -42,15 +44,15 @@ const login = async (username, password) => {
       { users, sessions },
       {
         headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
+          "X-Master-Key": apiKey,
+          "Content-Type": "application/json",
         },
       }
     );
 
     return true;
   } catch (error) {
-    console.error('Login failed:', error);
+    console.error("Login failed:", error);
     return false;
   }
 };
@@ -65,7 +67,7 @@ const logout = async (userId) => {
     };
 
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const sessions = response.data.record.sessions;
@@ -73,24 +75,20 @@ const logout = async (userId) => {
     if (sessions[userId]) {
       sessions[userId].isAuthenticated = false;
     } else {
-      throw new Error('Session not found for user');
+      throw new Error("Session not found for user");
     }
 
-    await axios.put(
-      JSON_BIN_URL,
-      response.data.record,
-      {
-        headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    await axios.put(JSON_BIN_URL, response.data.record, {
+      headers: {
+        "X-Master-Key": apiKey,
+        "Content-Type": "application/json",
+      },
+    });
 
-    console.log('Logout successful');
+    console.log("Logout successful");
     return true;
   } catch (error) {
-    console.error('Logout failed:', error);
+    console.error("Logout failed:", error);
     return false;
   }
 };
@@ -98,7 +96,7 @@ const logout = async (userId) => {
 const loadUserSession = async () => {
   try {
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
@@ -112,6 +110,13 @@ const loadUserSession = async () => {
       const [userId, session] = activeSession;
       const user = users.find((u) => u.id === userId);
 
+      // Add favouries array if not there
+      if (user) {
+        if (!user.favorites) {
+          user.favorites = [];
+        }
+      }
+
       if (user) {
         auth.value = {
           isAuthenticated: true,
@@ -122,18 +127,18 @@ const loadUserSession = async () => {
       }
     }
   } catch (error) {
-    console.error('Failed to load user session:', error);
+    console.error("Failed to load user session:", error);
   }
 };
 
 export const addUser = async (newUser, confirmPassword) => {
   try {
     if (newUser.password !== confirmPassword) {
-      throw new Error('Passwords do not match.');
+      throw new Error("Passwords do not match.");
     }
 
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
@@ -142,7 +147,7 @@ export const addUser = async (newUser, confirmPassword) => {
     // Check if the username already exists
     const existingUser = users.find((u) => u.username === newUser.username);
     if (existingUser) {
-      throw new Error('Username is already taken.');
+      throw new Error("Username is already taken.");
     }
 
     // Add the user
@@ -160,21 +165,19 @@ export const addUser = async (newUser, confirmPassword) => {
       { users, sessions },
       {
         headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
+          "X-Master-Key": apiKey,
+          "Content-Type": "application/json",
         },
       }
     );
 
-    console.log('User added successfully');
+    console.log("User added successfully");
     return true;
   } catch (error) {
-    console.error('Failed to add user:', error);
+    console.error("Failed to add user:", error);
     return false;
   }
 };
-
-
 
 loadUserSession(); // Initialize session on load
 
@@ -184,6 +187,6 @@ export const useAuth = () => {
     login,
     logout,
     loadUserSession,
-    addUser
+    addUser,
   };
 };

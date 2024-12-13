@@ -15,6 +15,9 @@ const newUser = ref({
   username: '',
   password: '',
   role: '',
+  description: '',
+  areaOfMalmo: '',
+  profileImgUrl: '',
 });
 
 defineEmits(['back']);

@@ -12,7 +12,7 @@
 
 <style scoped>
 .glow-effect {
-  --glow-line-color: #fff;
+  --glow-line-color: #8ace00;
   --glow-line-thickness: 2px;
   --glow-line-length: 20px;
   --glow-blur-color: #fff;

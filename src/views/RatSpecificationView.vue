@@ -3,6 +3,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useFetchRats } from "@/composables/useFetchRats";
 import BookForm from "../components/BookForm/BookForm.vue";
+import { useAuth } from "@/composables/useUser";
 
 const route = useRoute();
 const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den.
@@ -12,6 +13,7 @@ const error = ref(null);
 const isLoading = ref(true);
 const isBooking = ref(false);
 
+const { auth } = useAuth();
 const { fetchAllRats, rats } = useFetchRats(); // Tar in info från vår composable
 
 // Togglar booking modalen
@@ -109,7 +111,9 @@ const isLastRat = computed(() => {
     <div class="rat-info">
       <button class="back-button" @click="goBack">Tillbaka</button>
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <button @click="toggleModal">Rent this rat</button>
+      <button v-if="auth.isAuthenticated" @click="toggleModal">
+        Rent this rat
+      </button>
       <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>

@@ -20,7 +20,6 @@ export function useBookings() {
       for (const booking of bookings.value) {
         if (
           booking.date === newBooking.date &&
-          booking.time === newBooking.time &&
           booking.ratId === newBooking.ratId
         ) {
           alert("You have already made a booking on this date and time!");

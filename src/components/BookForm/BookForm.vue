@@ -9,9 +9,8 @@ const emit = defineEmits(["closeModal"]);
 const { isAddingBooking, fetchBookings, addBooking, bookings, error } =
   useBookings();
 
-const auth = useAuth();
+const { auth } = useAuth();
 const bookDate = ref("");
-const bookTime = ref("");
 
 // Fetch all bookings on load
 onMounted(() => {
@@ -44,7 +43,6 @@ const handleAddBooking = () => {
     ratId: auth.value.userId,
     RenterId: p.rat.id,
     date: bookDate.value,
-    time: bookTime.value,
     accepted: false,
   });
 };
@@ -58,10 +56,6 @@ const handleAddBooking = () => {
         <div class="formDateTime">
           <label for="date">Välj Datum:</label>
           <input type="date" id="date" v-model="bookDate" required />
-          <div class="formDateTime">
-            <label for="time">Välj Tid:</label>
-            <input type="time" id="time" v-model="bookTime" required />
-          </div>
           <div class="formAction">
             <button type="submit" @click="handleAddBooking">
               Bekräfta Bokning

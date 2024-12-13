@@ -13,6 +13,7 @@ import FindRats from '@/components/FindRats/FindRats.vue';
 
 <style scoped>
 .container {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;

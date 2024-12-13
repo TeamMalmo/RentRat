@@ -35,7 +35,6 @@ const handleEditRat = async (ratData) => {
     if (ratIndex !== -1) {
       rats.value[ratIndex] = { ...rats.value[ratIndex], ...ratData };
     }
-    alert('Rat updated successfully!'); // Bekräftelse
   } catch (error) {
     alert('Fel vid uppdatering av råtta.'); // Hantera fel
   } finally {

@@ -62,7 +62,6 @@ const handleSubmit = async () => {
         padding: 0;
         box-sizing: border-box ;
         text-transform:lowercase;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         display: flex;
         flex-direction: column;
         justify-content: center;

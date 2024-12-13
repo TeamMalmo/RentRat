@@ -10,6 +10,7 @@ const isHoverRenter = ref(false);
 const isHoverRentee = ref(false);
 const isTouchScreen = ref(false);
 const showInfo = ref(false);
+const showLogin = ref(false);
 
 const onLogoLoad = () => {
   isLogoLoaded.value = true;
@@ -69,6 +70,10 @@ onMounted(() => {
           @error="onLogoError"
         ></object>
       </header>
+      <button @click="showLogin = !showLogin">Bajs login</button>
+      <div v-if="showLogin">
+        <LoginForm />
+      </div>
       <div
         v-if="isTouchScreen"
         @touchstart="showInfo = true"
@@ -86,6 +91,7 @@ onMounted(() => {
           <GlowButton @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
             I have rats
           </GlowButton>
+          
         </RouterLink>
       </nav>
 

@@ -77,12 +77,12 @@ onMounted(() => {
         <GlowButton>?</GlowButton>
       </div>
       <nav class="hero-nav">
-        <RouterLink to="/renter">
+        <RouterLink to="/rentee">
           <GlowButton @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
             I want rats
           </GlowButton>
         </RouterLink>
-        <RouterLink to="/rentee">
+        <RouterLink to="/renter">
           <GlowButton @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
             I have rats
           </GlowButton>

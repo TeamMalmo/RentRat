@@ -70,7 +70,7 @@ onMounted(() => {
           @error="onLogoError"
         ></object>
       </header>
-      <button class="login" @click="showLogin = !showLogin">Login🐀</button>
+      <GlowButton class="login" @click="showLogin = !showLogin">Login🐀</GlowButton>
       <div v-if="showLogin">
         <LoginForm />
       </div>
@@ -226,6 +226,23 @@ nav > * {
   align-self: flex-end;
 }
 
+.login {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: fit-content;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  border: 5px solid black;
+  color: black;
+  background-color: transparent;
+}
+
+.login:hover {
+  background-color: black;
+  color: #8ace00;
+}
+
 /* mobile  */
 @media (max-width: 600px) {
   .svg-object {
@@ -292,14 +309,7 @@ nav > * {
   }
 }
 
-.login {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: fit-content;
-  padding: 0.5rem;
-  font-size: 1.5rem;
-}
+
 
 </style>
 

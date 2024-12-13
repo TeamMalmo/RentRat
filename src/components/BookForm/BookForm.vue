@@ -41,7 +41,7 @@ const handleAddBooking = () => {
 
   addBooking({
     Id: Date.now() % 100000,
-    ratId: auth.value.username,
+    ratId: auth.value.userId,
     RenterId: p.rat.id,
     date: bookDate.value,
     time: bookTime.value,

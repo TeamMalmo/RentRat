@@ -21,14 +21,14 @@ const toggleFavorite = (event) => {
       <p>Other Skills: {{ rat.skills.join(", ") }}</p>
       <p>Available? {{ rat.availability ? "Yes" : "No" }}</p>
       <p>Renter: {{ rat.renter }}</p>
+      <button class="favorite-btn" @click="toggleFavorite">
+      {{ isFavorite ? '💔' : '❤️' }}
+    </button>
     </span>
     <span>
       <img :src="rat.imgUrl" alt="rat-image" class="rat-image" />
       <p>Hourly Rate: {{ rat.price }}:-</p>
     </span>
-    <button class="favorite-btn" @click="toggleFavorite">
-      {{ isFavorite ? '💔' : '❤️' }}
-    </button>
   </li>
 </template>
 

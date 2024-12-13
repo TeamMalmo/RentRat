@@ -37,13 +37,13 @@ const handleSubmit = async () => {
   <div class="login-form" v-if="!showRegisterForm">
     <h2>Login</h2>
     <form @submit.prevent="handleSubmit">
-      <div>
+      <div class="inputs">
         <label for="username">Username:</label>
-        <input v-model="username" type="text" id="username" required />
+        <input v-model="username" type="text" id="username" placeholder="ratLover89" required />
       </div>
-      <div>
+      <div class="inputs">
         <label for="password">Password:</label>
-        <input v-model="password" type="password" id="password" required />
+        <input v-model="password" type="password" id="password" placeholder="manILoveRats" required />
       </div>
       <button type="submit" :disabled="isLoading">Login</button>
     </form>
@@ -56,13 +56,28 @@ const handleSubmit = async () => {
 </template>
 
 <style scoped>
+
+*{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box ;
+        text-transform:lowercase;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    
+}
+
 .login-form {
   max-width: 400px;
   margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #8ACE00;
 }
 
 .login-form h2 {
@@ -81,16 +96,28 @@ button:disabled {
 
 button {
   padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
+  background-color: #8ACE00;
+  color: black;
   border: none;
   cursor: pointer;
   font-size: 1rem;
   border-radius: 4px;
   transition: background-color 0.3s;
+  border: 1px solid black;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #abff03;
 }
+
+.inputs {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+input{
+  background-color: #8ACE00;
+}
+
 </style>

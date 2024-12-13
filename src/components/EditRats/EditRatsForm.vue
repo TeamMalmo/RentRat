@@ -126,7 +126,7 @@ const cancelEdit = () => {
 
       <label for="description">
         Description:
-        <textarea id="description" v-model="editedRat.description" required></textarea>
+        <textarea id="description" v-model="editedRat.description"  required></textarea>
       </label>
 
       <button type="submit">Save Changes</button>
@@ -137,19 +137,67 @@ const cancelEdit = () => {
 </template>
 
 <style scoped>
+*{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box ;
+        text-transform:lowercase;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 form {
-  width: 400px;
+  min-width: 400px;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color: #8ACE00;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: start;
+  gap: 0.5rem;
 }
 
 label {
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
 
+input{
+  background-color: #8ACE00;
+  border: 1px solid;
+}
+
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 button {
-  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #8ACE00;
+  color: black;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  border: 1px solid black;
+}
+
+button:hover {
+  background-color: #abff03;
+}
+
+textarea{
+  background-color: #8ACE00;
+  height: 80px;
+}
+
+select{
+  background-color: #8ACE00;
 }
 </style>

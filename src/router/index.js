@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useUser'; // Authentication composable
 
+//test comment - will delete
 // Define routes
 const routes = [
   {

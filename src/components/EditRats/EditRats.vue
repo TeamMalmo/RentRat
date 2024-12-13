@@ -82,8 +82,8 @@ const handleEditRat = async (ratData) => {
 
 <style scoped>
 .edit-container {
+  max-width: 1000px;
   display: flex;
-  flex-direction: column;
   align-items: start;
   gap: 1rem;
   padding: 1rem;

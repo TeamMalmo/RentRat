@@ -1,8 +1,9 @@
 <script setup>
+import EditUser from '@/components/EditUser/EditUser.vue';
 </script>
 
 <template>
   <main>
-    <h1>This is a RenteeProfile page</h1>
+    <EditUser />
   </main>
 </template>

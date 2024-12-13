@@ -8,6 +8,9 @@ const auth = ref({
   userId: null,
   role: null,
   username: null,
+  description: '',
+  areaOfMalmo: '',
+  profileImageUrl: '',
 });
 
 const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
@@ -27,9 +30,12 @@ const login = async (username, password) => {
 
     auth.value = {
       isAuthenticated: true,
-      userId: user.id,
+      userId: user.id,  // Ensure the user ID is set here
       role: user.role,
       username: user.username,
+      description: user.description || '', 
+      areaOfMalmo: user.areaOfMalmo || '', 
+      profileImageUrl: user.profileImageUrl || '', 
     };
 
     sessions[user.id] = {
@@ -54,6 +60,7 @@ const login = async (username, password) => {
     return false;
   }
 };
+
 
 const logout = async (userId) => {
   try {
@@ -118,6 +125,9 @@ const loadUserSession = async () => {
           userId,
           role: user.role,
           username: user.username,
+          description: user.description || '',  // Add missing fields
+          areaOfMalmo: user.areaOfMalmo || '',  // Add missing fields
+          profileImageUrl: user.profileImageUrl || '',  // Add missing fields
         };
       }
     }
@@ -125,6 +135,7 @@ const loadUserSession = async () => {
     console.error('Failed to load user session:', error);
   }
 };
+
 
 export const addUser = async (newUser, confirmPassword) => {
   try {
@@ -174,7 +185,60 @@ export const addUser = async (newUser, confirmPassword) => {
   }
 };
 
+const editUser = async (updatedUser) => {
+  try {
+    const response = await axios.get(JSON_BIN_URL, {
+      headers: { 'X-Master-Key': apiKey },
+    });
 
+    const users = response.data.record.users;
+
+    console.log('Updated User:', updatedUser); // Log to check the passed user data
+    console.log('Users in the database:', users); // Log the current users in the database
+
+    // Find the user by ID and update their information
+    const userIndex = users.findIndex((u) => u.id === updatedUser.userId);
+
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+
+    console.log('User found at index:', userIndex); // Log to see which user was found
+
+    // Update the user data
+    users[userIndex] = {
+      ...users[userIndex], // Keep other data intact
+      description: updatedUser.description,
+      areaOfMalmo: updatedUser.areaOfMalmo,
+      profileImageUrl: updatedUser.profileImageUrl,
+    };
+
+    // Save the updated users list back to JSON bin
+    await axios.put(
+      JSON_BIN_URL,
+      { users, sessions: response.data.record.sessions },
+      {
+        headers: {
+          'X-Master-Key': apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // Update the auth state with the new user data
+    auth.value = {
+      ...auth.value,
+      description: updatedUser.description,
+      areaOfMalmo: updatedUser.areaOfMalmo,
+      profileImageUrl: updatedUser.profileImageUrl,
+    };
+
+    return true;
+  } catch (error) {
+    console.error('Failed to update user:', error);
+    return false;
+  }
+};
 
 loadUserSession(); // Initialize session on load
 
@@ -184,6 +248,7 @@ export const useAuth = () => {
     login,
     logout,
     loadUserSession,
-    addUser
+    addUser,
+    editUser
   };
 };

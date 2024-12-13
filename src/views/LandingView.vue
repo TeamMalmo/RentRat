@@ -70,7 +70,7 @@ onMounted(() => {
           @error="onLogoError"
         ></object>
       </header>
-      <button @click="showLogin = !showLogin">Bajs login</button>
+      <button class="login" @click="showLogin = !showLogin">Login🐀</button>
       <div v-if="showLogin">
         <LoginForm />
       </div>
@@ -291,5 +291,15 @@ nav > * {
     margin-top: 0;
   }
 }
+
+.login {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: fit-content;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+}
+
 </style>
 

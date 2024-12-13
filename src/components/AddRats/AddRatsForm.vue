@@ -5,7 +5,7 @@ import { useAuth } from '@/composables/useUser';
 // emitar data till parenten
 const emit = defineEmits(['submit']);
 
-const auth = useAuth();
+const {auth} = useAuth();
 const primarySkillSelect = ref('');
 const skillInput = ref('');
 
@@ -125,12 +125,28 @@ const submitForm = () => {
   </template>
   
   <style scoped>
+
+*{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box ;
+        text-transform:lowercase;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        gap: 0.5rem;
+    
+}
+
   form {
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    gap: 1rem;
+  min-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color: #8ACE00;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
   }
 
   label{
@@ -138,6 +154,26 @@ const submitForm = () => {
     display: flex;
     justify-content: space-between;
   }
+
+  button {
+  padding: 0.5rem 1rem;
+  background-color: #8ACE00;
+  color: black;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  border: 1px solid black;
+}
+
+button:hover {
+  background-color: #abff03;
+}
+
+input, select, textarea{
+  background-color: #8ACE00;
+}
 
   </style>
   

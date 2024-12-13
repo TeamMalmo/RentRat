@@ -123,7 +123,7 @@ h2 {
 
 .rat-list {
   height: 100%;
-  width: 600px;
+  width: 100vw;
   overflow-y: auto; 
   display: flex;
   flex-direction: column;

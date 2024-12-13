@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import LogoutButton from '../Auth/LogoutButton.vue';
 
 const router = useRouter();
 
@@ -20,6 +21,7 @@ function switchToRenter() {
       <button @click="switchToRenter" class="toggle-btn">
         Switch to Renter Layout
       </button>
+      <LogoutButton />
     </nav>
   </header>
 

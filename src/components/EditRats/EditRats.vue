@@ -6,34 +6,39 @@ import { onMounted, ref, computed } from 'vue';
 import RatItem from '../FindRats/RatItem.vue';
 import EditRatsForm from './EditRatsForm.vue';
 
+// Hämtar användardata
+const {auth} = useAuth(); // hämtar den inloggade användaren
+
+// Användning av fetch och update metoder för råttor
 const { rats, fetchAllRats } = useFetchRats();
 const { updateRatById, isLoading, error } = useUpdateRat();
-const auth= useAuth(); // hämtar den inloggade användaren
 
+// Vald råtta för redigering
 const selectedRat = ref(null);
 
-// filtrera råttor baserat på ägaren
+// Filtrera råttor baserat på ägaren
 const ownedRats = computed(() => rats.value.filter((rat) => rat.renter === auth.value.username));
 
+// Hämta alla råttor när komponenten monteras
 onMounted(() => {
   fetchAllRats();
 });
 
-// hantera redigering av en specifik rått
+// Hantera redigering av en specifik råtta
 const handleEditRat = async (ratData) => {
   try {
-    // kallar på edit
+    // Kallar på update-metod
     await updateRatById(ratData);
 
-    //uppdaterar UI:n lokalt
+    // Uppdaterar UI:n lokalt
     const ratIndex = rats.value.findIndex((rat) => rat.id === ratData.id);
     if (ratIndex !== -1) {
       rats.value[ratIndex] = { ...rats.value[ratIndex], ...ratData };
     }
   } catch (error) {
-    alert('Error updating rat.');
+    alert('Fel vid uppdatering av råtta.'); // Hantera fel
   } finally {
-    selectedRat.value = null; // nollställer
+    selectedRat.value = null; // Nollställer vald råtta
   }
 };
 </script>
@@ -49,8 +54,9 @@ const handleEditRat = async (ratData) => {
     <div v-else-if="error" class="error-message">
       ❌ Failed to fetch rats: {{ error }} ❌
     </div>
+    
+    <!-- Visa råttor -->
     <ul v-else>
-      <!-- List of owned rats -->
       <RatItem 
         v-for="rat in ownedRats" 
         :key="rat.id" 
@@ -59,10 +65,10 @@ const handleEditRat = async (ratData) => {
       />
     </ul>
 
+    <!-- Prompt om ingen råtta är vald -->
     <div>
-      <!-- Prompt to select a rat -->
-      <p v-if="!selectedRat">Select a rat to edit</p>
-      <!-- Form to edit the selected rat -->
+      <p v-if="!selectedRat">Pick a rat to edit</p>
+      <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
         v-else 
         :rat-to-edit="selectedRat" 
@@ -73,12 +79,13 @@ const handleEditRat = async (ratData) => {
   </div>
 </template>
 
-
 <style scoped>
 .edit-container {
+  max-width: 1000px;
   display: flex;
   align-items: start;
   gap: 1rem;
+  padding: 1rem;
 }
 
 ul {
@@ -87,6 +94,7 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
 }
 
 .loading-message {

@@ -2,7 +2,8 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useFetchRats } from "@/composables/useFetchRats";
-// import av BookingForm.vue
+import BookForm from "../components/BookForm/BookForm.vue";
+import { useAuth } from "@/composables/useUser";
 
 const route = useRoute();
 const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den.
@@ -10,8 +11,15 @@ const ratId = ref(route.params.id); // Gör ratId reaktiv för att lyssna på f�
 const rat = ref(null);
 const error = ref(null);
 const isLoading = ref(true);
+const isBooking = ref(false);
 
+const { auth } = useAuth();
 const { fetchAllRats, rats } = useFetchRats(); // Tar in info från vår composable
+
+// Togglar booking modalen
+const toggleModal = () => {
+  isBooking.value = !isBooking.value;
+};
 
 // Funktion för att ladda en råtta baserat på ID
 const loadRat = async (id) => {
@@ -99,12 +107,14 @@ const isLastRat = computed(() => {
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
 
   <div v-else class="rat-container">
+    <BookForm v-if="isBooking" :rat="rat" @closeModal="toggleModal" />
     <div class="rat-info">
       <button class="back-button" @click="goBack">Tillbaka</button>
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <p><strong>Location:</strong> {{ rat.areaOfMalmo }}</p>
-      <p><strong>Primary Skill:</strong> {{ rat.primarySkill }}</p>
-      <p><strong>Other skills:</strong> {{ rat.skills.join(", ") }}</p>
+      <button v-if="auth.isAuthenticated" @click="toggleModal">
+        Rent this rat
+      </button>
+      <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>
     </div>
@@ -117,8 +127,7 @@ const isLastRat = computed(() => {
         <button
           @click="goToPreviousRat"
           class="prev-button"
-          :disabled="isFirstRat"
-        >
+          :disabled="isFirstRat">
           Föregående råtta
         </button>
         <button @click="goToNextRat" class="next-button" :disabled="isLastRat">
@@ -127,6 +136,7 @@ const isLastRat = computed(() => {
       </div>
     </div>
   </div>
+
   <!-- <BookingForm :rat="rat" /> -->
   <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
     eva.bjorling@chasacademy.se || rentarat2024

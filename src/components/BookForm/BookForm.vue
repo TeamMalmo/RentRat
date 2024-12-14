@@ -33,7 +33,7 @@ const handleAddBooking = () => {
     return;
   }
 
-  if (bookDate.value === "" || bookTime.value === "") {
+  if (bookDate.value === "") {
     alert("Date and time cannot be omitted!");
     return;
   }

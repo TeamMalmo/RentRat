@@ -11,6 +11,7 @@ const auth = ref({
   description: '',
   areaOfMalmo: '',
   profileImageUrl: '',
+  favorites: [],
 });
 
 const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
@@ -36,6 +37,7 @@ const login = async (username, password) => {
       description: user.description || '', 
       areaOfMalmo: user.areaOfMalmo || '', 
       profileImageUrl: user.profileImageUrl || '', 
+      favorites: user.favorites || [],
     };
 
     sessions[user.id] = {

@@ -88,7 +88,7 @@ onMounted(() => {
           </GlowButton>
         </RouterLink>
         <RouterLink to="/renter">
-          <GlowButton @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
+          <GlowButton @click="showLogin = !showLogin" @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
             I have rats
           </GlowButton>
           

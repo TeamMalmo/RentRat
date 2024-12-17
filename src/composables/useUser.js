@@ -242,6 +242,12 @@ const editUser = async (updatedUser) => {
   }
 };
 
+const addFavorite = async (userId, ratId) => {
+  const response = await axios.get(JSON_BIN_URL, {
+    headers: {'X-Master-Key: apiKey'},
+  })
+};
+
 loadUserSession(); // Initialize session on load
 
 export const useAuth = () => {

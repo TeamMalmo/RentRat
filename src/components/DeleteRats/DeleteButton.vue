@@ -20,11 +20,11 @@ const removeRat = async (ratId) => {
 </script>
 
 <template>
-    <button @click="removeRat(rat.id)">🗑️</button>
+    <button class="delete" @click="removeRat(rat.id)">🗑️delete rat</button>
 </template>
 
 <style scoped>
-button {
+.delete {
     background-color: #d6acac;
     color: white;
     border: none;
@@ -34,7 +34,7 @@ button {
     padding: 0.5rem;
 }
 
-button:hover {
-    background-color: #f47f7f;
+.delete:hover {
+    background-color: #fd0d0d;
 }
 </style>

@@ -67,7 +67,7 @@ const handleEditRat = async (ratData) => {
 
     <!-- Prompt om ingen råtta är vald -->
     <div>
-      <p v-if="!selectedRat">Pick a rat to edit</p>
+      <h2 v-if="!selectedRat" style="width: 400px;">Pick a rat to edit</h2>
       <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
         v-else 
@@ -82,6 +82,7 @@ const handleEditRat = async (ratData) => {
 <style scoped>
 .edit-container {
   max-width: 1000px;
+  min-width: 300px;
   display: flex;
   align-items: start;
   gap: 1rem;

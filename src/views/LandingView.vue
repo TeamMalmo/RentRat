@@ -1,38 +1,50 @@
 <script setup>
+// Import reactive refs and onMounted lifecycle hook
 import { ref, onMounted } from "vue";
+// Child component imports 
 import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
 import GlowButton from "@/components/GlowButton.vue";
 import LoginForm from '@/components/Auth/LoginForm.vue';
 
-
+// Reactive tracking ig logo loaded successfully 
 const isLogoLoaded = ref(false);
+
+// Reactive states for hover on buttons
 const isHoverRenter = ref(false);
 const isHoverRentee = ref(false);
+
+// Reactive state to see if device is touch screen
 const isTouchScreen = ref(false);
+
+// Reactive states for toggling info and login modals show/hide 
 const showInfo = ref(false);
 const showLogin = ref(false);
 
+// Event handler to set logo load state on success
 const onLogoLoad = () => {
   isLogoLoaded.value = true;
 };
 
+// Event handler for errors in logo loading
 const onLogoError = () => {
   isLogoLoaded.value = false;
 };
 
+// Event handlers for when hover over renter/rentee btns
 const onHoverRenter = () => {
   isHoverRenter.value = true;
 };
-
 const onHoverRentee = () => {
   isHoverRentee.value = true;
 };
 
+// Event handler for when leaving hover on renter/rentee btns 
 const onHoverLeave = () => {
   isHoverRenter.value = false;
   isHoverRentee.value = false;
 };
 
+// Lifecycle hook that runs after component is mounted to DOM
 onMounted(() => {
   // Check if the device has a coarse pointer (likely a touchscreen)
   isTouchScreen.value = window.matchMedia("(pointer: coarse)").matches;
@@ -40,14 +52,18 @@ onMounted(() => {
 
 
 // button glow 
+// Anon function to dynamically set glow effect radius with class .glow-effect
 (function setGlowEffectRx() {
   const glowEffects = document.querySelectorAll(".glow-effect");
 
+  // Select all rect elements 
   glowEffects.forEach((glowEffect) => {
     const glowLines = glowEffect.querySelectorAll("rect");
+    // Compute border radius
     const rx = getComputedStyle(glowEffect).borderRadius;
 
     glowLines.forEach((line) => {
+      // Apply border radius to each line as rx attribute 
       line.setAttribute("rx", rx);
     });
   });
@@ -58,10 +74,14 @@ onMounted(() => {
 <template>
   <main>
     <div class="hero-container">
+      <!-- Component for decoration  -->
       <HeroOverlayEffect />
 
+      <!-- Logo and title section  -->
       <header>
+        <!-- h1 for semantics and SEO, also fallback if logo doesnt load  -->
         <h1 v-show="!isLogoLoaded">Rent a Rat</h1>
+        <!-- SVG logo with load and error handlers  -->
         <object
           type="image/svg+xml"
           data="/images/rent-a-rat-vector.svg"
@@ -70,10 +90,14 @@ onMounted(() => {
           @error="onLogoError"
         ></object>
       </header>
+
+      <!-- Login button to toggle login form visibility  -->
       <GlowButton class="login" @click="showLogin = !showLogin">Login🐀</GlowButton>
       <div v-if="showLogin">
         <LoginForm />
       </div>
+
+      <!-- Help button alt. for hover info if on touch screen  -->
       <div
         v-if="isTouchScreen"
         @touchstart="showInfo = true"
@@ -81,6 +105,8 @@ onMounted(() => {
       >
         <GlowButton>?</GlowButton>
       </div>
+
+      <!-- Nav buttons to be renter or rentee  -->
       <nav class="hero-nav">
         <RouterLink to="/rentee">
           <GlowButton @mouseover="onHoverRenter" @mouseleave="onHoverLeave">
@@ -91,10 +117,10 @@ onMounted(() => {
           <GlowButton @click="showLogin = !showLogin" @mouseover="onHoverRentee" @mouseleave="onHoverLeave">
             I have rats
           </GlowButton>
-          
         </RouterLink>
       </nav>
 
+      <!-- Info sections on hover  -->
       <div class="hover-info-container">
         <div v-show="isHoverRenter" class="hover-info-renter">
           <p>I'm looking for helpful rats!</p>
@@ -104,6 +130,7 @@ onMounted(() => {
         </div>
       </div>
 
+      <!-- The info from pressing help button on touch screen  -->
       <div v-show="showInfo" class="touch-info-container">
         <div class="touch-renter-info">
           <p>

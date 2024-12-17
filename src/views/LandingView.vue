@@ -2,8 +2,8 @@
 // Import reactive refs and onMounted lifecycle hook
 import { ref, onMounted } from "vue";
 // Child component imports 
-import HeroOverlayEffect from "@/components/HeroOverlayEffect.vue";
-import GlowButton from "@/components/GlowButton.vue";
+import HeroOverlayEffect from "@/components/StyleComponents/HeroOverlayEffect.vue";
+import GlowButton from "@/components/StyleComponents/GlowButton.vue";
 import LoginForm from '@/components/Auth/LoginForm.vue';
 
 // Reactive tracking ig logo loaded successfully 

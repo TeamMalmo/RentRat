@@ -6,7 +6,7 @@ import { authMessage } from './router';
 
 <template>
   <div v-if="authMessage.message" class="login-prompt-div">
-    <h3>Please log in to access this page.</h3>
+    <h3>{{ authMessage.message }}</h3>
     <LoginForm />
   </div>
   <RouterView />

@@ -97,7 +97,12 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isLoggedIn) {
     authMessage.show = true;
     authMessage.message = "Please log in to access this page 🐀"
-    return;
+    // Prevent nav
+    return next(false);
+  } else {
+    // Hide and clear
+    authMessage.show = false;
+    authMessage.message ="";
   }
 
   // Redirect logged-in users from the Landing page to their respective home page

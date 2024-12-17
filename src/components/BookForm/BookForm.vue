@@ -38,14 +38,22 @@ const handleAddBooking = () => {
     return;
   }
 
+  const loggedInUsername = auth?.value?.username;
+
+  if (!loggedInUsername) {
+    alert("No user is currently logged in.");
+    return;
+  }
+
   addBooking({
     Id: Date.now() % 100000,
-    ratId: auth.value.userId,
-    RenterId: p.rat.id,
+    Booker: loggedInUsername,
+    RenterId: p.rat.username,
     date: bookDate.value,
     accepted: false,
   });
 };
+
 </script>
 
 <template>

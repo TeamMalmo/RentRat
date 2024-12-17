@@ -55,7 +55,7 @@ nav {
   margin-bottom: 3rem;
 }
 
-nav > :not(:last-child)  {
+nav > :not(:last-child):not(:nth-last-child(2))  {
   color: black;
   text-transform: uppercase;
   font-weight: bold;

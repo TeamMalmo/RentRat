@@ -1,9 +1,10 @@
 <script setup>
-import EditUser from '@/components/EditUser/EditUser.vue';
+// import EditUser from '@/components/EditUser/EditUser.vue';
+import UpdateUser from '@/components/EditUser/UpdateUser.vue';
 </script>
 
 <template>
   <main>
-    <EditUser />
+    <UpdateUser />
   </main>
 </template>

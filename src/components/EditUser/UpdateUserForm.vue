@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import GlowButton from '../GlowButton.vue';
 
-// Props: Receive the `user` object from the parent
+// tar emot användaren som objection från UpdateUser.vue
 const props = defineProps({
   user: {
     type: Object,
@@ -9,30 +10,31 @@ const props = defineProps({
   },
 });
 
-// Emits: Send the updated user data to the parent component
+// skickar emitter till UpdateUser.vue
 const emit = defineEmits(['submit']);
 
-// Directly use a shallow copy of the user prop
+// gör en spread/kopia av användarens data direkt
 const formData = ref({ ...props.user });
 
-// Predefined list of profile images
+// lista med profilbilder
 const profileImages = [
   '/images/user1.webp',
+  '/images/user2.png',
   '/images/user3.webp',
   '/images/user4.webp',
   '/images/user5.webp',
   '/images/user6.webp',
 ];
 
-// Handle profile image selection
+// hanterar val av profilbild
 const selectProfileImage = (imageSrc) => {
   formData.value.profileImageUrl = imageSrc;
 };
 
-// Submit form data to the parent
+// skickar in uppdaterade data till UpdateUser.vue
 const submitForm = () => {
   console.log('Form data:', formData.value);
-  emit('submit', formData.value); // Emit the updated user object
+  emit('submit', formData.value); 
 };
 </script>
 
@@ -43,7 +45,7 @@ const submitForm = () => {
       id="description"
       name="description"
       placeholder="Write a short description about yourself"
-      rows="4"
+      rows="6"
       v-model="formData.description"
     ></textarea>
 
@@ -57,7 +59,7 @@ const submitForm = () => {
 
     <label>Choose a profile image:</label>
     <div class="img-container">
-      <!-- Loop through profile images -->
+      <!-- loopar igenom profilebilderna -->
       <img
         v-for="(image, index) in profileImages"
         :key="index"
@@ -67,9 +69,9 @@ const submitForm = () => {
         alt="Profile Image"
       />
     </div>
-
-    <button type="submit">Submit</button>
-  </form>
+    
+    <GlowButton type="submit">🐀Save</GlowButton>
+</form>
 </template>
 
 <style scoped>
@@ -83,13 +85,32 @@ img {
 }
 
 img.selected {
-  border: 3px solid #42b983; /* Highlight selected image */
+  border: 10px solid #42b983; /* Highlight selected image */
 }
 
 form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
+}
+
+label{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+
+}
+
+input, textarea{
+    background-color: #8ACE00;
+    border: 1px solid black;
+    padding: 0.5rem;
+    border-radius: 4px;
+    width: 100%;
+    resize: none;
+    font-size: 1rem;
+
 }
 </style>

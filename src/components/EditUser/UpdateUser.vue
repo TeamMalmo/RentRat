@@ -2,58 +2,56 @@
 import { ref, computed } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import UpdateUserForm from './UpdateUserForm.vue';
+import LoginForm from '../Auth/LoginForm.vue';
+import GlowButton from '../GlowButton.vue';
+import UserInformation from './UserInformation.vue';
 
 const { auth, editUser } = useAuth();
 const showEditForm = ref(false);
+const showLoginForm = ref(false);
 const isLoading = ref(false);
 
+// hämtar den inloggade anvädaren för att kunna redigera
 const currentUser = computed(() => auth.value);
 
+// funktionen som anropas när användaren trycker på knappen "Submit" i UpdateUserForm.vue
 const handleFormSubmit = async (updatedUser) => {
-  isLoading.value = true; // Show loading state while the form is being submitted
-  const success = await editUser(updatedUser);
+  isLoading.value = true; // laddar under awaiting
+  const success = await editUser(updatedUser); // tar in användarens uppdaterade information
   if (success) {
-    showEditForm.value = false; // Hide the form after successful submission
+    showEditForm.value = false; // döljer UpdateUserForm.vue
   } else {
     alert('There was an issue updating your profile.');
   }
-  isLoading.value = false; // Hide loading state after submission
+  isLoading.value = false; 
 };
 </script>
 
 
 <template>
   <main>
-      <h1>This is an UpdateUser page</h1>
   <div v-show="!showEditForm">
+    <!-- Om användaren är inloggad visas denna sektion -->
     <div v-if="currentUser.isAuthenticated">
-      <h2>User Information</h2>
-      <img v-if="currentUser.profileImageUrl" :src="currentUser.profileImageUrl" alt="Profile" width="150" />
-      <span v-else>No profile image</span>
-      <ul>
-        <li><strong>Username:</strong> {{ currentUser.username }}</li>
-        <li><strong>Description:</strong>
-          <span v-if="currentUser.description">{{ currentUser.description }}</span>
-          <span v-else>No description added</span>
-          </li>
-        <li><strong>Area of Malmo:</strong>
-          <span v-if="currentUser.areaOfMalmo">{{ currentUser.areaOfMalmo }}</span>
-          <span v-else>No area of Malmö provided</span>
-        </li>
-        <li><strong>Role:</strong> {{ currentUser.role }}</li>
-      </ul>
+      <UserInformation :currentUser="currentUser" />
+      <GlowButton @click="showEditForm = !showEditForm">✏️Edit Profile</GlowButton>
     </div>
+    <!-- Om användaren inte är inloggad visas denna sektion -->
     <div v-else>
       <p>No user is currently signed in.</p>
+      <GlowButton @click="showLoginForm = !showLoginForm">Login🐀</GlowButton>
+      <LoginForm v-if="showLoginForm" @submit="handleLogin" />
     </div>
-    <button @click="showEditForm = !showEditForm">Edit Profile</button>
 </div>
-    <!-- Edit form will be shown only if showEditForm is true -->
+    <!-- detta visas bara om showEditForm är true -->
     <div v-if="showEditForm">
+      <!-- innan laddning -->
       <div v-if="!isLoading">
-        <h3>We want to know more about you!</h3>
+        <h3>We want to know more about you, {{ currentUser.username }}!</h3>
         <UpdateUserForm :user="currentUser" @submit="handleFormSubmit" />
+        <GlowButton @click="showEditForm = !showEditForm">❌Back</GlowButton>
       </div>
+      <!-- under laddning -->
       <div v-else>
         <p>Loading rat info 🐀🐀🐀...</p>
       </div>

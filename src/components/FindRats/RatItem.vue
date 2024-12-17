@@ -1,9 +1,12 @@
 <script setup>
+import { useAuth } from "@/composables/useUser";
 import { ref, computed } from "vue";
 
 defineProps({
   rat: Object, // Data för en specifik råtta
 });
+
+const { auth } = useAuth();
 
 const isFavorite = ref(false);
 

@@ -242,6 +242,7 @@ const editUser = async (updatedUser) => {
   }
 };
 
+const addFavorite = async (userId, )
 loadUserSession(); // Initialize session on load
 
 export const useAuth = () => {

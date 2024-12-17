@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-import GlowButton from "../GlowButton.vue";
 
 const isFavorite = ref(false);
 

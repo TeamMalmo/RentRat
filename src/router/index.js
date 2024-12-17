@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuth } from "@/composables/useUser"; // Authentication composable
+import { reactive } from "vue";
 
+export const authMessage = reactive({
+  show: false,
+  message: "",
+});
 //test comment - will delete
 // Define routes
 const routes = [
@@ -86,12 +91,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const { auth } = useAuth(); // Get the auth state
   const isLoggedIn = auth.value ? auth.value.isAuthenticated : false; // Safely access
-
   const userRole = auth.value.role; // Get the user's role
 
   // Redirect unauthenticated users from protected routes
   if (to.meta.requiresAuth && !isLoggedIn) {
-    return next({ name: "Landing" });
+    authMessage.show = true;
+    authMessage.message = "Please log in to access this page 🐀"
+    return;
   }
 
   // Redirect logged-in users from the Landing page to their respective home page

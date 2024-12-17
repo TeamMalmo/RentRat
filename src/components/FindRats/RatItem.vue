@@ -1,17 +1,21 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+
+defineProps({
+  rat: Object, // Data för en specifik råtta
+});
 
 const isFavorite = ref(false);
+
+const handleIsFavorite = computed(() =>
+  auth.value.favorites?.includes(props.rat.id)
+);
 
 const toggleFavorite = (event) => {
   // Stop click from opening rat details
   event.stopPropagation();
   isFavorite.value = !isFavorite.value;
 };
-
-defineProps({
-  rat: Object, // Data för en specifik råtta
-});
 </script>
 
 <template>

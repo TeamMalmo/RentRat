@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import { useRouter } from 'vue-router';
-
+import GlowButton from '../GlowButton.vue';
 const { logout, auth } = useAuth();
 
 
@@ -26,29 +26,13 @@ const handleLogout = async () => {
 
 <template>
     <!-- Logout button -->
-    <button v-if="auth.isAuthenticated" @click="handleLogout" :disabled="isLoading">
+    <GlowButton v-if="auth.isAuthenticated" @click="handleLogout" :disabled="isLoading">
       Log Out
-    </button>
+    </GlowButton>
 </template>
 
 <style scoped>
 button:disabled {
-  background-color: #ccc;
   cursor: not-allowed;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 </style>

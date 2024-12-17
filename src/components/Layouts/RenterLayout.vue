@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import LogoutButton from '../Auth/LogoutButton.vue';
+import GlowButton from '../GlowButton.vue';
 
 const router = useRouter();
 
@@ -17,9 +18,9 @@ function switchToRentee() {
       <RouterLink to="/renter/about">About</RouterLink>
       
       <!-- Toggle Button -->
-      <button @click="switchToRentee" class="toggle-btn">
+      <GlowButton @click="switchToRentee" class="toggle-btn">
         Switch to Rentee Layout
-      </button>
+      </GlowButton>
       <LogoutButton />
     </nav>
 
@@ -33,18 +34,4 @@ function switchToRentee() {
 
 
 <style scoped>
-.toggle-btn {
-  margin-left: auto;
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 </style>

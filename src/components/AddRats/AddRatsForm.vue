@@ -7,7 +7,8 @@ import GlowButton from '../GlowButton.vue';
 const emit = defineEmits(['submit']);
 
 const { auth } = useAuth();
-const skillInput = ref('');
+const skillInput = ref(''); // For general skills
+const customPrimarySkillInput = ref(''); // For custom primary skill input
 
 // Object for form data
 const newRat = ref({
@@ -37,9 +38,17 @@ const primarySkillSelect = ref('');
 // Watch primarySkillSelect to update newRat.primarySkill
 watch(primarySkillSelect, (value) => {
   if (value === 'custom') {
-    newRat.value.primarySkill = skillInput.value.trim() || 'Custom Skill';
+    newRat.value.primarySkill = customPrimarySkillInput.value.trim() || 'Custom Skill';
   } else {
     newRat.value.primarySkill = value;
+    customPrimarySkillInput.value = ''; // Reset custom input when not selected
+  }
+});
+
+// Watch customPrimarySkillInput to update newRat.primarySkill dynamically
+watch(customPrimarySkillInput, (value) => {
+  if (primarySkillSelect.value === 'custom') {
+    newRat.value.primarySkill = value.trim() || 'Custom Skill';
   }
 });
 
@@ -65,6 +74,7 @@ const submitForm = () => {
   emit('submit', newRat.value); // Emit data to parent
 };
 </script>
+
 
 <template>
   <div>
@@ -94,12 +104,12 @@ const submitForm = () => {
       <div v-if="primarySkillSelect === 'custom'">
         <label>
           Custom Primary Skill:
-          <input v-model="skillInput" type="text" required />
+          <input v-model="customPrimarySkillInput" type="text" required />
         </label>
       </div>
 
+
       <label>
-        Add Skill:
         <input v-model="skillInput" type="text" placeholder="Enter a skill" />
         <button class="add" type="button" @click="addSkill">Add Skill</button>
       </label>

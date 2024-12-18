@@ -77,7 +77,10 @@ const skillImages = [
 
 <template>
   <div>
-    <h2>Edit {{ ratToEdit.name }}</h2>
+    <div class="edit-header">
+      <h2>Edit {{ ratToEdit.name }}</h2>
+      <GlowButton type="button" @click="cancelEdit">Cancel</GlowButton>
+    </div>
 
     <form @submit.prevent="submitForm">
       <label>
@@ -142,7 +145,6 @@ const skillImages = [
       </label>
 
       <GlowButton type="submit">Save Changes</GlowButton>
-      <GlowButton type="button" @click="cancelEdit">Cancel</GlowButton>
       <DeleteButton :rat="editedRat" />
     </form>
   </div>
@@ -173,6 +175,7 @@ const skillImages = [
 }
 
 input, select, textarea {
+  width: 60%;
   background-color: #8ACE00;
   padding: 5px;
   border-radius: 5px;
@@ -198,8 +201,16 @@ ul {
   list-style: none;
 }
 
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 form {
-  max-width: 500px;
+  max-width: 800px;
   min-width: 400px;
   margin: auto;
   padding: 20px;

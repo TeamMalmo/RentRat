@@ -1,5 +1,3 @@
-<!-- AddReview.vue // Sida för att lägga till en ny recension -->
-
 <script setup>
 import { ref } from "vue";
 import AddReviewForm from "./AddReviewForm.vue";

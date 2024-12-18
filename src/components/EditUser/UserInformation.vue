@@ -25,7 +25,7 @@ defineProps({
           <span v-if="currentUser.description">{{ currentUser.description }}</span>
           <span v-else>No description added</span>
           </li>
-          <span class="basic-info">
+          <span class="basic-info" style="margin-top: 1rem;">
               <li><strong>Area of Malmö</strong>
                 <span v-if="currentUser.areaOfMalmo">{{ currentUser.areaOfMalmo }}</span>
                 <span v-else>No area of Malmö provided</span>

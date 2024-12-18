@@ -1,11 +1,18 @@
 <script setup>
-import DemoList from '@/components/DeleteRats/DemoList.vue';
+import { ref } from 'vue';
 import EditRats from '@/components/EditRats/EditRats.vue';
+import UpdateUser from '@/components/EditUser/UpdateUser.vue';
+import GlowButton from '@/components/GlowButton.vue';
+
+// bestämmer vilken view som visas
+const editView = ref('');
 </script>
 
 <template>
   <main>
-    <h1>This is a RenterProfile page</h1>
-    <EditRats />
+    <GlowButton @click="editView = 'editRats'">Edit Rats🐀</GlowButton>
+    <GlowButton @click="editView = 'updateUser'">Edit Profile✨</GlowButton>
+    <EditRats v-if="editView === 'editRats'" />
+    <UpdateUser v-if="editView === 'updateUser'" />
   </main>
 </template>

@@ -6,13 +6,22 @@ const props = defineProps({
   rat: Object, // Data för en specifik råtta
 });
 
-const { auth } = useAuth();
+const { auth, editUser } = useAuth();
 
 // Computed property to check if current rat is favorite
-const isFavorite = computed(() =>
+const isFavorite = computed(() => {
   // Check if rat id exists in users favorites array
-  auth.value.favorites?.includes(props.rat.id)
-);
+  const favoriteStatus = auth.value.favorites?.includes(props.rat.id);
+  console.log(
+    "Is favorite:",
+    favoriteStatus,
+    "Rat ID:",
+    props.rat.id,
+    "Favorites:",
+    auth.value.favorites
+  );
+  return favoriteStatus;
+});
 
 // Toggle fave status of a rat
 const toggleFavorite = async (event) => {
@@ -35,10 +44,18 @@ const toggleFavorite = async (event) => {
       // Spread operator to combine existing favorites with the current rat id
       updatedFavorites = [...currentFavorites, props.rat.id];
     }
+
+    // Update in database
+    await editUser({
+      userId: auth.value.userId,
+      favorites: updatedFavorites,
+    });
   } catch (error) {
     console.error("Failed to toggle favorite:", error);
   }
 };
+
+console.log(auth.value.favorites);
 </script>
 
 <template>

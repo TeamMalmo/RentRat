@@ -5,6 +5,7 @@ import { useAuth } from '@/composables/useUser';
 import { onMounted, ref, computed } from 'vue';
 import RatItem from '../FindRats/RatItem.vue';
 import EditRatsForm from './EditRatsForm.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
 // Hämtar användardata
 const {auth} = useAuth(); // hämtar den inloggade användaren
@@ -56,8 +57,8 @@ const handleEditRat = async (ratData) => {
     </div>
     
     <!-- Visa råttor -->
-    <ul v-else>
-      <RatItem 
+    <ul v-else >
+      <RatItem
         v-for="rat in ownedRats" 
         :key="rat.id" 
         :rat="rat" 
@@ -66,7 +67,7 @@ const handleEditRat = async (ratData) => {
     </ul>
 
     <!-- Prompt om ingen råtta är vald -->
-    <div>
+    <div v-if="ownedRats.length > 0">
       <h2 v-if="!selectedRat" style="width: 400px;">Pick a rat to edit</h2>
       <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
@@ -75,6 +76,10 @@ const handleEditRat = async (ratData) => {
         @submit="handleEditRat" 
         @cancel="selectedRat = null" 
       />
+    </div>
+    <div v-else> 
+      <h2>You currently don't have any rats.</h2>
+      <GlowButton @click="$router.push('/renter')">Add a rat</GlowButton>
     </div>
   </div>
 </template>

@@ -1,11 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue';
 import DeleteButton from '../DeleteRats/DeleteButton.vue';
+import GlowButton from '../GlowButton.vue';
 
-// emittar uppdaterad data || avbryter redigering
+// Emits data to parent
 const emit = defineEmits(['submit', 'cancel']);
 
-// taer emot råttan som ska redigeras
+// Receiving rat to edit
 const props = defineProps({
   ratToEdit: {
     type: Object,
@@ -13,31 +14,31 @@ const props = defineProps({
   },
 });
 
-// gör en reaktiv kopia av råttan för att undvika direkt modifiering av prop
+// Make a reactive copy of the rat to avoid direct modification of prop
 const editedRat = ref({ ...props.ratToEdit });
 
-
+// Selected primary skill
 const primarySkillSelect = ref(editedRat.value.primarySkill || '');
 
-// watch för ändringar i ratToEdit
+// Watch for changes in the prop ratToEdit to update the form
 watch(
   () => props.ratToEdit,
   (newRat) => {
     editedRat.value = { ...newRat }; 
     primarySkillSelect.value = editedRat.value.primarySkill || ''; 
   },
-  { immediate: true } // watcher köra på mount
+  { immediate: true } // Trigger watcher immediately on mount
 );
 
+// Watch primarySkillSelect to update editedRat.primarySkill
 watch(primarySkillSelect, (value) => {
-    if (value !== 'custom') {
-        editedRat.value.primarySkill = value;
-    }
+  if (value !== 'custom') {
+    editedRat.value.primarySkill = value;
+  }
 });
 
 // Add skill
 const skillInput = ref('');
-
 const addSkill = () => {
   if (skillInput.value.trim()) {
     editedRat.value.skills.push(skillInput.value.trim());
@@ -50,20 +51,28 @@ const removeSkill = (index) => {
   editedRat.value.skills.splice(index, 1);
 };
 
-// skickar uppdaterad data till parenten
+// Submit form data
 const submitForm = () => {
   if (primarySkillSelect.value === 'custom' && !editedRat.value.primarySkill.trim()) {
     alert('Please enter a custom primary skill.');
     return;
   }
-
-  emit('submit', editedRat.value); 
+  emit('submit', editedRat.value);
 };
 
-// avbryter redigering
+// Cancel editing
 const cancelEdit = () => {
-  emit('cancel'); 
+  emit('cancel');
 };
+
+// Array of skill options with corresponding images
+const skillImages = [
+  { name: 'cook', image: '/images/cook.png' },
+  { name: 'clean', image: '/images/clean.png' },
+  { name: 'laundry', image: '/images/laundry.png' },
+  { name: 'paint', image: '/images/paint.png' },
+  { name: 'custom', image: '/images/default.png' }, // Default image for custom skill
+];
 </script>
 
 <template>
@@ -76,18 +85,21 @@ const cancelEdit = () => {
         <input v-model="editedRat.name" type="text" required />
       </label>
 
-      <label>
-        Primary Skill:
-        <select v-model="primarySkillSelect">
-          <option disabled value="">Select a skill</option>
-          <option value="cook">Cook</option>
-          <option value="clean">Clean</option>
-          <option value="laundry">Laundry</option>
-          <option value="paint">Paint</option>
-          <option value="custom">Other (Add your own)</option>
-        </select>
-      </label>
+      <label><h3>Primary Skill</h3></label>
+      <div class="skill-selection">
+        <!-- Loop through predefined skills and display images -->
+        <div 
+          v-for="(skill, index) in skillImages" 
+          :key="index" 
+          class="skill-item"
+          :class="{ selected: primarySkillSelect === skill.name }"
+          @click="primarySkillSelect = skill.name">
+          <img :src="skill.image" :alt="skill.name" />
+          <p>{{ skill.name }}</p>
+        </div>
+      </div>
 
+      <!-- Custom skill input if "custom" is selected -->
       <div v-if="primarySkillSelect === 'custom'">
         <label>
           Custom Primary Skill:
@@ -99,13 +111,13 @@ const cancelEdit = () => {
       </div>
 
       <label>
-        Add Skill:
         <input v-model="skillInput" type="text" placeholder="Enter a skill" />
         <button type="button" @click="addSkill">Add Skill</button>
       </label>
       <ul>
+        <h3>Skills</h3>
         <li v-for="(skill, index) in editedRat.skills" :key="index">
-          {{ skill }} <button type="button" @click="removeSkill(index)">Remove</button>
+          {{ skill }} <button style="padding: 8px; font-size: 8px; margin: 0; padding-left: 12px;" type="button" @click="removeSkill(index)">❌</button>
         </li>
       </ul>
 
@@ -126,77 +138,83 @@ const cancelEdit = () => {
 
       <label for="description">
         Description:
-        <textarea id="description" v-model="editedRat.description"  required></textarea>
+        <textarea rows="6" id="description" v-model="editedRat.description" required></textarea>
       </label>
 
-      <button type="submit">Save Changes</button>
-      <button type="button" @click="cancelEdit">Cancel</button>
+      <GlowButton type="submit">Save Changes</GlowButton>
+      <GlowButton type="button" @click="cancelEdit">Cancel</GlowButton>
       <DeleteButton :rat="editedRat" />
     </form>
   </div>
 </template>
 
 <style scoped>
-*{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box ;
-        text-transform:lowercase;
-}
-
-form {
-  min-width: 400px;
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid black;
-  border-radius: 8px;
-  background-color: #8ACE00;
+.skill-selection {
   display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 0.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-label {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+.skill-item {
+  text-align: center;
+  cursor: pointer;
 }
 
-input{
+.skill-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.skill-item.selected img {
+  transform: scale(1.2);
+  border: 3px solid #42b983; /* Highlight selected skill */
+}
+
+input, select, textarea {
   background-color: #8ACE00;
-  border: 1px solid;
+  padding: 5px;
+  border-radius: 5px;
 }
-
 
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-button {
-  padding: 0.5rem 1rem;
+button:hover {
   background-color: #8ACE00;
   color: black;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+}
+
+
+ul {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  list-style: none;
+}
+
+form {
+  max-width: 500px;
+  min-width: 400px;
+  margin: auto;
+  padding: 20px;
   border: 1px solid black;
+  border-radius: 8px;
+  background-color: #89ce00b3;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-button:hover {
-  background-color: #abff03;
-}
-
-textarea{
-  background-color: #8ACE00;
-  height: 80px;
-}
-
-select{
-  background-color: #8ACE00;
+label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
 }
 </style>

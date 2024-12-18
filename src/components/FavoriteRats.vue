@@ -9,19 +9,25 @@ const { auth } = useAuth();
 // Import list of fetched rats
 const { rats } = useFetchRats();
 
-// Reactive ref to hold favorite rats
-const favoriteRats = ref([]);
+// Computed property to dynamically filter rats based on favorites
+const favoriteRats = computed(() => {
+    // Only if rats and favorites are loaded
+    if (rats.value && auth.value.favorites) {
+        return rats.value.filter(rat => auth.value.favorites.includes(rat.id));
+    };
+    return [];
+})
 
-// Do when component is mounted to DOM
-onMounted(() => {
-    // Check if the authenticated user has favorites and if rats are loaded
-  if (rats.value && auth.value.favorites) {
-    // Filter so only rats with ids in favorites are included
-    favoriteRats.value = rats.value.filter((rat) =>
-      auth.value.favorites.includes(rat.id)
-    );
-  }
-});
+// // Do when component is mounted to DOM
+// onMounted(() => {
+//     // Check if the authenticated user has favorites and if rats are loaded
+//   if (rats.value && auth.value.favorites) {
+//     // Filter so only rats with ids in favorites are included
+//     favoriteRats.value = rats.value.filter((rat) =>
+//       auth.value.favorites.includes(rat.id)
+//     );
+//   }
+// });
 
 </script>
 

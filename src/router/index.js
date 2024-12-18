@@ -1,21 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useAuth } from '@/composables/useUser'; // Authentication composable
+// Our own custom auth composable for user state management 
+import { useAuth } from '@/composables/useUser'; 
 
-//test comment - will delete
 // Define routes
 const routes = [
   {
+    // URL for the route
     path: '/',
+    // Name for identification 
     name: 'Landing',
-    component: () => import('@/views/LandingView.vue'), // Dynamic import
+    // Dynamic import of view component 
+    component: () => import('@/views/LandingView.vue'), 
   },
   {
+    // Base path for renter aka. I have rats
     path: '/renter',
     name: 'Renter',
-    component: () => import('@/components/Layouts/RenterLayout.vue'), // Dynamic import
-    meta: { requiresAuth: true, role: 'renter' }, // Protected route
+    component: () => import('@/components/Layouts/RenterLayout.vue'),
+    // Protected route- specifies that auth is required and access is limited to users with "renter" role 
+    meta: { requiresAuth: true, role: 'renter' }, 
+    // "/renter"s nested routes (babies hihihi)
     children: [
       {
+        // The default sub path = "/renter"
         path: '',
         name: 'RenterHome',
         component: () => import('@/views/RenterHomeView.vue'),
@@ -33,10 +40,12 @@ const routes = [
     ],
   },
   {
+    // Base path for rentee aka. I want rats!
     path: '/rentee',
     name: 'Rentee',
-    component: () => import('@/components/Layouts/RenteeLayout.vue'), // Dynamic import
-    // meta: { requiresAuth: true, role: 'rentee' }, // Protected route
+    component: () => import('@/components/Layouts/RenteeLayout.vue'), 
+    // Commented out to enable rat viewing before log in
+    // meta: { requiresAuth: true, role: 'rentee' }, 
     children: [
       {
         path: '',
@@ -74,18 +83,24 @@ const routes = [
   // },
 ];
 
-// Create the router
+// Create the router instance 
 const router = createRouter({
+  // Uses HTML5 history mode so we can have "/" in URLs instead of #-based nav yippie!
   history: createWebHistory(),
+  // Pass routes array to the router
   routes,
 });
 
-// Navigation guard for route protection
+// Global navigation guard for handling access control for routes 
+// Is called before every route change so we can check auth. before going to the target route
 router.beforeEach(  (to, from, next) => {
-  const { auth } = useAuth(); // Get the auth state
-  const isLoggedIn = auth.value ? auth.value.isAuthenticated : false; // Safely access
-  
-  const userRole = auth.value.role; // Get the user's role
+  // Get the auth state from the composable
+  const { auth } = useAuth(); 
+  // If auth.value exists- access the isAuthenticated property else- default to false
+  // Prevents runtime errors if properties are undefined or null = safe access
+  const isLoggedIn = auth.value ? auth.value.isAuthenticated : false; 
+  // Get user's role from auth state
+  const userRole = auth.value.role;
 
   // Redirect unauthenticated users from protected routes
   if (to.meta.requiresAuth && !isLoggedIn) {

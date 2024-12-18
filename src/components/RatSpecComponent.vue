@@ -1,36 +1,55 @@
 <script setup>
+// Import reactive refs and lifecycle hook 
 import { ref, onMounted } from "vue";
+// Import Vue router composable to get routers params
 import { useRoute } from "vue-router";
+// Import our custom composable for fetching rat data
 import { useFetchRats } from "@/composables/useFetchRats";
+// Import form for booking component 
 import BookForm from "@/components/BookForm.vue";
 
+// Extract route object to access route params = rat id
 const route = useRoute();
 const ratId = route.params.id; // Läs ID från URL
+
+// Reactive state to hold the selected rats details 
 const rat = ref(null);
+// Reactive state to handle potential errors when fetching data
 const error = ref(null);
+// Reactive state to toggle booking modal
 const isBooking = ref(false);
+// Reactive state to show loading message while data is fetching
 const isLoading = ref(true);
 
+// Destruct the function to fetch all rats and the reactive rats from the composable
 const { fetchAllRats, rats } = useFetchRats();
 
+// Set the value to false to close modal function
 const closeModal = () => {
   isBooking.value = false;
 };
 
+// Lifecycle hook that runs whe component is mounted in the DOM
 onMounted(async () => {
+  // Data is loading so show loading message 
   isLoading.value = true;
 
   try {
-    await fetchAllRats(); // Hämta alla råttor
+    // Fetch all rats using our awesuume composable
+    await fetchAllRats(); 
+    // Extract the list of rats or empty array if no rats
     const allRats = rats.value || [];
+    // Fin the rat with the matching id
     rat.value = allRats.find((r) => r.id === ratId);
 
+    // If rat match not found- throw error 
     if (!rat.value) {
       throw new Error(`Rat with ID ${ratId} not found`);
     }
   } catch (err) {
     error.value = err.message || "Failed to load rat data";
   } finally {
+    // Remove loading message wether fail or success
     isLoading.value = false;
   }
 });

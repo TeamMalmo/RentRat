@@ -100,7 +100,6 @@ const handleFilterChange = (filters) => {
   padding: 0;
   box-sizing: border-box;
   text-transform: lowercase;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 h2 {
@@ -123,7 +122,7 @@ h2 {
 
 .rat-list {
   height: 100%;
-  width: 600px;
+  width: 100vw;
   overflow-y: auto; 
   display: flex;
   flex-direction: column;

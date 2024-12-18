@@ -107,4 +107,21 @@ const resetFilters = () => {
 .reset-button:hover {
   background-color: #f47f7f;
 }
+label{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+
+}
+
+input, select{
+    background-color: #8ACE00;
+    border: 1px solid black;
+    padding: 0.5rem;
+    border-radius: 4px;
+    width: 100%;
+    resize: none;
+    font-size: 1rem;
+
+}
 </style>

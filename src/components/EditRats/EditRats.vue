@@ -1,63 +1,78 @@
 <script setup>
 import { useFetchRats } from '@/composables/useFetchRats';
 import { useUpdateRat } from '@/composables/useUpdateRat';
-import { onMounted, ref } from 'vue';
+import { useAuth } from '@/composables/useUser'; 
+import { onMounted, ref, computed } from 'vue';
 import RatItem from '../FindRats/RatItem.vue';
 import EditRatsForm from './EditRatsForm.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
+// Hämtar användardata
+const {auth} = useAuth(); // hämtar den inloggade användaren
+
+// Användning av fetch och update metoder för råttor
 const { rats, fetchAllRats } = useFetchRats();
 const { updateRatById, isLoading, error } = useUpdateRat();
 
+// Vald råtta för redigering
 const selectedRat = ref(null);
 
+// Filtrera råttor baserat på ägaren
+const ownedRats = computed(() => rats.value.filter((rat) => rat.renter === auth.value.username));
+
+// Hämta alla råttor när komponenten monteras
 onMounted(() => {
   fetchAllRats();
 });
 
-// kallar på vår composable
+// Hantera redigering av en specifik råtta
 const handleEditRat = async (ratData) => {
   try {
-    await updateRatById(ratData); 
+    // Kallar på update-metod
+    await updateRatById(ratData);
 
-    // hittar index i lokala arrayn för att updater UI:n
+    // Uppdaterar UI:n lokalt
     const ratIndex = rats.value.findIndex((rat) => rat.id === ratData.id);
     if (ratIndex !== -1) {
-      // uppdaterar lokala array med uppdaterad data
       rats.value[ratIndex] = { ...rats.value[ratIndex], ...ratData };
     }
   } catch (error) {
-    alert('Error updating rat.');
+    alert('Fel vid uppdatering av råtta.'); // Hantera fel
   } finally {
-    selectedRat.value = null; // återställer selectedRat
+    selectedRat.value = null; // Nollställer vald råtta
   }
 };
 </script>
 
 <template>
   <div class="edit-container">
-    <!--laddar...-->
+    <!-- Loading... -->
     <div v-if="isLoading" class="loading-message">
       🐭 Loading rats... Please wait! 🐭
     </div>
 
-    <!-- error... -->
+    <!-- Error... -->
     <div v-else-if="error" class="error-message">
       ❌ Failed to fetch rats: {{ error }} ❌
     </div>
-    <ul v-else>
-      <!-- LIsta av befintliga råttor -->
-      <RatItem 
-        v-for="rat in rats" 
+    
+    <!-- Visa råttor -->
+    <ul 
+    v-else
+    v-show="!selectedRat"
+    >
+      <RatItem
+        v-for="rat in ownedRats" 
         :key="rat.id" 
         :rat="rat" 
         @click="selectedRat = rat" 
       />
     </ul>
 
-    <div>
-      <!-- guidar användaren att välja en råtta -->
-      <p v-if="!selectedRat">Select a rat to edit</p>
-      <!-- formulär för att redigera råttan -->
+    <!-- Prompt om ingen råtta är vald -->
+    <div v-if="ownedRats.length > 0">
+      <h2 v-if="!selectedRat" style="width: 400px;">Pick a rat to edit</h2>
+      <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
         v-else 
         :rat-to-edit="selectedRat" 
@@ -65,14 +80,22 @@ const handleEditRat = async (ratData) => {
         @cancel="selectedRat = null" 
       />
     </div>
+    <div v-else> 
+      <h2>You currently don't have any rats.</h2>
+      <GlowButton @click="$router.push('/renter')">Add a rat</GlowButton>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .edit-container {
+  max-width: 1000px;
+  min-width: 300px;
   display: flex;
+  flex-direction: column-reverse;
   align-items: start;
   gap: 1rem;
+  padding: 1rem;
 }
 
 ul {
@@ -81,6 +104,7 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
 }
 
 .loading-message {

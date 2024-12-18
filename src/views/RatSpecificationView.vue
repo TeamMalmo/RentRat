@@ -1,23 +1,25 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useFetchRats } from '@/composables/useFetchRats';
-import { useReviews } from '@/composables/useReviews';
-import AddReviewForm from '@/components/ReviewRats/AddReviewForm.vue';
+import { ref, onMounted, watch, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useFetchRats } from "@/composables/useFetchRats";
+import BookForm from "../components/BookForm/BookForm.vue";
+import { useAuth } from "@/composables/useUser";
 
 const route = useRoute();
-const router = useRouter();
-const ratId = ref(route.params.id); // Hämta ratId från routen
-const rat = ref(null); // För att hålla den valda råttans information
-const error = ref(null); // För felmeddelanden
-const isLoading = ref(true); // Hantera laddning
+const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den.
+const ratId = ref(route.params.id); // Gör ratId reaktiv för att lyssna på förändringar
+const rat = ref(null);
+const error = ref(null);
+const isLoading = ref(true);
+const isBooking = ref(false);
 
-// Anropa composables för att hämta data
-const { fetchAllRats, rats } = useFetchRats();
-const { reviews, isLoading: isLoadingReviews, error: reviewError, updateReviews, getAverageRating } = useReviews();
+const { auth } = useAuth();
+const { fetchAllRats, rats } = useFetchRats(); // Tar in info från vår composable
 
-// Hantera synligheten av betygsformuläret
-const isRatingVisible = ref(false);
+// Togglar booking modalen
+const toggleModal = () => {
+  isBooking.value = !isBooking.value;
+};
 
 // Funktion för att ladda råttans data baserat på ratId
 const loadRat = async (id) => {
@@ -33,7 +35,7 @@ const loadRat = async (id) => {
       throw new Error(`Rat with ID ${id} not found`); // Om råttan inte finns
     }
   } catch (err) {
-    error.value = err.message || 'Failed to load rat data';
+    error.value = err.message || "Failed to load rat data";
   } finally {
     isLoading.value = false;
   }
@@ -54,7 +56,7 @@ watch(
 
 // Funktion för att navigera tillbaka till föregående sida
 const goBack = () => {
-  router.push('/rentee');
+  router.push("/rentee");
 };
 
 // Funktion för att gå till föregående råtta
@@ -133,10 +135,14 @@ const handleReviewSubmit = async (newReview) => {
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
 
   <div v-else class="rat-container">
+    <BookForm v-if="isBooking" :rat="rat" @closeModal="toggleModal" />
     <div class="rat-info">
       <button class="back-button" @click="goBack">Tillbaka</button>
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
+      <button v-if="auth.isAuthenticated" @click="toggleModal">
+        Rent this rat
+      </button>
+      <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>
       <p><strong>Average Rating:</strong> {{ averageRating.toFixed(2) }} ★</p>
@@ -147,25 +153,14 @@ const handleReviewSubmit = async (newReview) => {
         <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
       </div>
       <div class="navigation-buttons">
-        <button 
-          @click="goToPreviousRat" 
-          class="prev-button" 
-          :disabled="isFirstRat"
-        >
-          Previous Rat
+        <button
+          @click="goToPreviousRat"
+          class="prev-button"
+          :disabled="isFirstRat">
+          Föregående råtta
         </button>
-        <button 
-          @click="goToNextRat" 
-          class="next-button" 
-          :disabled="isLastRat"
-        >
-          Next Rat
-        </button>
-      </div>
-
-      <div class="rate-button-container">
-        <button class="rate-button" @click="toggleRatingForm">
-          {{ isRatingVisible ? 'Hide Rating' : 'Rate This Rat' }}
+        <button @click="goToNextRat" class="next-button" :disabled="isLastRat">
+          Nästa råtta
         </button>
       </div>
 
@@ -182,7 +177,7 @@ const handleReviewSubmit = async (newReview) => {
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px;
-  border: 2px solid #8ACE00;
+  border: 2px solid #8ace00;
   border-radius: 10px;
   background-color: rgba(128, 128, 128, 0.534);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

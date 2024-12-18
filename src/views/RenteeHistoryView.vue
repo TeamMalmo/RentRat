@@ -50,7 +50,7 @@ const test = (filter) => {
       <GlowButton @click="test('false')">Denied</GlowButton>
       <GlowButton @click="test('true')">Accepted</GlowButton>
     </div>
-    <ul class="cards">
+    <ul v-if="myNewHistory.length > 0" class="cards">
       <li v-for="booking in myNewHistory">
         <div class="card">
           <p>Booking Id: {{ booking.Id }}</p>
@@ -70,6 +70,7 @@ const test = (filter) => {
         </div>
       </li>
     </ul>
+    <p v-else>No such bookings found.</p>
   </main>
 </template>
 

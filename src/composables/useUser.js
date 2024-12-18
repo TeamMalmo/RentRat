@@ -1,33 +1,41 @@
 import { ref } from 'vue';
+// Axios for making HTTP requests
 import axios from 'axios';
+// Our API key and URL
 import { CONFIG } from '@/constant/config';
 
-// Auth state
+// Reactive objext to store the auth state
 const auth = ref({
-  isAuthenticated: false,
-  userId: null,
-  role: null,
-  username: null,
-  description: '',
-  areaOfMalmo: '',
-  profileImageUrl: '',
+  isAuthenticated: false, // Tracks if user is logged in
+  userId: null, // Stores logged in users ID
+  role: null, // Stores user's role
+  username: null, // Stores username
+  description: '', // Stores description
+  areaOfMalmo: '', // Stores area
+  profileImageUrl: '', // Stores profile img. url
 });
 
+// JSON Bin endpoint and key for where our data will be stored
 const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
 const apiKey = CONFIG.JSONBIN_API_KEY;
 
 const login = async (username, password) => {
   try {
+    // Fetch data from JSON bin
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });
 
+    // The list of users
     const users = response.data.record.users;
+    // The session data
     const sessions = response.data.record.sessions;
 
+    // Throw error if no match
     const user = users.find((u) => u.username === username && u.password === password);
     if (!user) throw new Error('Invalid username or password');
 
+    // Update the auth state with the values from the user's data
     auth.value = {
       isAuthenticated: true,
       userId: user.id,  // Ensure the user ID is set here
@@ -38,11 +46,13 @@ const login = async (username, password) => {
       profileImageUrl: user.profileImageUrl || '', 
     };
 
+    // Update session data for logged in user
     sessions[user.id] = {
       isAuthenticated: true,
       lastLogin: new Date().toISOString(),
     };
 
+    // Save the updated data back to the bin
     await axios.put(
       JSON_BIN_URL,
       { users, sessions },
@@ -54,9 +64,11 @@ const login = async (username, password) => {
       }
     );
 
+    // Indicate successful login with true status
     return true;
   } catch (error) {
     console.error('Login failed:', error);
+    // Indicate failed login
     return false;
   }
 };
@@ -64,6 +76,7 @@ const login = async (username, password) => {
 
 const logout = async (userId) => {
   try {
+    // Reset the local auth state 
     auth.value = {
       isAuthenticated: false,
       userId: null,
@@ -71,18 +84,21 @@ const logout = async (userId) => {
       username: null,
     };
 
+    // Fetch current sessin data
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });
 
     const sessions = response.data.record.sessions;
 
+    // Set the user's session as unauthenticated
     if (sessions[userId]) {
       sessions[userId].isAuthenticated = false;
     } else {
       throw new Error('Session not found for user');
     }
 
+    // Save updated session data to bin
     await axios.put(
       JSON_BIN_URL,
       response.data.record,
@@ -104,6 +120,7 @@ const logout = async (userId) => {
 
 const loadUserSession = async () => {
   try {
+    // Fetch user and session data from bin
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });
@@ -111,6 +128,7 @@ const loadUserSession = async () => {
     const users = response.data.record.users;
     const sessions = response.data.record.sessions;
 
+    // Find first active session
     const activeSession = Object.entries(sessions).find(
       ([id, session]) => session.isAuthenticated
     );
@@ -119,6 +137,7 @@ const loadUserSession = async () => {
       const [userId, session] = activeSession;
       const user = users.find((u) => u.id === userId);
 
+      // If user exists update the auth state
       if (user) {
         auth.value = {
           isAuthenticated: true,
@@ -139,10 +158,12 @@ const loadUserSession = async () => {
 
 export const addUser = async (newUser, confirmPassword) => {
   try {
+    // Make sure passwords are the same
     if (newUser.password !== confirmPassword) {
       throw new Error('Passwords do not match.');
     }
 
+    // Fetch curretn data from bin
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });
@@ -165,7 +186,7 @@ export const addUser = async (newUser, confirmPassword) => {
       lastLogin: null,
     };
 
-    // Save the updated data
+    // Save the updated data to bin
     await axios.put(
       JSON_BIN_URL,
       { users, sessions },
@@ -187,6 +208,7 @@ export const addUser = async (newUser, confirmPassword) => {
 
 const editUser = async (updatedUser) => {
   try {
+    // Fetch current user data
     const response = await axios.get(JSON_BIN_URL, {
       headers: { 'X-Master-Key': apiKey },
     });

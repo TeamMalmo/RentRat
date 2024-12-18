@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useUser';
 import RegisterForm from './RegisterForm.vue';
+import GlowButton from '../GlowButton.vue';
 
 const { login } = useAuth();
 
@@ -45,18 +46,18 @@ const handleSubmit = async () => {
         <label for="password">Password:</label>
         <input v-model="password" type="password" id="password" placeholder="manILoveRats" required />
       </div>
-      <button type="submit" :disabled="isLoading">Login</button>
+      <GlowButton type="submit" :disabled="isLoading">Login</GlowButton>
     </form>
 
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    <button @click="showRegisterForm = true" v-if="!showRegisterForm">Register</button>
+    <GlowButton @click="showRegisterForm = true" v-if="!showRegisterForm">Register</GlowButton>
     
   </div>
   <RegisterForm v-else @close="showRegisterForm = false" @back="showRegisterForm = false" />
 </template>
 
 <style scoped>
-
+/* 
 *{
         margin: 0;
         padding: 0;
@@ -68,7 +69,7 @@ const handleSubmit = async () => {
         align-items: center;
         gap: 0.5rem;
     
-}
+} */
 
 .login-form {
   max-width: 400px;
@@ -77,6 +78,15 @@ const handleSubmit = async () => {
   border: 1px solid black;
   border-radius: 8px;
   background-color: #8ACE00;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .login-form h2 {
@@ -93,21 +103,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #8ACE00;
-  color: black;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  border: 1px solid black;
-}
-
-button:hover {
-  background-color: #abff03;
-}
 
 .inputs {
   width: 100%;
@@ -117,6 +112,8 @@ button:hover {
 
 input{
   background-color: #8ACE00;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 </style>

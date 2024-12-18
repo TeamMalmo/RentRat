@@ -3,6 +3,7 @@
 import { useRouter } from 'vue-router';
 import LogoutButton from '../Auth/LogoutButton.vue';
 import GlowButton from '../StyleComponents/GlowButton.vue';
+import FooterComponent from "./FooterComponent.vue";
 
 // Init the router instance 
 const router = useRouter();
@@ -34,6 +35,7 @@ function switchToRentee() {
   <main>
     <RouterView />
   </main>
+  <FooterComponent />
 </template>
 
 

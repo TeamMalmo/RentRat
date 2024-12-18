@@ -1,7 +1,9 @@
 <script setup>
 
+// Define prop 'rat'- represents the data for a specific rat 
+// A parent component, i.e FindRats.vue can send us rat-data through the prop
 defineProps({
-  rat: Object, // Data för en specifik råtta
+  rat: Object, 
 });
 </script>
 

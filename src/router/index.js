@@ -1,6 +1,15 @@
+
 import { createRouter, createWebHistory } from 'vue-router';
 // Our own custom auth composable for user state management 
 import { useAuth } from '@/composables/useUser'; 
+import { reactive } from "vue";
+
+// Reactive object- changes to show and message will trigger updates in dependent UI 
+export const authMessage = reactive({
+  show: false,
+  message: "",
+});
+
 
 // Define routes
 const routes = [
@@ -26,52 +35,56 @@ const routes = [
         path: '',
         name: 'RenterHome',
         component: () => import('@/views/RenterHomeView.vue'),
+
       },
       {
-        path: 'profile',
-        name: 'RenterProfile',
-        component: () => import('@/views/RenterProfileView.vue'),
+        path: "profile",
+        name: "RenterProfile",
+        component: () => import("@/views/RenterProfileView.vue"),
       },
       {
-        path: 'about',
-        name: 'RenterAbout',
-        component: () => import('@/views/RenterAboutView.vue'),
+        path: "about",
+        name: "RenterAbout",
+        component: () => import("@/views/RenterAboutView.vue"),
       },
     ],
   },
   {
+
     // Base path for rentee aka. I want rats!
     path: '/rentee',
     name: 'Rentee',
     component: () => import('@/components/Layouts/RenteeLayout.vue'), 
-    // Commented out to enable rat viewing before log in
-    // meta: { requiresAuth: true, role: 'rentee' }, 
+      
     children: [
       {
-        path: '',
-        name: 'RenteeHome',
-        component: () => import('@/views/RenteeHomeView.vue'),
+        path: "",
+        name: "RenteeHome",
+        component: () => import("@/views/RenteeHomeView.vue"),
       },
       {
-        path: 'rats',
-        name: 'RenteeRats',
-        component: () => import('@/views/RenteeRatsView.vue'),
+        path: "rats",
+        name: "RenteeRats",
+        component: () => import("@/views/RenteeRatsView.vue"),
       },
       {
-        path: 'rats/:id',
-        name: 'RenteeRatDetail',
-        component: () => import('@/views/RatSpecificationView.vue'),
+        path: "rats/:id",
+        name: "RenteeRatDetail",
+        component: () => import("@/views/RatSpecificationView.vue"),
         props: true,
       },
       {
-        path: 'profile',
-        name: 'RenteeProfile',
-        component: () => import('@/views/RenteeProfileView.vue'),
+        path: "profile",
+        name: "RenteeProfile",
+        component: () => import("@/views/RenteeProfileView.vue"),
+        meta: { requiresAuth: true, role: "rentee" }, // Protected route
       },
+
       {
-        path: 'inbox',
-        name: 'RenteeInbox',
-        component: () => import('@/views/RenteeInboxView.vue'),
+        path: "inbox",
+        name: "RenteeInbox",
+        component: () => import("@/views/RenteeInboxView.vue"),
+        meta: { requiresAuth: true, role: "rentee" }, // Protected route
       },
     ],
   },
@@ -91,6 +104,7 @@ const router = createRouter({
   routes,
 });
 
+
 // Global navigation guard for handling access control for routes 
 // Is called before every route change so we can check auth. before going to the target route
 router.beforeEach(  (to, from, next) => {
@@ -104,19 +118,26 @@ router.beforeEach(  (to, from, next) => {
 
   // Redirect unauthenticated users from protected routes
   if (to.meta.requiresAuth && !isLoggedIn) {
-    return next({ name: 'Landing' });
+    authMessage.show = true;
+    authMessage.message = "Please log in to access this page 🐀"
+    // Prevent nav
+    return next(false);
+  } else {
+    // Hide and clear
+    authMessage.show = false;
+    authMessage.message ="";
   }
 
   // Redirect logged-in users from the Landing page to their respective home page
-  if (to.name === 'Landing' && isLoggedIn) {
-    if (userRole === 'renter') return next({ name: 'RenterHome' });
-    if (userRole === 'rentee') return next({ name: 'RenteeHome' });
+  if (to.name === "Landing" && isLoggedIn) {
+    if (userRole === "renter") return next({ name: "RenterHome" });
+    if (userRole === "rentee") return next({ name: "RenteeHome" });
   }
 
   // Restrict users from accessing routes not permitted for their role
   if (to.meta.requiresAuth && to.meta.role && to.meta.role !== userRole) {
-    if (userRole === 'renter') return next({ name: 'RenterHome' });
-    if (userRole === 'rentee') return next({ name: 'RenteeHome' });
+    if (userRole === "renter") return next({ name: "RenterHome" });
+    if (userRole === "rentee") return next({ name: "RenteeHome" });
   }
 
   // Proceed to the requested route

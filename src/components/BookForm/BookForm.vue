@@ -48,7 +48,7 @@ const handleAddBooking = () => {
   addBooking({
     Id: Date.now() % 100000,
     Booker: loggedInUsername,
-    RenterId: p.rat.username,
+    RenterId: p.rat.renter,
     date: bookDate.value,
     accepted: false,
   });

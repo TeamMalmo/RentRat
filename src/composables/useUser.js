@@ -246,7 +246,6 @@ const editUser = async (updatedUser) => {
         },
       }
     );
-
     // Update the auth state with the new user data
     auth.value = {
       ...auth.value,
@@ -262,6 +261,24 @@ const editUser = async (updatedUser) => {
   }
 };
 
+const fetchAllUsers = async () => {
+  try {
+    const response = await axios.get(JSON_BIN_URL, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': apiKey,
+      },
+    });
+
+    return response.data.record.users; // Return users directly
+  } catch (err) {
+    console.error('Failed to fetch users:', err);
+    return []; // Return an empty array on error
+  }
+};
+
+
+
 loadUserSession(); // Initialize session on load
 
 export const useAuth = () => {
@@ -271,6 +288,7 @@ export const useAuth = () => {
     logout,
     loadUserSession,
     addUser,
-    editUser
+    editUser,
+    fetchAllUsers
   };
 };

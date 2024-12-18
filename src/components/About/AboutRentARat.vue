@@ -10,7 +10,7 @@ const infoView = ref('general');
 </script>
 
 <template>
-<div>
+<div class="btns">
 <GlowButton @click="infoView = 'general'"> Info</GlowButton>
 <GlowButton @click="infoView = 'stats'">Stats</GlowButton>
 <GlowButton @click="infoView = 'contact'">Contact</GlowButton>
@@ -23,6 +23,12 @@ const infoView = ref('general');
 </template>
 
 <style>
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
   .container {
     padding-top: 1rem;
     max-width: 600px;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import { useRouter } from 'vue-router';
 import { useFetchRats } from '@/composables/useFetchRats.js';
@@ -9,6 +9,10 @@ const { rats, fetchAllRats } = useFetchRats();
 const { auth } = useAuth();
 
 const isLoading = ref(false); // Laddning tillstånd för utloggning
+
+onMounted(async () => {
+  await fetchAllRats();
+});
 
 </script>
 

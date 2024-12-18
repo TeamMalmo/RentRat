@@ -11,8 +11,10 @@ const editView = ref('');
 
 <template>
   <main>
-    <GlowButton @click="editView = 'editRats'">Edit Rats🐀</GlowButton>
-    <GlowButton @click="editView = 'updateUser'">Edit Profile✨</GlowButton>
+    <div class="btns">
+      <GlowButton @click="editView = 'editRats'">Edit Rats🐀</GlowButton>
+      <GlowButton @click="editView = 'updateUser'">Edit Profile✨</GlowButton>
+    </div>
     <EditRats v-if="editView === 'editRats'" />
     <UpdateUser v-if="editView === 'updateUser'" />
   </main>

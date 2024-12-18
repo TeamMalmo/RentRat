@@ -1,9 +1,12 @@
 <script setup>
+// Router instance
 import { useRouter } from 'vue-router';
 import LogoutButton from '../Auth/LogoutButton.vue';
 
+// Init router instance 
 const router = useRouter();
 
+// Nav to the renter layout funciton
 function switchToRenter() {
   router.push('/renter');
 }
@@ -12,12 +15,13 @@ function switchToRenter() {
 <template>
   <header>
     <nav>
+      <!-- Nav links for rentee  -->
       <RouterLink to="/rentee">Home</RouterLink>
       <RouterLink to="/rentee/rats">Your Rats</RouterLink>
       <RouterLink to="/rentee/profile">Profile</RouterLink>
       <RouterLink to="/rentee/inbox">Inbox</RouterLink>
       
-      <!-- Toggle Button -->
+      <!-- Toggle Button to switch layout -->
       <button @click="switchToRenter" class="toggle-btn">
         Switch to Renter Layout
       </button>

@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import UpdateUserForm from './UpdateUserForm.vue';
 import LoginForm from '../Auth/LoginForm.vue';
-import GlowButton from '../GlowButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 import UserInformation from './UserInformation.vue';
 
 const { auth, editUser } = useAuth();

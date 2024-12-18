@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import { useRouter } from 'vue-router';
-import GlowButton from '../GlowButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 const { logout, auth } = useAuth();
 
 

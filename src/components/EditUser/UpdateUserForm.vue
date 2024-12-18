@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import GlowButton from '../GlowButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
 // tar emot användaren som objection från UpdateUser.vue
 const props = defineProps({

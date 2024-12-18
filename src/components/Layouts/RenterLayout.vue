@@ -2,7 +2,7 @@
 // Router instance
 import { useRouter } from 'vue-router';
 import LogoutButton from '../Auth/LogoutButton.vue';
-import GlowButton from '../GlowButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
 // Init the router instance 
 const router = useRouter();

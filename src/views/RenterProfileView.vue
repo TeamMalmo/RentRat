@@ -3,7 +3,7 @@
 import { ref } from 'vue';
 import EditRats from '@/components/EditRats/EditRats.vue';
 import UpdateUser from '@/components/EditUser/UpdateUser.vue';
-import GlowButton from '@/components/GlowButton.vue';
+import GlowButton from '@/components/StyleComponents/GlowButton.vue';
 
 // bestämmer vilken view som visas
 const editView = ref('');

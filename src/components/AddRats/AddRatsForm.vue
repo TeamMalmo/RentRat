@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useAuth } from '@/composables/useUser';
-import GlowButton from '../GlowButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
 // Emits data to parent
 const emit = defineEmits(['submit']);

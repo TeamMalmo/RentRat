@@ -7,7 +7,7 @@ import UpdateUser from '@/components/EditUser/UpdateUser.vue';
 <template>
   <main>
     <!-- The component to edit user information  -->
-    <EditUser />
+    <UpdateUser />
 
   </main>
 </template>

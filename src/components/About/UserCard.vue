@@ -29,6 +29,8 @@ defineProps({
   padding: 0.5rem;
   width: 500px;
   background-color: #8ACE00;
+  border: 1px solid pink;
+  margin: 0;
 }
 
 .user-list-item:hover {

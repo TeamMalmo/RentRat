@@ -1,8 +1,8 @@
-import { ref } from 'vue';
+import { ref } from "vue";
 // Axios for making HTTP requests
-import axios from 'axios';
+import axios from "axios";
 // Our API key and URL
-import { CONFIG } from '@/constant/config';
+import { CONFIG } from "@/constant/config";
 
 // Reactive objext to store the auth state
 const auth = ref({
@@ -10,21 +10,21 @@ const auth = ref({
   userId: null, // Stores logged in users ID
   role: null, // Stores user's role
   username: null, // Stores username
-  description: '', // Stores description
-  areaOfMalmo: '', // Stores area
-  profileImageUrl: '', // Stores profile img. url
+  description: "", // Stores description
+  areaOfMalmo: "", // Stores area
+  profileImageUrl: "", // Stores profile img. url
   favorites: [], // Stores favorite rats
 });
 
 // JSON Bin endpoint and key for where our data will be stored
-const JSON_BIN_URL = 'https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088';
+const JSON_BIN_URL = "https://api.jsonbin.io/v3/b/675ab4e2ad19ca34f8d9e088";
 const apiKey = CONFIG.JSONBIN_API_KEY;
 
 const login = async (username, password) => {
   try {
     // Fetch data from JSON bin
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     // The list of users
@@ -33,18 +33,20 @@ const login = async (username, password) => {
     const sessions = response.data.record.sessions;
 
     // Throw error if no match
-    const user = users.find((u) => u.username === username && u.password === password);
-    if (!user) throw new Error('Invalid username or password');
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (!user) throw new Error("Invalid username or password");
 
     // Update the auth state with the values from the user's data
     auth.value = {
       isAuthenticated: true,
-      userId: user.id,  // Ensure the user ID is set here
+      userId: user.id, // Ensure the user ID is set here
       role: user.role,
       username: user.username,
-      description: user.description || '', 
-      areaOfMalmo: user.areaOfMalmo || '', 
-      profileImageUrl: user.profileImageUrl || '', 
+      description: user.description || "",
+      areaOfMalmo: user.areaOfMalmo || "",
+      profileImageUrl: user.profileImageUrl || "",
       favorites: user.favorites || [],
     };
 
@@ -60,8 +62,8 @@ const login = async (username, password) => {
       { users, sessions },
       {
         headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
+          "X-Master-Key": apiKey,
+          "Content-Type": "application/json",
         },
       }
     );
@@ -69,16 +71,15 @@ const login = async (username, password) => {
     // Indicate successful login with true status
     return true;
   } catch (error) {
-    console.error('Login failed:', error);
+    console.error("Login failed:", error);
     // Indicate failed login
     return false;
   }
 };
 
-
 const logout = async (userId) => {
   try {
-    // Reset the local auth state 
+    // Reset the local auth state
     auth.value = {
       isAuthenticated: false,
       userId: null,
@@ -88,7 +89,7 @@ const logout = async (userId) => {
 
     // Fetch current sessin data
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const sessions = response.data.record.sessions;
@@ -97,25 +98,21 @@ const logout = async (userId) => {
     if (sessions[userId]) {
       sessions[userId].isAuthenticated = false;
     } else {
-      throw new Error('Session not found for user');
+      throw new Error("Session not found for user");
     }
 
     // Save updated session data to bin
-    await axios.put(
-      JSON_BIN_URL,
-      response.data.record,
-      {
-        headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    await axios.put(JSON_BIN_URL, response.data.record, {
+      headers: {
+        "X-Master-Key": apiKey,
+        "Content-Type": "application/json",
+      },
+    });
 
-    console.log('Logout successful');
+    console.log("Logout successful");
     return true;
   } catch (error) {
-    console.error('Logout failed:', error);
+    console.error("Logout failed:", error);
     return false;
   }
 };
@@ -124,7 +121,7 @@ const loadUserSession = async () => {
   try {
     // Fetch user and session data from bin
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
@@ -146,29 +143,28 @@ const loadUserSession = async () => {
           userId,
           role: user.role,
           username: user.username,
-          description: user.description || '',  // Add missing fields
-          areaOfMalmo: user.areaOfMalmo || '',  // Add missing fields
-          profileImageUrl: user.profileImageUrl || '',  // Add missing fields
+          description: user.description || "", // Add missing fields
+          areaOfMalmo: user.areaOfMalmo || "", // Add missing fields
+          profileImageUrl: user.profileImageUrl || "", // Add missing fields
           favorites: user.favorites || [],
         };
       }
     }
   } catch (error) {
-    console.error('Failed to load user session:', error);
+    console.error("Failed to load user session:", error);
   }
 };
-
 
 export const addUser = async (newUser, confirmPassword) => {
   try {
     // Make sure passwords are the same
     if (newUser.password !== confirmPassword) {
-      throw new Error('Passwords do not match.');
+      throw new Error("Passwords do not match.");
     }
 
     // Fetch curretn data from bin
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
@@ -177,7 +173,7 @@ export const addUser = async (newUser, confirmPassword) => {
     // Check if the username already exists
     const existingUser = users.find((u) => u.username === newUser.username);
     if (existingUser) {
-      throw new Error('Username is already taken.');
+      throw new Error("Username is already taken.");
     }
 
     // Add the user
@@ -195,16 +191,16 @@ export const addUser = async (newUser, confirmPassword) => {
       { users, sessions },
       {
         headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
+          "X-Master-Key": apiKey,
+          "Content-Type": "application/json",
         },
       }
     );
 
-    console.log('User added successfully');
+    console.log("User added successfully");
     return true;
   } catch (error) {
-    console.error('Failed to add user:', error);
+    console.error("Failed to add user:", error);
     return false;
   }
 };
@@ -213,22 +209,22 @@ const editUser = async (updatedUser) => {
   try {
     // Fetch current user data
     const response = await axios.get(JSON_BIN_URL, {
-      headers: { 'X-Master-Key': apiKey },
+      headers: { "X-Master-Key": apiKey },
     });
 
     const users = response.data.record.users;
 
-    console.log('Updated User:', updatedUser); // Log to check the passed user data
-    console.log('Users in the database:', users); // Log the current users in the database
+    console.log("Updated User:", updatedUser); // Log to check the passed user data
+    console.log("Users in the database:", users); // Log the current users in the database
 
     // Find the user by ID and update their information
     const userIndex = users.findIndex((u) => u.id === updatedUser.userId);
 
     if (userIndex === -1) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
-    console.log('User found at index:', userIndex); // Log to see which user was found
+    console.log("User found at index:", userIndex); // Log to see which user was found
 
     // Update the user data
     users[userIndex] = {
@@ -237,9 +233,10 @@ const editUser = async (updatedUser) => {
       areaOfMalmo: updatedUser.areaOfMalmo,
       profileImageUrl: updatedUser.profileImageUrl,
       // If favorites are not provided, use the existing favorites
-      favorites: updatedUser.favorites !== undefined 
-      ? updatedUser.favorites 
-      : (users[userIndex].favorites || [])
+      favorites:
+        updatedUser.favorites !== undefined
+          ? updatedUser.favorites
+          : users[userIndex].favorites || [],
     };
 
     // Save the updated users list back to JSON bin
@@ -248,8 +245,8 @@ const editUser = async (updatedUser) => {
       { users, sessions: response.data.record.sessions },
       {
         headers: {
-          'X-Master-Key': apiKey,
-          'Content-Type': 'application/json',
+          "X-Master-Key": apiKey,
+          "Content-Type": "application/json",
         },
       }
     );
@@ -264,7 +261,7 @@ const editUser = async (updatedUser) => {
 
     return true;
   } catch (error) {
-    console.error('Failed to update user:', error);
+    console.error("Failed to update user:", error);
     return false;
   }
 };
@@ -273,19 +270,17 @@ const fetchAllUsers = async () => {
   try {
     const response = await axios.get(JSON_BIN_URL, {
       headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': apiKey,
+        "Content-Type": "application/json",
+        "X-Master-Key": apiKey,
       },
     });
 
     return response.data.record.users; // Return users directly
   } catch (err) {
-    console.error('Failed to fetch users:', err);
+    console.error("Failed to fetch users:", err);
     return []; // Return an empty array on error
   }
 };
-
-
 
 loadUserSession(); // Initialize session on load
 
@@ -297,6 +292,6 @@ export const useAuth = () => {
     loadUserSession,
     addUser,
     editUser,
-    fetchAllUsers
+    fetchAllUsers,
   };
 };

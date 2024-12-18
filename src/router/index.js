@@ -1,41 +1,38 @@
-
-import { createRouter, createWebHistory } from 'vue-router';
-// Our own custom auth composable for user state management 
-import { useAuth } from '@/composables/useUser'; 
+import { createRouter, createWebHistory } from "vue-router";
+// Our own custom auth composable for user state management
+import { useAuth } from "@/composables/useUser";
 import { reactive } from "vue";
 
-// Reactive object- changes to show and message will trigger updates in dependent UI 
+// Reactive object- changes to show and message will trigger updates in dependent UI
 export const authMessage = reactive({
   show: false,
   message: "",
 });
 
-
 // Define routes
 const routes = [
   {
     // URL for the route
-    path: '/',
-    // Name for identification 
-    name: 'Landing',
-    // Dynamic import of view component 
-    component: () => import('@/views/LandingView.vue'), 
+    path: "/",
+    // Name for identification
+    name: "Landing",
+    // Dynamic import of view component
+    component: () => import("@/views/LandingView.vue"),
   },
   {
     // Base path for renter aka. I have rats
-    path: '/renter',
-    name: 'Renter',
-    component: () => import('@/components/Layouts/RenterLayout.vue'),
-    // Protected route- specifies that auth is required and access is limited to users with "renter" role 
-    meta: { requiresAuth: true, role: 'renter' }, 
+    path: "/renter",
+    name: "Renter",
+    component: () => import("@/components/Layouts/RenterLayout.vue"),
+    // Protected route- specifies that auth is required and access is limited to users with "renter" role
+    meta: { requiresAuth: true, role: "renter" },
     // "/renter"s nested routes (babies hihihi)
     children: [
       {
         // The default sub path = "/renter"
-        path: '',
-        name: 'RenterHome',
-        component: () => import('@/views/RenterHomeView.vue'),
-
+        path: "",
+        name: "RenterHome",
+        component: () => import("@/views/RenterHomeView.vue"),
       },
       {
         path: "profile",
@@ -50,12 +47,11 @@ const routes = [
     ],
   },
   {
-
     // Base path for rentee aka. I want rats!
-    path: '/rentee',
-    name: 'Rentee',
-    component: () => import('@/components/Layouts/RenteeLayout.vue'), 
-      
+    path: "/rentee",
+    name: "Rentee",
+    component: () => import("@/components/Layouts/RenteeLayout.vue"),
+
     children: [
       {
         path: "",
@@ -86,6 +82,11 @@ const routes = [
         component: () => import("@/views/RenteeInboxView.vue"),
         meta: { requiresAuth: true, role: "rentee" }, // Protected route
       },
+      {
+        path: "history",
+        name: "RenteeHistory",
+        component: () => import("@/views/RenteeHistoryView.vue"),
+      },
     ],
   },
   // Fallback route for undefined paths
@@ -96,7 +97,7 @@ const routes = [
   // },
 ];
 
-// Create the router instance 
+// Create the router instance
 const router = createRouter({
   // Uses HTML5 history mode so we can have "/" in URLs instead of #-based nav yippie!
   history: createWebHistory(),
@@ -104,28 +105,27 @@ const router = createRouter({
   routes,
 });
 
-
-// Global navigation guard for handling access control for routes 
+// Global navigation guard for handling access control for routes
 // Is called before every route change so we can check auth. before going to the target route
-router.beforeEach(  (to, from, next) => {
+router.beforeEach((to, from, next) => {
   // Get the auth state from the composable
-  const { auth } = useAuth(); 
+  const { auth } = useAuth();
   // If auth.value exists- access the isAuthenticated property else- default to false
   // Prevents runtime errors if properties are undefined or null = safe access
-  const isLoggedIn = auth.value ? auth.value.isAuthenticated : false; 
+  const isLoggedIn = auth.value ? auth.value.isAuthenticated : false;
   // Get user's role from auth state
   const userRole = auth.value.role;
 
   // Redirect unauthenticated users from protected routes
   if (to.meta.requiresAuth && !isLoggedIn) {
     authMessage.show = true;
-    authMessage.message = "Please log in to access this page 🐀"
+    authMessage.message = "Please log in to access this page 🐀";
     // Prevent nav
     return next(false);
   } else {
     // Hide and clear
     authMessage.show = false;
-    authMessage.message ="";
+    authMessage.message = "";
   }
 
   // Redirect logged-in users from the Landing page to their respective home page

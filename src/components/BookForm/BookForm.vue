@@ -43,7 +43,7 @@ const handleAddBooking = () => {
     ratId: auth.value.userId,
     RenterId: p.rat.id,
     date: bookDate.value,
-    accepted: false,
+    accepted: null,
   });
 };
 </script>

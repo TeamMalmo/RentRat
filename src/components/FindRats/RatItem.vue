@@ -25,6 +25,8 @@ const isFavorite = computed(() => {
 
 // Toggle fave status of a rat
 const toggleFavorite = async (event) => {
+  console.log(`Toggle favorite for rat ${props.rat.id}`);
+
   // Stop click from opening rat details
   event.stopPropagation();
 
@@ -44,6 +46,8 @@ const toggleFavorite = async (event) => {
       // Spread operator to combine existing favorites with the current rat id
       updatedFavorites = [...currentFavorites, props.rat.id];
     }
+    // Update the `favorites` array to trigger reactivity
+    auth.value.favorites = [...updatedFavorites];
 
     // Update in database
     await editUser({

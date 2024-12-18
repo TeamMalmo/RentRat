@@ -1,5 +1,3 @@
-// Composable för useReviews 
-
 import { ref } from "vue";
 import { CONFIG } from "@/constant/config";
 
@@ -13,35 +11,33 @@ export function useAddReview() {
     error.value = null;
 
     try {
-      // Hämta den aktuella listan av råttor
-      const response = await fetch(CONFIG.ITEMS_API_URL, {
+      // Hämta befintliga recensioner
+      const response = await fetch(CONFIG.REVIEW_API_URL, {
         headers: {
           "Content-Type": "application/json",
           "X-Master-Key": apiKey,
         },
       });
       const data = await response.json();
-      const rats = data.record.rats;
+      const reviews = data.record.reviewRats;
 
-      // Hitta rätt råtta och lägg till review
-      const updatedRats = rats.map((rat) => {
-        if (rat.id === ratId) {
-          rat.reviews = rat.reviews || []; // Skapa reviews om det inte finns
-          const emailExists = rat.reviews.some((r) => r.email === reviewData.email);
-          if (emailExists) throw new Error("Den här e-posten har redan gett ett betyg.");
-          rat.reviews.push(reviewData);
-        }
-        return rat;
-      });
+      // Kontrollera om samma e-post redan har gett ett betyg för råttan
+      const emailExists = reviews.some(
+        (review) => review.ratId === ratId && review.reviewerEmail === reviewData.email
+      );
+      if (emailExists) throw new Error("Den här e-posten har redan gett ett betyg.");
 
-      // Uppdatera JSONbin med de nya reviews
-      const putResponse = await fetch(CONFIG.ITEMS_API_URL, {
+      // Lägg till ny recension
+      const updatedReviews = [...reviews, { ratId, ...reviewData }];
+
+      // Uppdatera JSONbin
+      const putResponse = await fetch(CONFIG.REVIEW_API_URL, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "X-Master-Key": apiKey,
         },
-        body: JSON.stringify({ rats: updatedRats }),
+        body: JSON.stringify({ reviewRats: updatedReviews }),
       });
 
       if (!putResponse.ok) throw new Error("Misslyckades med att spara betyget.");

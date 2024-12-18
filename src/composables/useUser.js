@@ -214,6 +214,10 @@ const editUser = async (updatedUser) => {
       description: updatedUser.description,
       areaOfMalmo: updatedUser.areaOfMalmo,
       profileImageUrl: updatedUser.profileImageUrl,
+      // If favorites are not provided, use the existing favorites
+      favorites: updatedUser.favorites !== undefined 
+      ? updatedUser.favorites 
+      : (users[userIndex].favorites || [])
     };
 
     // Save the updated users list back to JSON bin
@@ -234,6 +238,7 @@ const editUser = async (updatedUser) => {
       description: updatedUser.description,
       areaOfMalmo: updatedUser.areaOfMalmo,
       profileImageUrl: updatedUser.profileImageUrl,
+      favorites: updatedUser.favorites,
     };
 
     return true;

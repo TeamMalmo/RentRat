@@ -1,36 +1,32 @@
 import { ref } from "vue";
 import { CONFIG } from "@/constant/config";
+import { useAuth } from "@/composables/useUser";
 
 export function useBookings() {
-  const isAddingBooking = ref(false); // Used like a loading variable
+  const isAddingBooking = ref(false);
   const bookings = ref([]);
   const error = ref(null);
   const apiKey = CONFIG.JSONBIN_API_KEY;
   const url = "https://api.jsonbin.io/v3/b/67596fbeacd3cb34a8b7c8a7";
 
-  // Add a new booking
   const addBooking = async (newBooking) => {
     isAddingBooking.value = true;
 
     try {
-      // Making sure bookings is populated with latest data
       await fetchBookings();
 
-      // Check if there is already a booking with the same date and time
-      for (const booking of bookings.value) {
-        if (
-          booking.date === newBooking.date &&
-          booking.ratId === newBooking.ratId
-        ) {
-          alert("You have already made a booking on this date and time!");
-          return; // Exit early if booking already exists
-        }
+      const conflict = bookings.value.find(
+        (booking) =>
+          booking.date === newBooking.date && booking.ratId === newBooking.ratId
+      );
+
+      if (conflict) {
+        alert("You already have a booking for this date and time!");
+        return;
       }
 
-      // const updatedBookings = []; // Reset-the-JSONBIN-hack-2000
       const updatedBookings = [...bookings.value, newBooking];
 
-      // Send the updated bookings to the JSONBIN
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -41,21 +37,29 @@ export function useBookings() {
       });
 
       if (!response.ok) {
-        alert("Could not add booking. Try again.");
-        throw new Error("Failed to add booking. Please try again.");
+        alert("Booking failed, please try again.");
+        throw new Error("Failed to add booking.");
       }
+
       alert("Booking successful!");
     } catch (err) {
+      console.error(err);
       error.value = "An error occurred while adding the booking.";
-      console.error(err); // Log the error for debugging
     } finally {
       isAddingBooking.value = false;
     }
   };
 
-  // Fetch all bookings and populate bookings
+  // Filter bookings specific to the authenticated user
+  const filterBookingsByUser = (allBookings, renterId) => {
+    return allBookings.filter((booking) => booking.RenterId === renterId);
+  };
+
   const fetchBookings = async () => {
     try {
+      const { auth } = useAuth();  // Access the logged-in user's auth state
+      const renterId = auth?.value?.username;
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -66,10 +70,15 @@ export function useBookings() {
 
       if (response.ok) {
         const data = await response.json();
-        bookings.value = data.record.bookRats;
+        const allBookings = data.record.bookRats || [];
+
+        bookings.value = filterBookingsByUser(allBookings, renterId);
+        console.log('Fetched bookings:', allBookings);
       }
+
     } catch (err) {
-      error.value = err.message || "Misslyckades med att hämta bokningar.";
+      console.error(err);
+      error.value = err.message || "Failed to fetch bookings.";
     } finally {
       isAddingBooking.value = false;
     }

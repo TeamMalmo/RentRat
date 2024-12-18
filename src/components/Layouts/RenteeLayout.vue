@@ -1,9 +1,13 @@
 <script setup>
+// Router instance
 import { useRouter } from 'vue-router';
 import LogoutButton from '../Auth/LogoutButton.vue';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
+// Init router instance 
 const router = useRouter();
 
+// Nav to the renter layout funciton
 function switchToRenter() {
   router.push('/renter');
 }
@@ -12,15 +16,16 @@ function switchToRenter() {
 <template>
   <header>
     <nav>
+      <!-- Nav links for rentee  -->
       <RouterLink to="/rentee">Home</RouterLink>
-      <RouterLink to="/rentee/rats">Your Rats</RouterLink>
       <RouterLink to="/rentee/profile">Profile</RouterLink>
       <RouterLink to="/rentee/inbox">Inbox</RouterLink>
       
       <!-- Toggle Button -->
-      <button @click="switchToRenter" class="toggle-btn">
+      <GlowButton @click="switchToRenter" class="toggle-btn">
+
         Switch to Renter Layout
-      </button>
+      </GlowButton>
       <LogoutButton />
     </nav>
   </header>
@@ -32,18 +37,5 @@ function switchToRenter() {
 
 
 <style scoped>
-.toggle-btn {
-  margin-left: auto;
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+
 </style>

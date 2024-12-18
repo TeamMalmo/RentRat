@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useAuth } from '@/composables/useUser';
 import { uid } from 'uid';
 import { useRouter } from 'vue-router';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
 const { addUser, login } = useAuth();
 
@@ -69,11 +70,11 @@ const handleRegister = async () => {
       <div class="roles">
         <label>
           <input type="radio" value="renter" v-model="newUser.role" />
-          ✅🐀 I have rats - I want to rent them out
+          I have rats 
         </label>
         <label>
           <input type="radio" value="rentee" v-model="newUser.role" />
-          ❌🐀 I have no rats - I want to rent!
+          I don't have rats 
         </label>
       </div>
 
@@ -101,20 +102,15 @@ const handleRegister = async () => {
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" :disabled="isLoading">Register</button>
+      <GlowButton type="submit" :disabled="isLoading">🐀Register</GlowButton>
     </form>
-    <button @click="$emit('back')">Back</button>
+    <GlowButton @click="$emit('back')">❌Back</GlowButton>
   </div>
 </template>
 
 <style scoped>
 
-*{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box ;
-        text-transform:lowercase;
-}
+
 
 .register-form {
   max-width: 400px;
@@ -123,18 +119,22 @@ const handleRegister = async () => {
   border: 1px solid black;
   border-radius: 8px;
   background-color: #8ACE00;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-
 
 form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   gap: 10px;
 }
 
 input{
   background-color: #8ACE00;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .roles {
@@ -142,7 +142,13 @@ input{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.roles label {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .error-message {
@@ -163,19 +169,4 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #8ACE00;
-  color: black;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  border: 1px solid black;
-}
-
-button:hover {
-  background-color: #abff03;
-}
 </style>

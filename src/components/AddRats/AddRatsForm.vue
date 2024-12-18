@@ -1,17 +1,17 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useAuth } from '@/composables/useUser';
+import GlowButton from '../StyleComponents/GlowButton.vue';
 
-// emitar data till parenten
+// Emits data to parent
 const emit = defineEmits(['submit']);
 
-const {auth} = useAuth();
-const primarySkillSelect = ref('');
-const skillInput = ref('');
+const { auth } = useAuth();
+const skillInput = ref(''); // For general skills
+const customPrimarySkillInput = ref(''); // For custom primary skill input
 
-// objektet som skickas till parenten
+// Object for form data
 const newRat = ref({
-  // skapar ett id 00001 - 10000  
   id: String(Math.floor(Math.random() * 10000) + 1).padStart(5, '0'),
   name: '',
   primarySkill: '',
@@ -19,18 +19,40 @@ const newRat = ref({
   price: 0,
   availability: true,
   areaOfMalmo: '',
-  renter: auth.value.username, // hämtar användarens namn
+  renter: auth.value.username,
   description: ''
 });
 
-// Watch primarySkillSelect för att uppdatera newRat.primarySkill
+// Array of skills and associated images
+const skillImages = [
+  { name: 'cook', image: '/images/cook.png' },
+  { name: 'clean', image: '/images/clean.png' },
+  { name: 'laundry', image: '/images/laundry.png' },
+  { name: 'paint', image: '/images/paint.png' },
+  { name: 'custom', image: '/images/default.png' }, // Default image for custom skill
+];
+
+// Selected skill and custom input state
+const primarySkillSelect = ref('');
+
+// Watch primarySkillSelect to update newRat.primarySkill
 watch(primarySkillSelect, (value) => {
-  if (value !== 'custom') {
+  if (value === 'custom') {
+    newRat.value.primarySkill = customPrimarySkillInput.value.trim() || 'Custom Skill';
+  } else {
     newRat.value.primarySkill = value;
+    customPrimarySkillInput.value = ''; // Reset custom input when not selected
   }
 });
 
-// Lägger till skill
+// Watch customPrimarySkillInput to update newRat.primarySkill dynamically
+watch(customPrimarySkillInput, (value) => {
+  if (primarySkillSelect.value === 'custom') {
+    newRat.value.primarySkill = value.trim() || 'Custom Skill';
+  }
+});
+
+// Add skill function
 const addSkill = () => {
   if (skillInput.value.trim()) {
     newRat.value.skills.push(skillInput.value.trim());
@@ -38,105 +60,123 @@ const addSkill = () => {
   }
 };
 
-// Tar bort skill
+// Remove skill function
 const removeSkill = (index) => {
   newRat.value.skills.splice(index, 1);
 };
 
-// Skickar data till parenten
+// Submit the form
 const submitForm = () => {
-  // Kontrollerar att custom skill är vald och skillInput är giltig
   if (primarySkillSelect.value === 'custom' && !newRat.value.primarySkill.trim()) {
     alert('Please enter a custom primary skill.');
     return;
   }
-
-  emit('submit', newRat.value); // emittar till AddRats.vue
+  emit('submit', newRat.value); // Emit data to parent
 };
 </script>
 
 
 <template>
-    <div>
-      <h2>Add a New Rat</h2>
-  
-      <form @submit.prevent="submitForm">
-        <label>
-          Name:
-          <input v-model="newRat.name" type="text" required />
-        </label>
-  
-        <label>
-          Primary Skill:
-          <select v-model="primarySkillSelect">
-            <option disabled value="">Select a skill</option>
-            <option value="cook">Cook</option>
-            <option value="clean">Clean</option>
-            <option value="laundry">Laundry</option>
-            <option value="paint">Paint</option>
-            <option value="custom">Other (Add your own)</option>
-          </select>
-        </label>
-  
-        <div v-if="primarySkillSelect === 'custom'">
-          <label>
-            Custom Primary Skill:
-            <input v-model="newRat.primarySkill" type="text" required />
-          </label>
-        </div>
-        <div v-else>
-          <p v-if="primarySkillSelect">Selected: {{ primarySkillSelect }}</p>
-        </div>
-  
-        <label>
-          Add Skill:
-          <input v-model="skillInput" type="text" placeholder="Enter a skill" />
-          <button type="button" @click="addSkill">Add Skill</button>
-        </label>
-        <ul>
-          <li v-for="(skill, index) in newRat.skills" :key="index">
-            {{ skill }} <button type="button" @click="removeSkill(index)">Remove</button>
-          </li>
-        </ul>
-  
-        <label>
-          Price:
-          <input v-model="newRat.price" type="number" required />
-        </label>
+  <div>
+    <h2>Add a New Rat</h2>
 
-        <label>
-          Area of Malmö:
-          <input v-model="newRat.areaOfMalmo" type="text" required />
-        </label>
-<!--   
-        <label for="renter">
-          Renter:
-          <input id="renter" v-model="newRat.renter" type="text" required />
-        </label> -->
-  
-        <label for="description">
-          Description:
-          <textarea id="description" v-model="newRat.description" type="text" required></textarea>
-        </label>
-  
-        <button type="submit">Add Rat</button>
-      </form>
-    </div>
-  </template>
-  
-  <style scoped>
+    <form @submit.prevent="submitForm">
+      <label>
+        Name:
+        <input v-model="newRat.name" type="text" required />
+      </label>
 
-*{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box ;
-        text-transform:lowercase;
-        gap: 0.5rem;
-    
+      <label>Primary Skill:</label>
+      <div class="skill-selection">
+        <!-- Loop through predefined skills and display images -->
+        <div 
+          v-for="(skill, index) in skillImages" 
+          :key="index" 
+          class="skill-item"
+          :class="{ selected: primarySkillSelect === skill.name }"
+          @click="primarySkillSelect = skill.name">
+          <img :src="skill.image" :alt="skill.name" />
+          <p>{{ skill.name }}</p>
+        </div>
+      </div>
+
+      <!-- Custom skill input if "custom" is selected -->
+      <div v-if="primarySkillSelect === 'custom'">
+        <label>
+          Custom Primary Skill:
+          <input v-model="customPrimarySkillInput" type="text" required />
+        </label>
+      </div>
+
+
+      <label>
+        <input v-model="skillInput" type="text" placeholder="Enter a skill" />
+        <button class="add" type="button" @click="addSkill">Add Skill</button>
+      </label>
+      <ul>
+        <li v-for="(skill, index) in newRat.skills" :key="index">
+          {{ skill }} <button style="padding: 8px; font-size: 8px; margin: 0; padding-left: 12px;" class="remove" type="button" @click="removeSkill(index)">❌</button>
+        </li>
+      </ul>
+
+      <label>
+        Price:
+        <input v-model="newRat.price" type="number" required />
+      </label>
+
+      <label>
+        Area of Malmö:
+        <input v-model="newRat.areaOfMalmo" type="text" required />
+      </label>
+
+      <label for="description">
+        Description:
+        <textarea id="description" v-model="newRat.description" type="text" rows="6" required></textarea>
+      </label>
+
+      <GlowButton type="submit">🐀Add Rat</GlowButton>
+    </form>
+  </div>
+</template>
+
+<style scoped>
+.skill-selection {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-  form {
-  min-width: 400px;
+.skill-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.skill-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.skill-item.selected img {
+  transform: scale(1.2);
+  border: 3px solid #42b983; /* Highlight selected skill */
+}
+
+input, select, textarea {
+  background-color: #8ACE00;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.add:hover, .remove:hover {
+  background-color: #8ACE00;
+  color: black;
+}
+
+form {
+  max-width: 400px;
   margin: auto;
   padding: 20px;
   border: 1px solid black;
@@ -144,35 +184,21 @@ const submitForm = () => {
   background-color: #8ACE00;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
+}
+
+label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+ul {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  }
-
-  label{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  button {
-  padding: 0.5rem 1rem;
-  background-color: #8ACE00;
-  color: black;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  border: 1px solid black;
+  align-items: center ;
+  list-style: none;
 }
-
-button:hover {
-  background-color: #abff03;
-}
-
-input, select, textarea{
-  background-color: #8ACE00;
-}
-
-  </style>
-  
+</style>

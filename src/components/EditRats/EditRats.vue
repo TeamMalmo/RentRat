@@ -56,7 +56,7 @@ const handleEditRat = async (ratData) => {
     </div>
     
     <!-- Visa råttor -->
-    <ul v-else>
+    <ul v-else v-show="selectedRat === null">
       <RatItem 
         v-for="rat in ownedRats" 
         :key="rat.id" 
@@ -67,7 +67,7 @@ const handleEditRat = async (ratData) => {
 
     <!-- Prompt om ingen råtta är vald -->
     <div>
-      <p v-if="!selectedRat">Pick a rat to edit</p>
+      <h2 v-if="!selectedRat" style="width: 400px;">Pick a rat to edit</h2>
       <!-- Formulär för att redigera råttan -->
       <EditRatsForm 
         v-else 
@@ -82,7 +82,9 @@ const handleEditRat = async (ratData) => {
 <style scoped>
 .edit-container {
   max-width: 1000px;
+  min-width: 300px;
   display: flex;
+  flex-direction: column-reverse;
   align-items: start;
   gap: 1rem;
   padding: 1rem;

@@ -2,8 +2,11 @@
 import { useAuth } from "@/composables/useUser";
 import { ref, computed } from "vue";
 
+
+// Define prop 'rat'- represents the data for a specific rat 
+// A parent component, i.e FindRats.vue can send us rat-data through the prop
 const props = defineProps({
-  rat: Object, // Data för en specifik råtta
+  rat: Object, 
 });
 
 const { auth, editUser } = useAuth();

@@ -36,7 +36,9 @@ const resetForm = () => {
   
       <div v-else>
         <!--döljer formläret, visar den nya råttan -->
-        <RatItem :rat="newRat" />
+        <RatItem 
+        :rat="newRat"
+        @click="$router.push(`/rentee/rats/${newRat.id}`)"/>
         <button @click="resetForm">Add Another Rat</button>
       </div>
   

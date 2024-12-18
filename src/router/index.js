@@ -87,6 +87,11 @@ const routes = [
         name: "RenteeHistory",
         component: () => import("@/views/RenteeHistoryView.vue"),
       },
+      {
+        path: "about",
+        name: "RenteeAbout",
+        component: () => import("@/views/RenteeAboutView.vue"),
+      },
     ],
   },
   // Fallback route for undefined paths

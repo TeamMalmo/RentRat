@@ -1,9 +1,9 @@
-import { ref, onMounted } from "vue"; // Importera 'ref' för reaktiva variabler och 'onMounted' för att köra kod vid komponentens montering
-import { CONFIG } from "@/constant/config"; // Importera API-nyckeln från en extern konfigurationsfil
+import { ref, computed, onMounted } from "vue"; // Importera nödvändiga Vue-funktioner
+import { CONFIG } from "@/constant/config"; // Importera API-konfigurationen
 
 // Definiera en composable som hanterar recensioner för råttor
 export function useReviews() {
-  // Definiera reaktiva variabler för recensioner, laddningstillstånd och felmeddelanden
+  // Reaktiva variabler för recensioner, laddningstillstånd och felmeddelanden
   const reviews = ref([]); // Här lagras alla recensioner
   const isLoading = ref(false); // Här lagras om data är under laddning
   const error = ref(null); // Här lagras eventuella felmeddelanden
@@ -71,9 +71,18 @@ export function useReviews() {
     }
   };
 
+  // Beräknar det genomsnittliga betyget för recensioner baserat på ratId
+  const getAverageRating = (ratId) => {
+    const ratReviews = reviews.value.filter((review) => review.ratId === ratId);
+    if (ratReviews.length === 0) return 0; // Om inga recensioner finns, returnera 0
+
+    const totalStars = ratReviews.reduce((sum, review) => sum + review.stars, 0); // Summera stjärnor
+    return totalStars / ratReviews.length; // Returnera genomsnittet
+  };
+
   // När composablen monteras (komponenten som använder denna composable), hämta recensionerna
   onMounted(fetchReviews);
 
   // Returera alla funktioner och reaktiva variabler som ska användas i komponenten
-  return { reviews, isLoading, error, updateReviews };
+  return { reviews, isLoading, error, updateReviews, getAverageRating };
 }

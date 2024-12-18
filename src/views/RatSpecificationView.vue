@@ -14,7 +14,7 @@ const isLoading = ref(true); // Hantera laddning
 
 // Anropa composables för att hämta data
 const { fetchAllRats, rats } = useFetchRats();
-const { reviews, isLoading: isLoadingReviews, error: reviewError, updateReviews } = useReviews();
+const { reviews, isLoading: isLoadingReviews, error: reviewError, updateReviews, getAverageRating } = useReviews();
 
 // Hantera synligheten av betygsformuläret
 const isRatingVisible = ref(false);
@@ -99,11 +99,9 @@ const ratReviews = computed(() => {
   return reviews.value.filter((review) => review.ratId === ratId.value);
 });
 
-// Beräkna genomsnittligt betyg
+// Beräkna genomsnittligt betyg genom composable
 const averageRating = computed(() => {
-  if (!ratReviews.value.length) return 0;
-  const totalStars = ratReviews.value.reduce((sum, review) => sum + review.stars, 0);
-  return totalStars / ratReviews.value.length;
+  return getAverageRating(ratId.value); // Anropa getAverageRating från composablet
 });
 
 // Toggla synligheten av betygsformuläret
@@ -128,6 +126,7 @@ const handleReviewSubmit = async (newReview) => {
   }
 };
 </script>
+
 
 <template>
   <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>

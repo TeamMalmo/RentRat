@@ -1,11 +1,11 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import LogoutButton from '../Auth/LogoutButton.vue';
+import { useRouter } from "vue-router";
+import LogoutButton from "../Auth/LogoutButton.vue";
 
 const router = useRouter();
 
 function switchToRenter() {
-  router.push('/renter');
+  router.push("/renter");
 }
 </script>
 
@@ -16,7 +16,8 @@ function switchToRenter() {
       <RouterLink to="/rentee/rats">Your Rats</RouterLink>
       <RouterLink to="/rentee/profile">Profile</RouterLink>
       <RouterLink to="/rentee/inbox">Inbox</RouterLink>
-      
+      <RouterLink to="/rentee/history">History</RouterLink>
+
       <!-- Toggle Button -->
       <button @click="switchToRenter" class="toggle-btn">
         Switch to Renter Layout
@@ -29,7 +30,6 @@ function switchToRenter() {
     <RouterView />
   </main>
 </template>
-
 
 <style scoped>
 .toggle-btn {

@@ -1,26 +1,43 @@
 <script setup>
 import { useAuth } from "@/composables/useUser";
 import { useBookings } from "@/composables/useBookings";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import GlowButton from "@/components/GlowButton.vue";
 
-let myHistory = ref([]);
+const chosenFilter = ref(null);
 const { auth } = useAuth();
 const { isAddingBooking, fetchBookings, addBooking, bookings, error } =
   useBookings();
 
 onMounted(async () => {
   await fetchBookings();
-  getMyHistory();
 });
 
-const getMyHistory = () => {
-  const newHistory = bookings.value.filter(
-    (booking) =>
-      booking.Booker === auth.value.username && booking.accepted !== null
+const myNewHistory = computed(() => {
+  let newHistory = bookings.value.filter(
+    (booking) => booking.Booker === auth.value.username
   );
-  console.log(newHistory);
-  myHistory.value = newHistory;
+
+  if (chosenFilter.value === "pending") {
+    newHistory = newHistory.filter((booking) => {
+      return booking.accepted === null;
+    });
+  }
+  if (chosenFilter.value === "true") {
+    newHistory = newHistory.filter((booking) => {
+      return booking.accepted === true;
+    });
+  }
+  if (chosenFilter.value === "false") {
+    newHistory = newHistory.filter((booking) => {
+      return booking.accepted === false;
+    });
+  }
+  return newHistory;
+});
+
+const test = (filter) => {
+  chosenFilter.value = filter;
 };
 </script>
 
@@ -28,18 +45,33 @@ const getMyHistory = () => {
   <main>
     <h1>{{ auth.username }}s booking history</h1>
     <div>
-      <GlowButton>Show All</GlowButton>
-      <GlowButton>Pending</GlowButton>
-      <GlowButton>Denied</GlowButton>
-      <GlowButton>Accepted</GlowButton>
+      <GlowButton @click="test('all')">Show All</GlowButton>
+      <GlowButton @click="test('pending')">Pending</GlowButton>
+      <GlowButton @click="test('false')">Denied</GlowButton>
+      <GlowButton @click="test('true')">Accepted</GlowButton>
     </div>
     <ul>
-      <li></li>
+      <li v-for="booking in myNewHistory">
+        Booking Id: {{ booking.Id }} Renter: {{ booking.RenterId }} Requested
+        Date: {{ booking.date }} Status:
+        {{
+          booking.accepted === null
+            ? "Pending Reply"
+            : booking.accepted
+            ? "Yes"
+            : "No"
+        }}
+      </li>
     </ul>
   </main>
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  list-style: none;
+}
+
 main {
   display: flex;
   justify-content: center;

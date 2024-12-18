@@ -7,7 +7,7 @@ import RatItem from "./FindRats/RatItem.vue";
 // Get users auth state 
 const { auth } = useAuth();
 // Import list of fetched rats
-const { rats } = useFetchRats();
+const { rats, fetchAllRats, } = useFetchRats();
 
 // Ref to store favorite rats
 const favoriteRats = ref([]);
@@ -15,6 +15,11 @@ const favoriteRats = ref([]);
 // Debugging logs
 console.log('Auth Favorites:', auth.value.favorites);
 console.log('Rats:', rats.value);
+
+// Fetch rats when the component is mounted
+onMounted(() => {
+  fetchAllRats(); // Trigger the fetching of rats
+});
 
 // Watch for changes in rats and favorites
 watch(

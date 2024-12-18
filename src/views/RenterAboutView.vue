@@ -1,8 +1,9 @@
 <script setup>
+import AboutRentARat from '@/components/About/AboutRentARat.vue';
 </script>
 
 <template>
   <main>
-    <h1>This is a RenterAbout page</h1>
+    <AboutRentARat />
   </main>
 </template>

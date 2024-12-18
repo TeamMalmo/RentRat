@@ -44,23 +44,30 @@ const test = (filter) => {
 <template>
   <main>
     <h1>{{ auth.username }}s booking history</h1>
-    <div>
+    <div class="filter-buttons">
       <GlowButton @click="test('all')">Show All</GlowButton>
       <GlowButton @click="test('pending')">Pending</GlowButton>
       <GlowButton @click="test('false')">Denied</GlowButton>
       <GlowButton @click="test('true')">Accepted</GlowButton>
     </div>
-    <ul>
+    <ul class="cards">
       <li v-for="booking in myNewHistory">
-        Booking Id: {{ booking.Id }} Renter: {{ booking.RenterId }} Requested
-        Date: {{ booking.date }} Status:
-        {{
-          booking.accepted === null
-            ? "Pending Reply"
-            : booking.accepted
-            ? "Yes"
-            : "No"
-        }}
+        <div class="card">
+          <p>Booking Id: {{ booking.Id }}</p>
+
+          <p>Renter: {{ booking.RenterId }}</p>
+          <p>Requested Date: {{ booking.date }}</p>
+          <p>
+            Booking Status:
+            {{
+              booking.accepted === null
+                ? "Pending Reply"
+                : booking.accepted
+                ? "Accepted"
+                : "Denied"
+            }}
+          </p>
+        </div>
       </li>
     </ul>
   </main>
@@ -78,5 +85,24 @@ main {
   align-items: center;
   flex-direction: column;
   padding-top: 2rem;
+}
+
+.filter-buttons {
+  margin-bottom: 2rem;
+}
+
+.cards {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 0.5rem;
 }
 </style>

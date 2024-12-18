@@ -57,7 +57,10 @@ const handleEditRat = async (ratData) => {
     </div>
     
     <!-- Visa råttor -->
-    <ul v-else >
+    <ul 
+    v-else
+    v-show="!selectedRat"
+    >
       <RatItem
         v-for="rat in ownedRats" 
         :key="rat.id" 
@@ -89,6 +92,7 @@ const handleEditRat = async (ratData) => {
   max-width: 1000px;
   min-width: 300px;
   display: flex;
+  flex-direction: column-reverse;
   align-items: start;
   gap: 1rem;
   padding: 1rem;

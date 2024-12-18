@@ -21,6 +21,7 @@ function switchToRenter() {
       <RouterLink to="/rentee/profile">Profile</RouterLink>
       <RouterLink to="/rentee/inbox">Inbox</RouterLink>
       <RouterLink to="/rentee/history">History</RouterLink>
+      <RouterLink to="/rentee/about">About</RouterLink>
 
       <!-- Toggle Button -->
       <GlowButton @click="switchToRenter" class="toggle-btn">

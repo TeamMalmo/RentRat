@@ -14,11 +14,30 @@ const isFavorite = computed(() =>
   auth.value.favorites?.includes(props.rat.id)
 );
 
-// Toggle fave status of a rat 
+// Toggle fave status of a rat
 const toggleFavorite = async (event) => {
   // Stop click from opening rat details
   event.stopPropagation();
-  isFavorite.value = !isFavorite.value;
+
+  try {
+    // Get the current list of favorite rat ids from the authenticated users state
+    // If favorites is null, create an empty array
+    const currentFavorites = auth.value.favorites || [];
+    // Hold the updated list of favorite rat ids
+    let updatedFavorites = [];
+
+    if (isFavorite.value) {
+      // If rat is already favorite, remove it from favorites
+      // Filter to create new array without the current rat id
+      updatedFavorites = currentFavorites.filter((id) => id !== props.rat.id);
+    } else {
+      // If rat is not favorite, add it to favorites
+      // Spread operator to combine existing favorites with the current rat id
+      updatedFavorites = [...currentFavorites, props.rat.id];
+    }
+  } catch (error) {
+    console.error("Failed to toggle favorite:", error);
+  }
 };
 </script>
 

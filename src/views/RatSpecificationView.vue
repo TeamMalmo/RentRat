@@ -1,39 +1,36 @@
-<!-- RatSpecificationView.vue // Sida för specifikation av råtta -->
-
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useFetchRats } from '@/composables/useFetchRats';
+import { useReviews } from '@/composables/useReviews';
 import AddReviewForm from '@/components/ReviewRats/AddReviewForm.vue';
 
 const route = useRoute();
 const router = useRouter();
-const ratId = ref(route.params.id);
-const rat = ref(null);
-const error = ref(null);
-const isLoading = ref(true);
+const ratId = ref(route.params.id); // Hämta ratId från routen
+const rat = ref(null); // För att hålla den valda råttans information
+const error = ref(null); // För felmeddelanden
+const isLoading = ref(true); // Hantera laddning
 
+// Anropa composables för att hämta data
 const { fetchAllRats, rats } = useFetchRats();
+const { reviews, isLoading: isLoadingReviews, error: reviewError, updateReviews } = useReviews();
 
-const isRatingVisible = ref(false); // Hanterar synligheten för betygsformuläret
+// Hantera synligheten av betygsformuläret
+const isRatingVisible = ref(false);
 
-// Här lagras alla recensioner för råttan
-const reviews = ref([]);
-
-// Ladda råttans specifikation
+// Funktion för att ladda råttans data baserat på ratId
 const loadRat = async (id) => {
   isLoading.value = true;
-
   try {
     if (!rats.value || rats.value.length === 0) {
-      await fetchAllRats();
+      await fetchAllRats(); // Hämta alla råttor om de inte är tillgängliga
     }
-
     const allRats = rats.value || [];
-    rat.value = allRats.find((r) => r.id === id);
+    rat.value = allRats.find((r) => r.id === id); // Hitta rätt råtta
 
     if (!rat.value) {
-      throw new Error(`Rat with ID ${id} not found`);
+      throw new Error(`Rat with ID ${id} not found`); // Om råttan inte finns
     }
   } catch (err) {
     error.value = err.message || 'Failed to load rat data';
@@ -43,21 +40,24 @@ const loadRat = async (id) => {
 };
 
 onMounted(() => {
-  loadRat(ratId.value);
+  loadRat(ratId.value); // Ladda råttan när komponenten är monterad
 });
 
+// Lyssna på förändringar av ratId när användaren navigerar
 watch(
   () => route.params.id,
   (newId) => {
     ratId.value = newId;
-    loadRat(newId);
+    loadRat(newId); // Ladda ny råtta vid ID-förändring
   }
 );
 
+// Funktion för att navigera tillbaka till föregående sida
 const goBack = () => {
   router.push('/rentee');
 };
 
+// Funktion för att gå till föregående råtta
 const goToPreviousRat = async () => {
   await fetchAllRats();
   const allRats = rats.value || [];
@@ -69,6 +69,7 @@ const goToPreviousRat = async () => {
   }
 };
 
+// Funktion för att gå till nästa råtta
 const goToNextRat = async () => {
   await fetchAllRats();
   const allRats = rats.value || [];
@@ -80,6 +81,7 @@ const goToNextRat = async () => {
   }
 };
 
+// Kontrollera om den nuvarande råttan är första eller sista
 const isFirstRat = computed(() => {
   const allRats = rats.value || [];
   const currentIndex = allRats.findIndex((r) => r.id === ratId.value);
@@ -92,23 +94,39 @@ const isLastRat = computed(() => {
   return currentIndex === allRats.length - 1;
 });
 
-// Toggla betygsformuläret
+// Filtrera recensioner för den aktuella råttan
+const ratReviews = computed(() => {
+  return reviews.value.filter((review) => review.ratId === ratId.value);
+});
+
+// Beräkna genomsnittligt betyg
+const averageRating = computed(() => {
+  if (!ratReviews.value.length) return 0;
+  const totalStars = ratReviews.value.reduce((sum, review) => sum + review.stars, 0);
+  return totalStars / ratReviews.value.length;
+});
+
+// Toggla synligheten av betygsformuläret
 const toggleRatingForm = () => {
   isRatingVisible.value = !isRatingVisible.value;
 };
 
 // Funktion för att hantera när en recension skickas
-const handleReviewSubmit = (newReview) => {
-  reviews.value.push(newReview); // Lägg till recensionen i arrayen
+const handleReviewSubmit = async (newReview) => {
+  // Lägg till den nya recensionen till listan
+  const updatedReviews = [...reviews.value, {
+    ...newReview,
+    ratId: ratId.value, // Länka recensionen till rätt råtta
+  }];
+  
+  // Uppdatera recensioner via API
+  try {
+    await updateReviews(updatedReviews);
+    toggleRatingForm(); // Stäng formuläret efter skickat betyg
+  } catch (e) {
+    console.error('Error updating reviews:', e);
+  }
 };
-
-// Beräkna snittbetyget
-const averageRating = computed(() => {
-  if (reviews.value.length === 0) return 0;
-  const totalStars = reviews.value.reduce((sum, review) => sum + review.stars, 0);
-  return totalStars / reviews.value.length;
-});
-
 </script>
 
 <template>
@@ -122,7 +140,7 @@ const averageRating = computed(() => {
       <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>
-      <p><strong>Average Rating:</strong> {{ averageRating.toFixed(2) }} ★</p> <!-- Visar snittbetyget -->
+      <p><strong>Average Rating:</strong> {{ averageRating.toFixed(2) }} ★</p>
     </div>
 
     <div class="rat-image-and-buttons">
@@ -146,21 +164,20 @@ const averageRating = computed(() => {
         </button>
       </div>
 
-      <!-- Knapp för att visa/dölja formuläret -->
       <div class="rate-button-container">
         <button class="rate-button" @click="toggleRatingForm">
           {{ isRatingVisible ? 'Hide Rating' : 'Rate This Rat' }}
         </button>
       </div>
 
-      <!-- Visa AddReviewForm om isRatingVisible är sant -->
-      <AddReviewForm v-if="isRatingVisible" @submit="handleReviewSubmit" />
+      <AddReviewForm v-if="isRatingVisible" @submit="handleReviewSubmit" :ratId="String(ratId.value)" />
+
     </div>
   </div>
 </template>
 
 <style scoped>
-
+/* Styling för sidan och komponenterna */
 .rat-container {
   display: flex;
   justify-content: space-between;
@@ -190,7 +207,7 @@ const averageRating = computed(() => {
   width: 200px;
   height: 200px;
   overflow: hidden;
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .rat-image {

@@ -1,48 +1,80 @@
-<!-- AddReviewForm.vue // Formulär för att lägga till en ny recension -->
 <script setup>
-import { ref } from "vue";
+import { ref } from "vue"; // Importera 'ref' för att skapa reaktiva variabler
 
-// Emiterar data till föräldern
+// Emiterar data till föräldern (för att skicka tillbaka recensionen)
 const emit = defineEmits(["submit"]);
 
 // Data för recensionen
 const review = ref({
-  email: "",
-  stars: 0,
+  email: "", // E-postadress för användaren som lämnar recensionen
+  stars: 0,  // Antal stjärnor (betyg) som användaren ger
 });
 
-// Skickar formulärets data
+// Identifiera råttans ID (får via prop istället för URL)
+const ratId = ref("");
+
+// Kontrollera om ratId finns som prop, annars hämta från URL
+const props = defineProps({
+  ratId: {
+    type: String,
+    required: true,  // Gör ratId obligatorisk
+  },
+});
+
+// Tilldela värdet på ratId från föräldern
+ratId.value = props.ratId; // Använd den inkommande ratId-propen
+
+// Funktion som anropas när formuläret skickas
 const submitForm = () => {
+  // Kontrollera om e-post eller betyg inte är ifyllda
   if (!review.value.email || review.value.stars === 0) {
-    alert("Vänligen fyll i alla fält.");
+    alert("Vänligen fyll i alla fält."); // Visa en alert om fälten inte är ifyllda
     return;
   }
-  emit("submit", review.value);
+
+  // Skapa reviewData objekt med ratId, email och stjärnor
+  const reviewData = {
+    ratId: ratId.value, // Länka recensionen till rätt råtta
+    reviewerEmail: review.value.email, // Användarens e-postadress
+    stars: review.value.stars, // Antalet stjärnor
+  };
+
+  // Emiterar 'submit' händelsen och skickar data tillbaka till föräldern
+  emit("submit", reviewData);
 };
 </script>
 
 <template>
   <form @submit.prevent="submitForm">
+    <!-- E-postfält för användaren -->
     <label>
       E-post:
-      <input type="email" v-model="review.email" required placeholder="Ange din e-post" />
+      <input
+        type="email"
+        v-model="review.email"  
+        required
+        placeholder="Ange din e-post"
+      />
     </label>
 
+    <!-- Stjärnval för betyg -->
     <label>
       Antal stjärnor:
       <div class="stars">
-        <span 
-          v-for="star in 5" 
-          :key="star" 
-          class="star" 
-          :class="{ 'selected': review.stars >= star }" 
-          @click="review.stars = star"
+        <!-- Generera 5 stjärnor som användaren kan klicka på för att ge ett betyg -->
+        <span
+          v-for="star in 5"
+          :key="star"
+          class="star"
+          :class="{ selected: review.stars >= star }" 
+          @click="review.stars = star"  
         >
           ★
         </span>
       </div>
     </label>
 
+    <!-- Skicka betyg-knapp -->
     <button type="submit">Skicka betyg</button>
   </form>
 </template>

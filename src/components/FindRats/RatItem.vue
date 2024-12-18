@@ -8,13 +8,14 @@ defineProps({
 
 const { auth } = useAuth();
 
-const isFavorite = ref(false);
-
-const handleIsFavorite = computed(() =>
+// Computed property to check if current rat is favorite
+const isFavorite = computed(() =>
+  // Check if rat id exists in users favorites array
   auth.value.favorites?.includes(props.rat.id)
 );
 
-const toggleFavorite = (event) => {
+// Toggle fave status of a rat 
+const toggleFavorite = async (event) => {
   // Stop click from opening rat details
   event.stopPropagation();
   isFavorite.value = !isFavorite.value;

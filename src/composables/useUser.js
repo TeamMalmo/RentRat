@@ -13,6 +13,7 @@ const auth = ref({
   description: '', // Stores description
   areaOfMalmo: '', // Stores area
   profileImageUrl: '', // Stores profile img. url
+  favorites: [], // Stores favorite rats
 });
 
 // JSON Bin endpoint and key for where our data will be stored
@@ -44,6 +45,7 @@ const login = async (username, password) => {
       description: user.description || '', 
       areaOfMalmo: user.areaOfMalmo || '', 
       profileImageUrl: user.profileImageUrl || '', 
+      favorites: user.favorites || [],
     };
 
     // Update session data for logged in user
@@ -147,6 +149,7 @@ const loadUserSession = async () => {
           description: user.description || '',  // Add missing fields
           areaOfMalmo: user.areaOfMalmo || '',  // Add missing fields
           profileImageUrl: user.profileImageUrl || '',  // Add missing fields
+          favorites: user.favorites || [],
         };
       }
     }
@@ -233,6 +236,10 @@ const editUser = async (updatedUser) => {
       description: updatedUser.description,
       areaOfMalmo: updatedUser.areaOfMalmo,
       profileImageUrl: updatedUser.profileImageUrl,
+      // If favorites are not provided, use the existing favorites
+      favorites: updatedUser.favorites !== undefined 
+      ? updatedUser.favorites 
+      : (users[userIndex].favorites || [])
     };
 
     // Save the updated users list back to JSON bin
@@ -253,6 +260,7 @@ const editUser = async (updatedUser) => {
       description: updatedUser.description,
       areaOfMalmo: updatedUser.areaOfMalmo,
       profileImageUrl: updatedUser.profileImageUrl,
+      favorites: updatedUser.favorites,
     };
 
     return true;
@@ -261,6 +269,7 @@ const editUser = async (updatedUser) => {
     return false;
   }
 };
+
 
 loadUserSession(); // Initialize session on load
 

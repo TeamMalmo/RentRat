@@ -12,20 +12,20 @@ const { auth, editUser } = useAuth();
 const isFavorite = computed(() => {
   // Check if rat id exists in users favorites array
   const favoriteStatus = auth.value.favorites?.includes(props.rat.id);
-  console.log(
-    "Is favorite:",
-    favoriteStatus,
-    "Rat ID:",
-    props.rat.id,
-    "Favorites:",
-    auth.value.favorites
-  );
+  // console.log(
+  //   "Is favorite:",
+  //   favoriteStatus,
+  //   "Rat ID:",
+  //   props.rat.id,
+  //   "Favorites:",
+  //   auth.value.favorites
+  // );
   return favoriteStatus;
 });
 
 // Toggle fave status of a rat
 const toggleFavorite = async (event) => {
-  console.log(`Toggle favorite for rat ${props.rat.id}`);
+  // console.log(`Toggle favorite for rat ${props.rat.id}`);
 
   // Stop click from opening rat details
   event.stopPropagation();
@@ -59,7 +59,7 @@ const toggleFavorite = async (event) => {
   }
 };
 
-console.log(auth.value.favorites);
+// console.log(auth.value.favorites);
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { useFetchRats } from "@/composables/useFetchRats";
 import { useAuth } from "@/composables/useUser";
 import RatItem from "./FindRats/RatItem.vue";
@@ -9,14 +9,38 @@ const { auth } = useAuth();
 // Import list of fetched rats
 const { rats } = useFetchRats();
 
-// Computed property to dynamically filter rats based on favorites
-const favoriteRats = computed(() => {
-    // Only if rats and favorites are loaded
-    if (rats.value && auth.value.favorites) {
-        return rats.value.filter(rat => auth.value.favorites.includes(rat.id));
-    };
-    return [];
-})
+// Ref to store favorite rats
+const favoriteRats = ref([]);
+
+// Debugging logs
+console.log('Auth Favorites:', auth.value.favorites);
+console.log('Rats:', rats.value);
+
+// Watch for changes in rats and favorites
+watch(
+  [rats, auth],
+  () => {
+    if (rats.value && auth.value?.favorites) {
+      favoriteRats.value = rats.value.filter((rat) =>
+        auth.value.favorites.includes(rat.id)
+      );
+    } else {
+      favoriteRats.value = [];
+    }
+  },
+  { immediate: true, deep: true } // Ensure reactivity and run on initial load
+);
+
+
+
+// // Computed property to dynamically filter rats based on favorites
+// const favoriteRats = computed(() => {
+//     // Only if rats and favorites are loaded
+//     if (rats.value && auth.value.favorites) {
+//         return rats.value.filter(rat => auth.value.favorites.includes(rat.id));
+//     };
+//     return [];
+// })
 
 // // Do when component is mounted to DOM
 // onMounted(() => {

@@ -12,7 +12,7 @@ export function useReviews() {
   const fetchReviews = async () => {
     isLoading.value = true; // Sätt isLoading till true när hämtningen startar
     try {
-      // Gör en GET-förfrågan till JSONBin API för att hämta recensioner
+      // Gör en förfrågan till JSONBin API för att hämta recensioner
       const response = await fetch('https://api.jsonbin.io/v3/b/675960dee41b4d34e46387c2', {
         headers: {
           "Content-Type": "application/json", // Ange att vi skickar och förväntar oss JSON
@@ -54,7 +54,7 @@ export function useReviews() {
       const responseData = await response.json();
       console.log("Response from PUT request:", responseData); // Logga svaret från API:et för felsökning
 
-      // Om svarskoden inte är OK, kasta ett fel
+      // Om svarskoden inte är OK, skicka error
       if (!response.ok) {
         throw new Error("Failed to update reviews: " + responseData.message);
       }

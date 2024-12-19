@@ -1,6 +1,7 @@
 <script setup>
 import { useAuth } from "@/composables/useUser";
 import { ref, computed } from "vue";
+import { useReviews } from "@/composables/useReviews"; // Importera reviews composable
 
 
 // Define prop 'rat'- represents the data for a specific rat 
@@ -10,6 +11,10 @@ const props = defineProps({
 });
 
 const { auth, editUser } = useAuth();
+const { getAverageRating } = useReviews(); // Hämta funktionen för genomsnittligt betyg
+
+// Computed property for average rating
+const averageRating = computed(() => getAverageRating(props.rat.id));
 
 // Computed property to check if current rat is favorite
 const isFavorite = computed(() => {
@@ -73,6 +78,7 @@ const toggleFavorite = async (event) => {
       <p>Other Skills: {{ rat.skills.join(", ") }}</p>
       <p>Available? {{ rat.availability ? "Yes" : "No" }}</p>
       <p>Renter: {{ rat.renter }}</p>
+      <p>Average Rating: {{ averageRating.toFixed(2) }} ★</p>
       <button class="favorite-btn" @click="toggleFavorite">
         {{ isFavorite ? "Unfavorite💔" : "Favorite❤️" }}
       </button>

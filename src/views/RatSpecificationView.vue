@@ -1,71 +1,65 @@
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useFetchRats } from "@/composables/useFetchRats";
-import BookForm from "../components/BookForm/BookForm.vue";
-import { useAuth } from "@/composables/useUser";
+import { ref, onMounted, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useFetchRats } from '@/composables/useFetchRats';
+import { useReviews } from '@/composables/useReviews';
+import AddReviewForm from '@/components/ReviewRats/AddReviewForm.vue';
 
 const route = useRoute();
-const router = useRouter(); // Adderar router för att kunna gå tillbaka då useRoute endast kan läsa befintlig route, inte ändra den.
-const ratId = ref(route.params.id); // Gör ratId reaktiv för att lyssna på förändringar
-const rat = ref(null);
-const error = ref(null);
-const isLoading = ref(true);
-const isBooking = ref(false);
+const router = useRouter();
+const ratId = ref(route.params.id); // Hämta ratId från routen
+const rat = ref(null); // För att hålla den valda råttans information
+const error = ref(null); // För felmeddelanden
+const isLoading = ref(true); // Hantera laddning
 
-const { auth } = useAuth();
-const { fetchAllRats, rats } = useFetchRats(); // Tar in info från vår composable
+// Anropa composables för att hämta data
+const { fetchAllRats, rats } = useFetchRats();
+const { reviews, isLoading: isLoadingReviews, error: reviewError, updateReviews, getAverageRating } = useReviews();
 
-// Togglar booking modalen
-const toggleModal = () => {
-  isBooking.value = !isBooking.value;
-};
+// Hantera synligheten av betygsformuläret
+const isRatingVisible = ref(false);
 
-// Funktion för att ladda en råtta baserat på ID
+// Funktion för att ladda råttans data baserat på ratId
 const loadRat = async (id) => {
   isLoading.value = true;
-
   try {
-    // Om råttorna inte har hämtats än, hämta dem
     if (!rats.value || rats.value.length === 0) {
-      await fetchAllRats();
+      await fetchAllRats(); // Hämta alla råttor om de inte är tillgängliga
     }
-
     const allRats = rats.value || [];
-    rat.value = allRats.find((r) => r.id === id);
+    rat.value = allRats.find((r) => r.id === id); // Hitta rätt råtta
 
     if (!rat.value) {
-      throw new Error(`Rat with ID ${id} not found`);
+      throw new Error(`Rat with ID ${id} not found`); // Om råttan inte finns
     }
   } catch (err) {
-    error.value = err.message || "Failed to load rat data";
+    error.value = err.message || 'Failed to load rat data';
   } finally {
     isLoading.value = false;
   }
 };
 
-// Ladda råttan vid start
 onMounted(() => {
-  loadRat(ratId.value);
+  loadRat(ratId.value); // Ladda råttan när komponenten är monterad
 });
 
-// Watch för att lyssna på ändring av URL-parametern och ladda ny råtta
+// Lyssna på förändringar av ratId när användaren navigerar
 watch(
   () => route.params.id,
   (newId) => {
-    ratId.value = newId; // Uppdatera ratId
-    loadRat(newId); // Ladda ny råtta
+    ratId.value = newId;
+    loadRat(newId); // Ladda ny råtta vid ID-förändring
   }
 );
 
-// Navigera tillbaka till råttornas sida
+// Funktion för att navigera tillbaka till föregående sida
 const goBack = () => {
-  router.push("/rentee");
+  router.push('/rentee');
 };
 
-// Navigera till föregående råtta
+// Funktion för att gå till föregående råtta
 const goToPreviousRat = async () => {
-  await fetchAllRats(); // Säkerställ att alla råttor är laddade
+  await fetchAllRats();
   const allRats = rats.value || [];
   const currentIndex = allRats.findIndex((r) => r.id === ratId.value);
 
@@ -75,9 +69,9 @@ const goToPreviousRat = async () => {
   }
 };
 
-// Navigera till nästa råtta
+// Funktion för att gå till nästa råtta
 const goToNextRat = async () => {
-  await fetchAllRats(); // Säkerställ att alla råttor är laddade
+  await fetchAllRats();
   const allRats = rats.value || [];
   const currentIndex = allRats.findIndex((r) => r.id === ratId.value);
 
@@ -87,36 +81,66 @@ const goToNextRat = async () => {
   }
 };
 
-// Computed property för att kontrollera om vi är på första råttan
+// Kontrollera om den nuvarande råttan är första eller sista
 const isFirstRat = computed(() => {
   const allRats = rats.value || [];
   const currentIndex = allRats.findIndex((r) => r.id === ratId.value);
   return currentIndex === 0;
 });
 
-// Computed property för att kontrollera om vi är på sista råttan
 const isLastRat = computed(() => {
   const allRats = rats.value || [];
   const currentIndex = allRats.findIndex((r) => r.id === ratId.value);
   return currentIndex === allRats.length - 1;
 });
+
+// Filtrera recensioner för den aktuella råttan
+const ratReviews = computed(() => {
+  return reviews.value.filter((review) => review.ratId === ratId.value);
+});
+
+// Beräkna genomsnittligt betyg genom composable
+const averageRating = computed(() => {
+  return getAverageRating(ratId.value); // Anropa getAverageRating från composablet
+});
+
+// Toggla synligheten av betygsformuläret
+const toggleRatingForm = () => {
+  isRatingVisible.value = !isRatingVisible.value;
+};
+
+// Funktion för att hantera när en recension skickas
+const handleReviewSubmit = async (newReview) => {
+  // Lägg till den nya recensionen till listan
+  const updatedReviews = [...reviews.value, {
+    ...newReview,
+    ratId: ratId.value, // Länka recensionen till rätt råtta
+  }];
+  
+  // Uppdatera recensioner via API
+  try {
+    await updateReviews(updatedReviews);
+    toggleRatingForm(); // Stäng formuläret efter skickat betyg
+  } catch (e) {
+    console.error('Error updating reviews:', e);
+  }
+};
 </script>
+
+
 
 <template>
   <div v-if="isLoading" class="loading-message">🐭 Loading rat...</div>
   <div v-else-if="error" class="error-message">❌ {{ error }}</div>
 
   <div v-else class="rat-container">
-    <BookForm v-if="isBooking" :rat="rat" @closeModal="toggleModal" />
     <div class="rat-info">
       <button class="back-button" @click="goBack">Tillbaka</button>
       <h1 class="rat-name">{{ rat.name }}</h1>
-      <button v-if="auth.isAuthenticated" @click="toggleModal">
-        Rent this rat
-      </button>
-      <p><strong>Skills:</strong> {{ rat.skills.join(", ") }}</p>
+      <p><strong>Skills:</strong> {{ rat.skills.join(', ') }}</p>
       <p><strong>Price:</strong> {{ rat.price }} SEK</p>
       <p><strong>Description:</strong> {{ rat.description }}</p>
+      <p><strong>Average Rating:</strong> {{ averageRating.toFixed(2) }} ★</p>
     </div>
 
     <div class="rat-image-and-buttons">
@@ -124,32 +148,42 @@ const isLastRat = computed(() => {
         <img :src="rat.imgUrl" alt="rat image" class="rat-image" />
       </div>
       <div class="navigation-buttons">
-        <button
-          @click="goToPreviousRat"
-          class="prev-button"
-          :disabled="isFirstRat">
-          Föregående råtta
+        <button 
+          @click="goToPreviousRat" 
+          class="prev-button" 
+          :disabled="isFirstRat"
+        >
+          Previous Rat
         </button>
-        <button @click="goToNextRat" class="next-button" :disabled="isLastRat">
-          Nästa råtta
+        <button 
+          @click="goToNextRat" 
+          class="next-button" 
+          :disabled="isLastRat"
+        >
+          Next Rat
         </button>
       </div>
+
+      <div class="rate-button-container">
+        <button class="rate-button" @click="toggleRatingForm">
+          {{ isRatingVisible ? 'Hide Rating' : 'Rate This Rat' }}
+        </button>
+      </div>
+
+      <AddReviewForm v-if="isRatingVisible" @submit="handleReviewSubmit" :ratId="String(ratId.value)" />
+
     </div>
   </div>
-
-  <!-- <BookingForm :rat="rat" /> -->
-  <!-- TODO: SPARA BOOKINGS I EN ARRAY -> I EN JSONBIN 
-    eva.bjorling@chasacademy.se || rentarat2024
-    använd url från din skapade bin
-    -->
 </template>
+
 <style scoped>
+/* Styling för sidan och komponenterna */
 .rat-container {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px;
-  border: 2px solid #8ace00;
+  border: 2px solid #8ACE00;
   border-radius: 10px;
   background-color: rgba(128, 128, 128, 0.534);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -162,28 +196,18 @@ const isLastRat = computed(() => {
   padding-right: 20px;
 }
 
-.rat-name {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #333;
-}
-
 .rat-image-and-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centrerar knappar och bild vertikalt */
+  align-items: center;
   flex: 1;
 }
 
 .rat-image-container {
   width: 200px;
   height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
-  border-radius: 0; /* Fyrkantig från början */
-  animation: circleAnimation 1.5s ease-out forwards; /* Animering vid laddning */
+  border-radius: 50%;
 }
 
 .rat-image {
@@ -192,52 +216,26 @@ const isLastRat = computed(() => {
   object-fit: cover;
 }
 
-.navigation-buttons {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column; /* Staplar knapparna vertikalt */
-  gap: 0.5rem; /* Mellanrum mellan knappar */
-}
-
-.prev-button,
-.next-button,
-.back-button {
+.navigation-buttons button,
+.rate-button {
   background-color: #6c757d;
   color: white;
+  margin: 0.5rem;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
   transition: background-color 0.3s ease;
 }
 
-.prev-button:hover,
-.next-button:hover,
-.back-button:hover {
-  background-color: #5a6268;
-}
-
-.prev-button:focus,
-.next-button:focus,
-.back-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.5);
+.rate-button-container {
+  text-align: center;
+  margin-top: 1rem;
 }
 
 .prev-button:disabled,
-.next-button:disabled,
-.back-button:disabled {
+.next-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-@keyframes circleAnimation {
-  0% {
-    border-radius: 0%; /* Fyrkantig */
-  }
-  100% {
-    border-radius: 50%; /* Cirkulär */
-  }
 }
 </style>

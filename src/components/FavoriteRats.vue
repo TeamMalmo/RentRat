@@ -4,17 +4,17 @@ import { useFetchRats } from "@/composables/useFetchRats";
 import { useAuth } from "@/composables/useUser";
 import RatItem from "./FindRats/RatItem.vue";
 
-// Get users auth state 
+// Get users auth state
 const { auth } = useAuth();
 // Import list of fetched rats
-const { rats, fetchAllRats, } = useFetchRats();
+const { rats, fetchAllRats } = useFetchRats();
 
 // Ref to store favorite rats
 const favoriteRats = ref([]);
 
 // Debugging logs
-console.log('Auth Favorites:', auth.value.favorites);
-console.log('Rats:', rats.value);
+console.log("Auth Favorites:", auth.value.favorites);
+console.log("Rats:", rats.value);
 
 // Fetch rats when the component is mounted
 onMounted(() => {
@@ -25,18 +25,19 @@ onMounted(() => {
 watch(
   [rats, auth],
   () => {
+    // When both `rats` and `auth`'s favorites are available:
     if (rats.value && auth.value?.favorites) {
+      // Filter the fetched rats to only include those whose IDs match the user's favorites
       favoriteRats.value = rats.value.filter((rat) =>
         auth.value.favorites.includes(rat.id)
       );
     } else {
+      // If data is unavailable, reset `favoriteRats` to an empty array
       favoriteRats.value = [];
     }
   },
   { immediate: true, deep: true } // Ensure reactivity and run on initial load
 );
-
-
 
 // // Computed property to dynamically filter rats based on favorites
 // const favoriteRats = computed(() => {
@@ -57,7 +58,6 @@ watch(
 //     );
 //   }
 // });
-
 </script>
 
 <template>

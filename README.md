@@ -1,57 +1,66 @@
-# Rent-a-Rat 
+# Rent-a-Rat
 
 This is a Vue.js application for renting and renting out rats and their services. with various layout components, UI effects, and reusable components designed for a dynamic user experience. It includes two main layouts (`RenteeLayout` and `RenterLayout`), a series of visual effects like particle and noise overlays.
 
+## Landing Page
+
+![Landing Page](/public/images/landing-page.png)
+
+## Specification Page
+
+![Specification Page](client/public/spec-rat.png)
+
+## Search function
+
+![Search function](client/public/find-rat.png)
 
 ## Project Structure
+
 public/
-  - Images
-  - CSS
-  - JavaScript
-src/
-  - App.vue
-  - components/
-    - Auth/
-      - LoginForm.vue
-      - LogoutButton.vue
-      - RegisterForm.vue
-      - WelcomeMessage.vue
-    - AddRats/
-      - AddRats.vue
-      - AddRatsForm.vue
-    - EditRats/
-      - EditRats.vue
-      - EditRatsForm.vue
-    - EditUser/
-      - UpdateUser.vue
-      - UpdateUserForm.vue
-    - FindRats/
-      - FindRats.vue
-      - RatFilter.vue
-      - RatItem.vue
-    - Layouts/
-      - RenteeLayout.vue
-      - RenterLayout.vue
-    - StyleComponents/
-      - GlowButton.vue
-      - HeroOverlayEffect.vue
-      - NoiseOverlay.vue
-      - NoiseOverlay.vue
-  views/
-    - LandingView.vue
-    - RenterHomeView.vue
-    - RenterProfileView.vue
-    - RenteeHomeView.vue
-    - RenteeRatsView.vue
-    - RatSpecificationView.vue
-    - RenteeProfileView.vue
-    - RenterAboutView.vue
-    - NotFoundView.vue
-  router/
+
+- Images
+- CSS
+- JavaScript
+  src/
+- App.vue
+- components/
+  - Auth/
+    - LoginForm.vue
+    - LogoutButton.vue
+    - RegisterForm.vue
+    - WelcomeMessage.vue
+  - AddRats/
+    - AddRats.vue
+    - AddRatsForm.vue
+  - EditRats/
+    - EditRats.vue
+    - EditRatsForm.vue
+  - EditUser/
+    - UpdateUser.vue
+    - UpdateUserForm.vue
+  - FindRats/
+    - FindRats.vue
+    - RatFilter.vue
+    - RatItem.vue
+  - Layouts/
+    - RenteeLayout.vue
+    - RenterLayout.vue
+  - StyleComponents/ - GlowButton.vue - HeroOverlayEffect.vue - NoiseOverlay.vue - NoiseOverlay.vue
+    views/
+  - LandingView.vue
+  - RenterHomeView.vue
+  - RenterProfileView.vue
+  - RenteeHomeView.vue
+  - RenteeRatsView.vue
+  - RatSpecificationView.vue
+  - RenteeProfileView.vue
+  - RenterAboutView.vue
+  - NotFoundView.vue
+    router/
     index.js
-  constant/
+    constant/
     config.js
-  composables/
+    composables/
     useAddRat.js
     useAuth.js
     useBookings.js
@@ -59,10 +68,11 @@ src/
     useRemoveRat.js
     useUpdateRat.js
     useUser.js
-  services/
+    services/
     ratsApi.js
 
 ## Features
+
 - Authentication
 - User Profile
 - Rat Finder
@@ -75,10 +85,12 @@ src/
 - Reusable Components
 
 ## Dependencies
+
     - Vue 3
     - Vue Router 4
 
 ## Getting Started
+
 To get started with this project, follow these steps:
 
 1. Clone the repository:
@@ -95,7 +107,8 @@ To get started with this project, follow these steps:
    ```
 4. Open your browser and navigate to `http://localhost:5173`.
 
-### By: 
+### By:
+
 - [Eva Bjorling](https://github.com/evesteve94)
 - [Aleksei Nilsson](https://github.com/Alenil00)
 - [Mirza Mesinovic](https://github.com/Strimlaren)

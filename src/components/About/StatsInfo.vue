@@ -6,28 +6,27 @@ import GlowButton from '../StyleComponents/GlowButton.vue';
 import RatItem from '../FindRats/RatItem.vue';
 import UserCard from './UserCard.vue';
 
-const { fetchAllUsers } = useAuth(); // Import fetchAllUsers
+const { fetchAllUsers } = useAuth(); 
 const { rats, fetchAllRats } = useFetchRats();
-const users = ref([]); // Create a reactive list of users
-const listContent = ref('rats'); // Default content is rats
+const users = ref([]); // ref för användare
+const listContent = ref('rats'); // Default content är rats
 
 onMounted(async () => {
-  users.value = await fetchAllUsers(); // Fetch and assign users
-  await fetchAllRats(); // Fetch and assign rats
+  users.value = await fetchAllUsers(); // hämtar och tilldelar användare
+  await fetchAllRats(); //hämtar och tilldelar rats
 });
 
-// Compute the renter with the most rats
+// dynamiskt beräknar den med flest rats
 const ratQueen = computed(() => {
   const renterRatCount = users.value
-    .filter(user => user.role === 'renter') // Only include renters
+    .filter(user => user.role === 'renter') // bara inkludera renter
     .map(renter => ({
-      name: renter.username, // Assuming `username` is the name field
-      ratCount: rats.value.filter(rat => rat.renter === renter.username).length, // Count their rats
-      profileImageUrl: renter.profileImageUrl // Assuming `profileImageUrl` exists for each user
+      name: renter.username, 
+      ratCount: rats.value.filter(rat => rat.renter === renter.username).length, // räkna deras rats
+      profileImageUrl: renter.profileImageUrl 
     }))
-    .sort((a, b) => b.ratCount - a.ratCount); // Sort by rat count in descending order
-
-  return renterRatCount.length > 0 ? renterRatCount[0] : null; // Return the top renter or null if none
+    .sort((a, b) => b.ratCount - a.ratCount); // sorterar efter rat-antal i fallande ordning
+  return renterRatCount.length > 0 ? renterRatCount[0] : null; // Returnera topp renter eller null om ingen
 });
 </script>
 

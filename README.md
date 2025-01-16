@@ -8,11 +8,11 @@ This is a Vue.js application for renting and renting out rats and their services
 
 ## Specification Page
 
-![Specification Page](client/public/spec-rat.png)
+![Specification Page](/public/images/spec-rat.png)
 
 ## Search function
 
-![Search function](client/public/find-rat.png)
+![Search function](/public/images/find-rat.png)
 
 ## Project Structure
 
